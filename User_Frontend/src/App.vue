@@ -6,6 +6,9 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <SideBar/>
   <RouterView />
+
+  <login />
+  
 </template>
 
 <style scoped>
