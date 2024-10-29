@@ -63,7 +63,7 @@
               data-bs-target="#loginModal">
               登入
             </button>
-            <RouterLink to="/registerView" type="button" class="btn btn-primary">註冊</RouterLink>
+            <RouterLink to="/register" type="button" class="btn btn-primary">註冊</RouterLink>
           </div>
 
           <!-- 漢堡選單（在小於 576px 時顯示） -->
@@ -80,7 +80,7 @@
                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
               </li>
               <li>
-                <RouterLink to="/registerView" class="dropdown-item">註冊</RouterLink>
+                <RouterLink to="/register" class="dropdown-item">註冊</RouterLink>
               </li>
             </ul>
           </div>
