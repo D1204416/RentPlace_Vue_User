@@ -8,7 +8,8 @@
         <nav class="navbar" aria-label="Light offcanvas navbar">
 
             <div class="container-fluid">
-                <!-- Navbar Expand button -->
+
+                <!-- Sidebar 展開按鈕 -->
                 <div class="d-flex m-3">
                     <a data-bs-toggle="offcanvas" href="#offcanvasNavbarLight" aria-controls="offcanvasNavbarLight">
                         <div>
@@ -20,18 +21,19 @@
                         </div>
                     </a>
 
-                    <!-- logo -->
+                    <!-- 台中通logo -->
                     <img src="/img/logo.svg" alt="Logo" style="height: 40px; margin-left: 15px;" />
                     <!-- <h4 style="margin-left: 15px; color: aliceblue;">Happy Lion</h4> -->
                 </div>
 
 
                 <!-- 會員登入頭像和下拉選單 -->
-                <div class="d-flex align-items-center" style="margin-right: 15px;">
+                <!-- 
+                    <div class="d-flex align-items-center" style="margin-right: 15px;">
                     <div class="dropdown">
                         <a class="d-flex align-items-center text-gray text-decoration-none dropdown-toggle"
                             id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <!-- 假設這裡是會員頭像 -->
+                             假設這裡是會員頭像
                             <img src="https://picsum.photos/id/684/600/400" alt="user-avatar" width="40" height="40"
                                 class="rounded-circle border" style="border-width: 8px; ">
 
@@ -49,9 +51,17 @@
                         </ul>
                     </div>
                 </div>
+                 -->
 
 
-                <!-- 左側欄位 -->
+                <!-- 登入註冊 -->
+                <div class="col-md-3 text-end" style="margin-right: 20px;">
+                    <button type="button" class="btn btn-outline-primary me-2">登入</button>
+                    <button type="button" class="btn btn-primary">註冊</button>
+                </div>
+
+
+                <!-- SideBar 收起按鈕 -->
                 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbarLight"
                     aria-labelledby="offcanvasNavbarLightLabel" style="width: 220px ; border-radius: 0px 50px 0px 0px;">
 
@@ -68,6 +78,9 @@
 
                     </div>
                     <hr style="margin: 10px;">
+
+
+                    <!-- SideBar 選單 -->
 
                     <div class="offcanvas-body" style="background-color: #FFFFFF;">
 
@@ -125,9 +138,10 @@
 
                     </div>
 
+                    <!-- SideBar Logo -->
                     <div>
                         <img src="/img/logo.svg" alt="Logo"
-                        style="height: 44px; position: fixed; bottom: 30px; margin-left: 48px;" />
+                            style="height: 44px; position: fixed; bottom: 30px; margin-left: 48px;" />
                     </div>
 
                 </div>
@@ -152,5 +166,17 @@
 
 .text-gray {
     color: #4a4a4a;
+}
+
+.btn-outline-primary {
+    --bs-btn-border-color: #ffffff;
+    color: #000000;
+    --bs-btn-hover-bg: #0074a9;
+}
+
+.btn-primary {
+    background-color: #019ee7;
+    border-color: #019ee7;
+    --bs-btn-hover-bg: #0074a9;
 }
 </style>
