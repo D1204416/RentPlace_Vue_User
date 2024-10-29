@@ -33,17 +33,22 @@
     </div>
 
     <!-- 行政區域 Region Modal -->
-    <div class="modal" v-if="showRegionModal">
+<div class="modal" v-if="showRegionModal">
       <div class="modal-content">
         <span class="close-button" @click="showRegionModal = false">&times;</span>
         <h3>選擇行政區域</h3>
-        <div class="checkbox-group">
-          <div class="checkbox-item" v-for="region in regions" :key="region">
+        <div class="checkbox-grid">
+          <div class="checkbox-item" v-for="region in regions" :key="region" 
+               @mouseenter="handleMouseEnter(region)" 
+               @mouseleave="handleMouseLeave">
             <input type="checkbox" :id="region" v-model="selectedRegions" :value="region">
-            <label :for="region">{{ region }}</label>
+            <label :for="region" :class="{'hover-blue': isRegionHovered(region)}">{{ region }}</label>
           </div>
         </div>
-        <button class="submit-button" @click="showRegionModal = false">確認</button>
+        <div class="button-group">
+          <button class="submit-button" @click="showRegionModal = false">確認</button>
+          <button class="clear-button" @click="clearSelectedRegions">清除選擇</button>
+        </div>
       </div>
     </div>
 
@@ -68,6 +73,7 @@ export default {
     return {
       showRegionModal: false,
       selectedRegions: [],  // 行政區域
+      hoveredRegion: null,
       selectedVenueType: '',  // 場地類型
       selectedDate: '',  // 日期
       selectedCapacity: '', //容納人數
@@ -107,7 +113,23 @@ export default {
         }
       ]
     }
-  }
+  },
+
+  methods: {
+    handleMouseEnter(region) {
+      this.hoveredRegion = region;
+    },
+    handleMouseLeave() {
+      this.hoveredRegion = null;
+    },
+    isRegionHovered(region) {
+      return this.hoveredRegion === region;
+    },
+    clearSelectedRegions() {
+      this.selectedRegions = [];
+    }
+
+  },
 }
 </script>
 
@@ -172,7 +194,56 @@ export default {
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 30%;
+  width: 60%;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.checkbox-item label.hover-blue {
+  color: #4A90E2;
+}
+
+.checkbox-item input {
+  margin-right: 5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.submit-button {
+  background-color: #FFD700;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 35px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button:hover {
+  background-color: #d0d0d0;
 }
 
 .close-button {
@@ -186,16 +257,6 @@ export default {
 .close-button:focus {
   color: black;
   text-decoration: none;
-  cursor: pointer;
-}
-
-.submit-button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  background-color: #FFD700;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
 
