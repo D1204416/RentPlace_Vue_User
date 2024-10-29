@@ -36,7 +36,9 @@
     <h2 class="section-title">場地類型</h2>
     <div class="venue-grid">
       <div v-for="venue in venues" :key="venue.id" class="venue-card">
-        <div class="venue-icon" v-html="venue.icon"></div>
+        <div class="venue-icon">
+          <img :src="`/img/${venue.icon}`" :alt="venue.title" />
+        </div>
         <h3 class="venue-title">{{ venue.title }} {{ venue.count }}</h3>
         <p class="venue-description">{{ venue.description }}</p>
       </div>
@@ -63,46 +65,29 @@ export default {
           id: 1,
           title: '會議室',
           count: 158,
-          description: '包含中型與小型會議室、簡報室、輔語室.....',
-          icon: `<svg viewBox="0 0 24 24" width="48" height="48">
-                    <rect x="2" y="4" width="20" height="3" fill="#FFD700"/>
-                    <rect x="4" y="9" width="4" height="4" fill="#4A90E2"/>
-                    <rect x="10" y="9" width="4" height="4" fill="#4A90E2"/>
-                    <rect x="16" y="9" width="4" height="4" fill="#4A90E2"/>
-                  </svg>`
+          description: '包含中型與小型會議室、簡報室、聯誼室.....',
+          icon: 'meeting-room.png'
         },
         {
           id: 2,
           title: '活動中心',
           count: 120,
           description: '包含一般禮堂、音樂廳、集會空間、演藝廳.....',
-          icon: `<svg viewBox="0 0 24 24" width="48" height="48">
-                    <rect x="2" y="2" width="20" height="6" fill="#FFD700"/>
-                    <rect x="4" y="10" width="4" height="4" fill="#4A90E2"/>
-                    <rect x="10" y="10" width="4" height="4" fill="#4A90E2"/>
-                    <rect x="16" y="10" width="4" height="4" fill="#4A90E2"/>
-                  </svg>`
+          icon: 'theater.png'
         },
         {
           id: 3,
           title: '運動場所',
           count: 158,
           description: '包含健身中心、韻律教室、廣場、校園操場.....',
-          icon: `<svg viewBox="0 0 24 24" width="48" height="48">
-                    <rect x="2" y="4" width="20" height="16" fill="#4A90E2"/>
-                    <circle cx="12" cy="12" r="4" fill="#FFD700"/>
-                  </svg>`
+          icon: 'playground.png'
         },
         {
           id: 4,
           title: '教室',
           count: 158,
           description: '包含一般教室、多功能教室、電腦教室.....',
-          icon: `<svg viewBox="0 0 24 24" width="48" height="48">
-                    <rect x="2" y="4" width="20" height="3" fill="#FFD700"/>
-                    <rect x="4" y="9" width="8" height="8" fill="#4A90E2"/>
-                    <rect x="14" y="9" width="8" height="8" fill="#4A90E2"/>
-                  </svg>`
+          icon: 'classroom.png'
         }
       ]
     }
@@ -179,6 +164,8 @@ export default {
 }
 
 .venue-icon {
+  /* width: 48px;
+  height: 48px; */
   margin-bottom: 15px;
 }
 
@@ -191,6 +178,11 @@ export default {
   font-size: 14px;
   color: #666;
   line-height: 1.4;
+}
+
+img {
+  width: 200px;
+  height: 200px;
 }
 
 @media (max-width: 768px) {
