@@ -198,7 +198,7 @@ input[type="password"]::placeholder {
 }
 
 .send-code-btn {
-  padding: 10px;
+  padding: 3px;
   background-color: #007bff;
   color: #fff;
   border: none;
