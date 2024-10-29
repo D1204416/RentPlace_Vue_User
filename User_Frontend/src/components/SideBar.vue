@@ -1,4 +1,5 @@
-<script></script>
+<script>
+</script>
 
 <template>
 
@@ -56,8 +57,33 @@
 
                 <!-- 登入註冊 -->
                 <div class="col-md-3 text-end" style="margin-right: 20px;">
-                    <button type="button" class="btn btn-outline-primary me-2">登入</button>
-                    <button type="button" class="btn btn-primary">註冊</button>
+                    <!-- 登入和註冊按鈕（在大於 576px 時顯示） -->
+                    <div class="d-none d-sm-block">
+                        <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">
+                            登入
+                        </button>
+                        <button type="button" class="btn btn-primary">註冊</button>
+                    </div>
+
+                    <!-- 漢堡選單（在小於 576px 時顯示） -->
+                    <div class="d-block d-sm-none">
+                        <button class="btn btn-outline-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="#4A4A4A"
+                                class="bi bi-list" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                            </svg>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item">註冊</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
 
@@ -150,6 +176,8 @@
         </nav>
 
     </div>
+
+    <RouterView />
 </template>
 
 <style>
@@ -172,11 +200,15 @@
     --bs-btn-border-color: #ffffff;
     color: #000000;
     --bs-btn-hover-bg: #0074a9;
+    --bs-btn-active-bg: #0074a9;
+    --bs-btn-active-border-color: #0074a9;
 }
 
 .btn-primary {
     background-color: #019ee7;
     border-color: #019ee7;
     --bs-btn-hover-bg: #0074a9;
+    --bs-btn-active-bg: #0074a9;
+    --bs-btn-active-border-color: #0074a9;
 }
 </style>
