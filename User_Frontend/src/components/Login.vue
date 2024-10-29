@@ -1,7 +1,8 @@
 <template>
   <div class="login-container">
     <div class="header">
-      <span class="title">台中<span style="color: #019ee7;">市民卡</span><br>登入</span>
+      <!-- <span class="title">台中<span style="color: #019ee7;">市民卡</span></span> -->
+      
       <div>
         <span>還沒申辦？</span>
         <a href="#" class="signup-link">去申辦</a>
