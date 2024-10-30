@@ -296,6 +296,7 @@ export default {
 
 .venue-card:hover {
   transform: translateY(-5px);
+  background-color: azure;
 }
 
 .venue-icon {
