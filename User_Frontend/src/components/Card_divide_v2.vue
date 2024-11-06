@@ -3,12 +3,12 @@
     <!-- Search Bar -->
     <div class="search-bar">
       <div class="search-filters">
-        <select class="filter-item" v-model="selectedRegion">
-          <option value="" disabled selected>行政區域</option>
-          <option v-for="region in regions" :key="region" :value="region">
-            {{ region }}
-          </option>
-        </select>
+        <div class="filter-item">
+          <span>行政區域</span>
+          <button class="region-button" @click="showRegionModal = true">
+            {{ selectedRegions.length > 0 ? selectedRegions.join(', ') : '' }}
+          </button>
+        </div>
 
         <select class="filter-item" v-model="selectedVenueType">
           <option value="" disabled selected>場地類型</option>
@@ -32,6 +32,26 @@
       </div>
     </div>
 
+    <!-- 行政區域 Region Modal -->
+<div class="modal" v-if="showRegionModal">
+      <div class="modal-content">
+        <span class="close-button" @click="showRegionModal = false">&times;</span>
+        <h3>選擇行政區域</h3>
+        <div class="checkbox-grid">
+          <div class="checkbox-item" v-for="region in regions" :key="region" 
+               @mouseenter="handleMouseEnter(region)" 
+               @mouseleave="handleMouseLeave">
+            <input type="checkbox" :id="region" v-model="selectedRegions" :value="region">
+            <label :for="region" :class="{'hover-blue': isRegionHovered(region)}">{{ region }}</label>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="submit-button" @click="showRegionModal = false">確認</button>
+          <button class="clear-button" @click="clearSelectedRegions">清除選擇</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Venue Types Section -->
     <h2 class="section-title">場地類型</h2>
     <div class="venue-grid">
@@ -51,7 +71,9 @@ export default {
   name: 'VenueBooking',
   data() {
     return {
-      selectedRegion: '',  // 行政區域
+      showRegionModal: false,
+      selectedRegions: [],  // 行政區域
+      hoveredRegion: null,
       selectedVenueType: '',  // 場地類型
       selectedDate: '',  // 日期
       selectedCapacity: '', //容納人數
@@ -91,7 +113,23 @@ export default {
         }
       ]
     }
-  }
+  },
+
+  methods: {
+    handleMouseEnter(region) {
+      this.hoveredRegion = region;
+    },
+    handleMouseLeave() {
+      this.hoveredRegion = null;
+    },
+    isRegionHovered(region) {
+      return this.hoveredRegion === region;
+    },
+    clearSelectedRegions() {
+      this.selectedRegions = [];
+    }
+
+  },
 }
 </script>
 
@@ -123,6 +161,103 @@ export default {
   border-radius: 5px;
   min-width: 150px;
   font-size: 14px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.region-button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-width: 150px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.checkbox-item label.hover-blue {
+  color: #4A90E2;
+}
+
+.checkbox-item input {
+  margin-right: 5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.submit-button {
+  background-color: #FFD700;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 35px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button:hover {
+  background-color: #d0d0d0;
+}
+
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .search-button {
@@ -166,7 +301,7 @@ export default {
 
 .venue-icon {
   /* width: 48px;
-  height: 48px; */
+    height: 48px; */
   margin-bottom: 15px;
 }
 
