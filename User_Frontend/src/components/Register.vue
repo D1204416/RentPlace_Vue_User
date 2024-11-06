@@ -47,11 +47,11 @@
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
         <div class="form-group ">
-          <!-- <label for="verification-code">信箱驗證</label>
+          <label for="verification-code">信箱驗證</label>
           <div class="verification">
             <button type="button" class="send-code-btn" @click="sendVerificationCode">發送驗證碼</button>
             <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼" required>
-          </div> -->
+          </div>
         </div>
       </div>
 
