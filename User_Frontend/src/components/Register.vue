@@ -113,7 +113,7 @@ h1 {
 .already-registered {
   display: inline-block;
   font-size: 14px;
-  color: #007bff;
+  color: #019ee7;
   text-decoration: none;
   margin-bottom: 30px;
   margin-left: auto;
@@ -168,7 +168,7 @@ input[type="password"]::placeholder {
 
 .send-code-btn {
   padding: 8px 12px;
-  background-color: #007bff;
+  background-color: #019ee7;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -192,7 +192,7 @@ input[type="password"]::placeholder {
 .submit-btn {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
+  background-color: #019ee7;
   color: #fff;
   font-size: 16px;
   border: none;
@@ -202,7 +202,7 @@ input[type="password"]::placeholder {
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background-color: #0074a9;
 }
 
 
