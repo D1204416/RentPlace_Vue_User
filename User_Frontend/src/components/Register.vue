@@ -83,6 +83,7 @@ import axios from 'axios';
 
 export default {
   name: 'Register',
+
   data() {
     return {
       formData: {
@@ -93,32 +94,21 @@ export default {
         gender: '',
         birth: ''
       },
+      confirmPassword: '', // 新增 confirmPassword 屬性
       verificationCode: '',
       agreedToTerms: false, // 添加同意條款的數據屬性
       errors: {},
       isSubmitting: false
     }
   },
+
   methods: {
-    // sendVerificationCode() {
-    //   // 這裡你需要實現發送驗證碼的邏輯
-    //   // 比如透過 API 請求發送驗證碼到用戶的郵箱
-    //   axios.post('/api/send-verification-code', { email: this.formData.email })
-    //     .then(response => {
-    //       // 處理發送驗證碼成功的情況
-    //       console.log('Verification code sent:', response.data.verificationCode)
-    //     })
-    //     .catch(error => {
-    //       // 處理發送驗證碼失敗的情況
-    //       console.error('Failed to send verification code:', error)
-    //     })
-    // },
     async sendVerificationCode() {
       try {
-        const response = await axios.post('/api/send-verification-code', {
+        const response = await axios.post('http://localhost:8080/api/send-verification-code', {
           email: this.formData.email
         });
-        console.log('Verification code sent:', response.data.verificationCode);
+        console.log('Verification code sent:', response.data);
       } catch (error) {
         console.error('Failed to send verification code:', error);
       }
@@ -126,16 +116,19 @@ export default {
 
     async verifyCode() {
       try {
-        const response = await axios.post('/api/verify-code', {
+        const response = await axios.post('http://localhost:8080/api/verify-code', {
           email: this.formData.email,
           code: this.verificationCode
         });
-        return response.data.isValid;
+        console.log('Verification response:', response.data); // 添加此行來查看回應數據
+        return response.data.valid;
+
       } catch (error) {
         console.error('Failed to verify code:', error);
         return false;
       }
     },
+
 
     validateForm() {
       this.errors = {}
@@ -150,6 +143,12 @@ export default {
       // 驗證密碼
       if (this.formData.password.length < 6) {
         this.errors.password = '密碼至少需要6個字符'
+        isValid = false
+      }
+
+      if (this.formData.password !== this.confirmPassword) {
+        this.errors.confirmPassword = '確認密碼與密碼不一致';
+        console.log('Password mismatch');
         isValid = false
       }
 
@@ -182,38 +181,11 @@ export default {
       return isValid
     },
 
-    // async handleSubmit() {
-    //   if (!this.validateForm()) {
-    //     return
-    //   }
-
-    //   this.isSubmitting = true
-
-    //   try {
-    //     const response = await axios.post('http://localhost:8080/api/register', this.formData)
-
-    //     // 註冊成功
-    //     this.$emit('register-success', response.data)
-
-    //     // 可以加入路由導航
-    //     // this.$router.push('/login')
-
-    //   } catch (error) {
-    //     // 處理錯誤
-    //     if (error.response) {
-    //       // 服務器返回的錯誤信息
-    //       this.errors = error.response.data.errors || {}
-    //     } else {
-    //       // 網絡錯誤或其他錯誤
-    //       console.error('註冊失敗:', error)
-    //     }
-    //   } finally {
-    //     this.isSubmitting = false
-    //   }
-    // },
-
     async handleSubmit() {
+      console.log('handleSubmit called');
+
       if (!this.validateForm()) {
+        console.log('Form validation failed');
         return;
       }
 
@@ -221,18 +193,19 @@ export default {
 
       try {
         const isCodeValid = await this.verifyCode();
+        console.log('Verification code valid:', isCodeValid);
+
         if (isCodeValid) {
-          // 驗證碼正確,提交表單
           const response = await axios.post('http://localhost:8080/api/register', this.formData);
+          console.log('Register response:', response.data);
           this.$emit('register-success', response.data);
         } else {
-          // 驗證碼錯誤
           this.errors.verificationCode = '驗證碼不正確';
         }
       } catch (error) {
-        // 處理錯誤
         if (error.response) {
           this.errors = error.response.data.errors || {};
+          console.log('Error response:', error.response.data.errors);
         } else {
           console.error('註冊失敗:', error);
         }
@@ -240,6 +213,7 @@ export default {
         this.isSubmitting = false;
       }
     }
+
   }
 }
 </script>
