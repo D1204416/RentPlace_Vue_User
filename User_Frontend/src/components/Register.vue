@@ -9,8 +9,8 @@
       <div class="form-row">
         <div class="form-group">
           <label for="name">姓名</label>
-          <input type="text" id="name" v-model="formData.username" placeholder="輸入您的名字" 
-          :class="{ 'error': errors.username }" required>
+          <input type="text" id="name" v-model="formData.username" placeholder="輸入您的名字"
+            :class="{ 'error': errors.username }" required>
           <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
         </div>
         <div class="form-group">
@@ -28,7 +28,7 @@
         <div class="form-group">
           <label for="birthdate">生日</label>
           <input type="date" id="birthdate" v-model="formData.birth" placeholder="請選擇生日"
-          :class="{ 'error': errors.birth }" required>
+            :class="{ 'error': errors.birth }" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
         <div class="form-group">
@@ -58,8 +58,8 @@
       <div class="form-row">
         <div class="form-group">
           <label for="password">密碼</label>
-          <input type="password" id="password"  v-model="formData.password" placeholder=""
-          :class="{ 'error': errors.password }" required>
+          <input type="password" id="password" v-model="formData.password" placeholder=""
+            :class="{ 'error': errors.password }" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
         <div class="form-group">
@@ -100,18 +100,41 @@ export default {
     }
   },
   methods: {
-    sendVerificationCode() {
-      // 這裡你需要實現發送驗證碼的邏輯
-      // 比如透過 API 請求發送驗證碼到用戶的郵箱
-      axios.post('/api/send-verification-code', { email: this.formData.email })
-        .then(response => {
-          // 處理發送驗證碼成功的情況
-          console.log('Verification code sent:', response.data.verificationCode)
-        })
-        .catch(error => {
-          // 處理發送驗證碼失敗的情況
-          console.error('Failed to send verification code:', error)
-        })
+    // sendVerificationCode() {
+    //   // 這裡你需要實現發送驗證碼的邏輯
+    //   // 比如透過 API 請求發送驗證碼到用戶的郵箱
+    //   axios.post('/api/send-verification-code', { email: this.formData.email })
+    //     .then(response => {
+    //       // 處理發送驗證碼成功的情況
+    //       console.log('Verification code sent:', response.data.verificationCode)
+    //     })
+    //     .catch(error => {
+    //       // 處理發送驗證碼失敗的情況
+    //       console.error('Failed to send verification code:', error)
+    //     })
+    // },
+    async sendVerificationCode() {
+      try {
+        const response = await axios.post('/api/send-verification-code', {
+          email: this.formData.email
+        });
+        console.log('Verification code sent:', response.data.verificationCode);
+      } catch (error) {
+        console.error('Failed to send verification code:', error);
+      }
+    },
+
+    async verifyCode() {
+      try {
+        const response = await axios.post('/api/verify-code', {
+          email: this.formData.email,
+          code: this.verificationCode
+        });
+        return response.data.isValid;
+      } catch (error) {
+        console.error('Failed to verify code:', error);
+        return false;
+      }
     },
 
     validateForm() {
@@ -159,67 +182,64 @@ export default {
       return isValid
     },
 
-    async handleSubmit() {
-      if (!this.validateForm()) {
-        return
-      }
-
-      this.isSubmitting = true
-
-      try {
-        const response = await axios.post('http://localhost:8080/api/register', this.formData)
-
-        // 註冊成功
-        this.$emit('register-success', response.data)
-
-        // 可以加入路由導航
-        // this.$router.push('/login')
-
-      } catch (error) {
-        // 處理錯誤
-        if (error.response) {
-          // 服務器返回的錯誤信息
-          this.errors = error.response.data.errors || {}
-        } else {
-          // 網絡錯誤或其他錯誤
-          console.error('註冊失敗:', error)
-        }
-      } finally {
-        this.isSubmitting = false
-      }
-    }
-    
-    // async handleSubmit() {  // 增加驗證碼
+    // async handleSubmit() {
     //   if (!this.validateForm()) {
     //     return
     //   }
 
-    //   try {
-    //     // 先檢查驗證碼是否正確
-    //     const response = await axios.post('/api/verify-code', {
-    //       email: this.formData.email,
-    //       code: this.verificationCode
-    //     })
+    //   this.isSubmitting = true
 
-    //     if (response.data.isValid) {
-    //       // 驗證碼正確,提交表單
-    //       await axios.post('http://localhost:8080/api/register', this.formData)
-    //       this.$emit('register-success', response.data)
-    //     } else {
-    //       // 驗證碼錯誤
-    //       this.errors.verificationCode = '驗證碼不正確'
-    //     }
+    //   try {
+    //     const response = await axios.post('http://localhost:8080/api/register', this.formData)
+
+    //     // 註冊成功
+    //     this.$emit('register-success', response.data)
+
+    //     // 可以加入路由導航
+    //     // this.$router.push('/login')
+
     //   } catch (error) {
     //     // 處理錯誤
     //     if (error.response) {
+    //       // 服務器返回的錯誤信息
     //       this.errors = error.response.data.errors || {}
     //     } else {
+    //       // 網絡錯誤或其他錯誤
     //       console.error('註冊失敗:', error)
     //     }
     //   } finally {
     //     this.isSubmitting = false
     //   }
-    // }
+    // },
+
+    async handleSubmit() {
+      if (!this.validateForm()) {
+        return;
+      }
+
+      this.isSubmitting = true;
+
+      try {
+        const isCodeValid = await this.verifyCode();
+        if (isCodeValid) {
+          // 驗證碼正確,提交表單
+          const response = await axios.post('http://localhost:8080/api/register', this.formData);
+          this.$emit('register-success', response.data);
+        } else {
+          // 驗證碼錯誤
+          this.errors.verificationCode = '驗證碼不正確';
+        }
+      } catch (error) {
+        // 處理錯誤
+        if (error.response) {
+          this.errors = error.response.data.errors || {};
+        } else {
+          console.error('註冊失敗:', error);
+        }
+      } finally {
+        this.isSubmitting = false;
+      }
+    }
   }
 }
 </script>
@@ -380,21 +400,21 @@ input[type="password"]::placeholder {
   .container {
     padding: 30px;
   }
-  
+
   .form-row {
     /* flex-direction: column; */
     gap: 15px;
   }
-  
+
   .form-group {
     width: 100%;
   }
-  
+
   .verification {
     /* flex-direction: column; */
     align-items: stretch;
   }
-  
+
   .send-code-btn {
     width: 30%;
   }
@@ -414,16 +434,16 @@ input[type="password"]::placeholder {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   h1 {
     font-size: 20px;
   }
-  
+
   .registration-title {
     /* flex-direction: column; */
     align-items: flex-start;
   }
-  
+
   .already-registered {
     align-self: flex-end;
   }
@@ -432,21 +452,21 @@ input[type="password"]::placeholder {
     /* flex-direction: column; */
     align-items: stretch;
   }
-  
+
   input[type="text"],
   input[type="email"],
   input[type="password"],
   input[type="date"],
   input[type="tel"],
   select {
-    font-size: 16px; /* 改善手機上的可讀性 */
+    font-size: 16px;
+    /* 改善手機上的可讀性 */
     padding: 12px;
   }
-  
+
   .agreement {
     flex-direction: row;
     gap: 8px;
   }
 }
-
 </style>
