@@ -70,30 +70,94 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user' // Pinia store
+import axios from 'axios' // 假設使用 axios 做 API 請求
 
+const router = useRouter()
+const userStore = useUserStore()
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL // 後端 API 基礎網址
+
+// 建立 axios 實例
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
 // 處理登入成功
-const handleCredentialResponse = (response) => {
+const handleCredentialResponse = async (response) => {
   console.log('Google 登入成功！')
-  
+
   try {
-    // 解碼 JWT token
+    // 1.解碼 Google 回傳的 credential (JWT token)
     const credential = response.credential
     const payload = decodeJwtResponse(credential)
-    
+
     const userInfo = {
       id: payload.sub,
       name: payload.name,
       email: payload.email,
       picture: payload.picture
     }
-    
-    // TODO: 發送 credential 到後端進行驗證
-    // await sendToBackend(credential)
-    
+
+    // 2. 準備發送給後端的數據
+    const loginData = {
+      googleToken: credential, // Google JWT token
+      email: payload.email,
+      name: payload.name,
+      picture: payload.picture
+    }
+
+    // 3. 發送登入請求到 Spring Boot 後端
+    const { data } = await api.post('/api/auth/google-login', loginData)
+
+    // 4. 處理後端回傳的資料
+    const { accessToken, user } = data
+
+    // 5. 儲存 JWT token 到 localStorage
+    localStorage.setItem('accessToken', accessToken)
+
+    // 6. 設定 axios 預設 header
+    api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
+    // 7. 更新 Pinia store 中的用戶資訊
+    userStore.setUser({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.picture,
+      roles: user.roles // 如果有角色權限
+    })
+
+    // 8. 導航到首頁或儀表板
+    router.push('/')
+
   } catch (err) {
     console.error('登入處理失敗:', err)
+
+    // 錯誤處理
+    if (err.response) {
+      // 後端回傳的錯誤
+      switch (err.response.status) {
+        case 401:
+          alert('驗證失敗，請重新登入')
+          break
+        case 404:
+          alert('找不到用戶資訊')
+          break
+        default:
+          alert('登入時發生錯誤，請稍後再試')
+      }
+    } else {
+      alert('無法連接到伺服器')
+    }
+
+    // 重置狀態
+    userStore.resetUser()
+    localStorage.removeItem('accessToken')
   }
 }
 
@@ -113,7 +177,7 @@ const initializeGoogleIdentity = () => {
   script.src = 'https://accounts.google.com/gsi/client'
   script.async = true
   script.defer = true
-  
+
   script.onload = () => {
     window.google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
