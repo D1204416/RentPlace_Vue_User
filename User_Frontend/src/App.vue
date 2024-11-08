@@ -17,12 +17,19 @@ import Login from './components/Login.vue'
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <Login />
+          <Login @login-success="handleLoginSuccess"/>
         </div>
       </div>
     </div>
   </div>
 
 </template>
+
+<script>
+const handleLoginSuccess = (userInfo) => {
+  console.log('使用者登入成功:', userInfo)
+  // 處理登入成功後的邏輯
+}
+</script>
 
 <style scoped></style>

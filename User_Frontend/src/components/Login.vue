@@ -2,30 +2,40 @@
   <div class="login-container">
     <div class="header">
       <!-- <span class="title">台中<span style="color: #019ee7;">市民卡</span></span> -->
-      
+
       <div>
         <span>還沒申辦？</span>
         <a href="#" class="signup-link">去申辦</a>
       </div>
     </div>
-    
+
     <!-- google button -->
-    <button class="google-button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
-        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20  s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039 l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36  c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+    <!-- <button class="google-button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" @click="handleGoogleLogin">
+        <path fill="#FFC107"
+          d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12 s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20  s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+        <path fill="#FF3D00"
+          d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039 l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+        <path fill="#4CAF50"
+          d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36  c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+        <path fill="#1976D2"
+          d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
       </svg>
-      使用Google帳號
-    </button>
-    
+    </button> -->
+
+
+    <!-- Google 登入按鈕容器 -->
+    <div id="googleButtonDiv"></div>
+
+
     <div class="social-buttons">
       <!-- meta button -->
       <button class="social-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
-          <path fill="#3F51B5" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"/>
-          <path fill="#FFFFFF" d="M34.368,25H31v13h-5V25h-3v-4h3v-2.41c0.002-3.508,1.459-5.59,5.592-5.59H35v4h-2.287 C31.104,17,31,17.6,31,18.723V21h4L34.368,25z"/>
+          <path fill="#3F51B5"
+            d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z" />
+          <path fill="#FFFFFF"
+            d="M34.368,25H31v13h-5V25h-3v-4h3v-2.41c0.002-3.508,1.459-5.59,5.592-5.59H35v4h-2.287 C31.104,17,31,17.6,31,18.723V21h4L34.368,25z" />
         </svg>
       </button>
 
@@ -37,29 +47,116 @@
         <img src="/img/logo.svg" alt="Logo" style="height: 20px;" />
       </button>
     </div>
-    
+
     <!-- 輸入帳號 -->
     <div class="input-group">
       <label class="input-label">帳號（Email 或 手機號碼）</label>
       <input type="text" class="input-field" placeholder="輸入您的Email 或 手機號碼">
     </div>
-    
+
     <!-- 輸入密碼 -->
     <div class="input-group">
       <label class="input-label">密碼</label>
       <input type="password" class="input-field" placeholder="請輸入密碼">
     </div>
-    
+
     <div class="forgot-password">
       <a href="#">忘記密碼</a>
     </div>
-    
+
     <button class="login-button">登入</button>
   </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted } from 'vue'
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
+// 處理登入成功
+const handleCredentialResponse = (response) => {
+  console.log('Google 登入成功！')
+  
+  try {
+    // 解碼 JWT token
+    const credential = response.credential
+    const payload = decodeJwtResponse(credential)
+    
+    const userInfo = {
+      id: payload.sub,
+      name: payload.name,
+      email: payload.email,
+      picture: payload.picture
+    }
+    
+    // TODO: 發送 credential 到後端進行驗證
+    // await sendToBackend(credential)
+    
+  } catch (err) {
+    console.error('登入處理失敗:', err)
+  }
+}
+
+// 解碼 JWT token
+const decodeJwtResponse = (token) => {
+  const base64Url = token.split('.')[1]
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+  return JSON.parse(jsonPayload)
+}
+
+// 初始化 Google Identity Services
+const initializeGoogleIdentity = () => {
+  const script = document.createElement('script')
+  script.src = 'https://accounts.google.com/gsi/client'
+  script.async = true
+  script.defer = true
+  
+  script.onload = () => {
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    })
+
+    window.google.accounts.id.renderButton(
+      document.getElementById('googleButtonDiv'),
+      {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        text: 'signin_with',
+        shape: 'rectangular',
+        logo_alignment: 'left',
+        locale: 'zh_TW',
+        width: 240
+      }
+    )
+  }
+
+  document.head.appendChild(script)
+}
+
+// 登出功能
+const handleSignOut = () => {
+  window.google?.accounts.id.disableAutoSelect()
+  user.value = null
+}
+
+// 組件掛載時初始化
+onMounted(() => {
+  if (GOOGLE_CLIENT_ID) {
+    initializeGoogleIdentity()
+  }
+})
+
+
 </script>
+
+
 
 <style scoped>
 * {
@@ -122,6 +219,11 @@ body {
   border-radius: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+}
+
+/* 自訂 Google 按鈕容器樣式 */
+#googleButtonDiv {
+  margin: 1rem 0;
 }
 
 .social-buttons {
@@ -188,12 +290,14 @@ body {
   /* 保持原有樣式 */
   display: flex;
   align-items: center;
-  gap: 10px; /* 替代 margin-right */
+  gap: 10px;
+  /* 替代 margin-right */
 }
 
 .social-button svg {
   /* 設置 SVG 顏色 */
-  color: #000; /* Apple logo 顏色 */
+  color: #000;
+  /* Apple logo 顏色 */
 }
 
 .social-button:hover svg {
