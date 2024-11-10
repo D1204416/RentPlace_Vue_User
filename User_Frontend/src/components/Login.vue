@@ -51,24 +51,32 @@
     <!-- 輸入帳號 -->
     <div class="input-group">
       <label class="input-label">帳號（Email 或 手機號碼）</label>
-      <input type="text" class="input-field" placeholder="輸入您的Email 或 手機號碼">
+      <input type="text" class="input-field" v-model="loginForm.username" :disabled="isLoading" placeholder="輸入您的Email 或 手機號碼">
     </div>
 
     <!-- 輸入密碼 -->
     <div class="input-group">
       <label class="input-label">密碼</label>
-      <input type="password" class="input-field" placeholder="請輸入密碼">
+      <input type="password" class="input-field" v-model="loginForm.password" :disabled="isLoading" placeholder="請輸入密碼">
     </div>
 
     <div class="forgot-password">
       <a href="#">忘記密碼</a>
     </div>
 
-    <button class="login-button">登入</button>
+    <!-- <button class="login-button">登入</button> -->
+    <button class="login-button" @click="handleLogin" :disabled="isLoading">{{ isLoading ? '登入中...' : '登入' }}</button>
+
+    <!-- 錯誤訊息顯示 -->
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
   </div>
 </template>
 
 <script setup>
+import { ref, reactive } from 'vue'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user' // Pinia store
@@ -79,6 +87,16 @@ const userStore = useUserStore()
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL // 後端 API 基礎網址
 
+// 表單數據
+const loginForm = reactive({
+  username: '',
+  password: ''
+})
+
+// 狀態管理
+const isLoading = ref(false)
+const errorMessage = ref('')
+
 // 建立 axios 實例
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -87,7 +105,7 @@ const api = axios.create({
   }
 })
 
-// 處理登入成功
+// 處理Google登入
 const handleCredentialResponse = async (response) => {
   console.log('Google 登入成功！')
 
@@ -158,6 +176,79 @@ const handleCredentialResponse = async (response) => {
     // 重置狀態
     userStore.resetUser()
     localStorage.removeItem('accessToken')
+  }
+}
+
+// 一般登入處理
+const handleLogin = async () => {
+  // 清除之前的錯誤訊息
+  errorMessage.value = ''
+
+  // 表單驗證
+  if (!loginForm.username || !loginForm.password) {
+    errorMessage.value = '請填寫帳號和密碼'
+    return
+  }
+
+  try {
+    isLoading.value = true
+
+    console.log('Sending login request:', {
+      username: loginForm.username,
+      // 不要記錄密碼
+    })
+
+    const response = await api.post('/api/auth/login', {
+      username: loginForm.username,
+      password: loginForm.password
+    })
+
+    console.log('Login response:', {
+      status: response.status,
+      // data: response.data
+      hasToken: !!response.data.token
+    })
+
+    if (response.data.token) {
+      // 儲存 token
+      localStorage.setItem('token', response.data.token)
+
+      // 更新 user store
+      userStore.setUser({
+        username: response.data.username,
+        role: response.data.roles[0]  // 假設只有一個角色
+      })
+
+      // 設置 axios 默認 header
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+
+      // 登入成功後跳轉首頁
+      router.push('/')
+    } else {
+      errorMessage.value = '登入失敗：伺服器回應格式錯誤'
+      console.error('Invalid response format:', response.data)
+      throw new Error('無效的回應格式')
+    }
+
+  } catch (error) {
+    console.error('Login error:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      error: error
+    })
+
+    if (error.response) {
+      // 伺服器回傳錯誤
+      errorMessage.value = error.response.data.message || '登入失敗'
+    } else if (error.request) {
+      // 請求發送失敗
+      errorMessage.value = '無法連接到伺服器，請檢查網路連接'
+    } else {
+      // 其他錯誤
+      errorMessage.value = '登入過程發生錯誤'
+    }
+  } finally {
+    isLoading.value = false
   }
 }
 
