@@ -51,7 +51,7 @@
     <!-- 輸入帳號 -->
     <div class="input-group">
       <label class="input-label">帳號（Email 或 手機號碼）</label>
-      <input type="text" class="input-field" v-model="loginForm.username" :disabled="isLoading" placeholder="輸入您的Email 或 手機號碼">
+      <input type="text" class="input-field" v-model="loginForm.email" :disabled="isLoading" placeholder="輸入您的Email 或 手機號碼">
     </div>
 
     <!-- 輸入密碼 -->
@@ -89,7 +89,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL // 後端 API 基礎網�
 
 // 表單數據
 const loginForm = reactive({
-  username: '',
+  email: '',
   password: ''
 })
 
@@ -185,7 +185,7 @@ const handleLogin = async () => {
   errorMessage.value = ''
 
   // 表單驗證
-  if (!loginForm.username || !loginForm.password) {
+  if (!loginForm.email || !loginForm.password) {
     errorMessage.value = '請填寫帳號和密碼'
     return
   }
@@ -194,18 +194,17 @@ const handleLogin = async () => {
     isLoading.value = true
 
     console.log('Sending login request:', {
-      username: loginForm.username,
+      email: loginForm.email,
       // 不要記錄密碼
     })
 
     const response = await api.post('/api/auth/login', {
-      username: loginForm.username,
+      email: loginForm.email,
       password: loginForm.password
     })
 
     console.log('Login response:', {
       status: response.status,
-      // data: response.data
       hasToken: !!response.data.token
     })
 
@@ -216,13 +215,14 @@ const handleLogin = async () => {
       // 更新 user store
       userStore.setUser({
         username: response.data.username,
-        role: response.data.roles[0]  // 假設只有一個角色
+        email: response.data.email  // 確保從回應中獲取 email
       })
 
       // 設置 axios 默認 header
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
 
       // 登入成功後跳轉首頁
+      console.log("登入成功")
       router.push('/')
     } else {
       errorMessage.value = '登入失敗：伺服器回應格式錯誤'
@@ -233,20 +233,21 @@ const handleLogin = async () => {
   } catch (error) {
     console.error('Login error:', {
       status: error.response?.status,
-      message: error.response?.data?.message || error.message,
+      message: error.message,
       error: error
     })
 
-    if (error.response) {
-      // 伺服器回傳錯誤
-      errorMessage.value = error.response.data.message || '登入失敗'
-    } else if (error.request) {
-      // 請求發送失敗
-      errorMessage.value = '無法連接到伺服器，請檢查網路連接'
-    } else {
-      // 其他錯誤
-      errorMessage.value = '登入過程發生錯誤'
-    }
+    // if (error.response) {
+    //   // 伺服器回傳錯誤
+    //   errorMessage.value = error.response.data.message || '登入失敗'
+    // } else if (error.request) {
+    //   // 請求發送失敗
+    //   errorMessage.value = '無法連接到伺服器，請檢查網路連接'
+    // } else {
+    //   // 其他錯誤
+    //   errorMessage.value = '登入過程發生錯誤'
+    // }
+    errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試'
   } finally {
     isLoading.value = false
   }
