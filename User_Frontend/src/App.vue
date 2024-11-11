@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import SideBar from './components/SideBar.vue'
 import Login from './components/Login.vue'
+import Foot from './components/Foot.vue';
 
 </script>
 
@@ -22,6 +23,8 @@ import Login from './components/Login.vue'
       </div>
     </div>
   </div>
+
+  <Foot />
 
 </template>
 
