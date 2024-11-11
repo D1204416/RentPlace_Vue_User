@@ -8,14 +8,22 @@
     <form class="registration-form" @submit.prevent="handleSubmit">
       <div class="form-row">
         <div class="form-group">
-          <label for="name">姓名</label>
+          <label for="name">姓名
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('username')" class="field-hint">(必填)</small>
+          </label>
           <input type="text" id="name" v-model="formData.username" placeholder="輸入您的名字"
-            :class="{ 'error': errors.username }" required>
+            :class="{ 'error': errors.username }" :aria-required="isFieldRequired('username')"
+            :required="isFieldRequired('username')" required>
           <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
         </div>
         <div class="form-group">
-          <label for="gender">性別</label>
-          <select id="gender" v-model="formData.gender" required>
+          <label for="gender">性別
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('gender')" class="field-hint">(必填)</small>
+          </label>
+          <select id="gender" v-model="formData.gender" :aria-required="isFieldRequired('gender')"
+          :required="isFieldRequired('gender')" required>
             <option value="">請選擇性別</option>
             <option value="male">男</option>
             <option value="female">女</option>
@@ -26,24 +34,39 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="birthdate">生日</label>
+          <label for="birthdate">生日
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('birth')" class="field-hint">(必填)</small>
+          </label>
           <input type="date" id="birthdate" v-model="formData.birth" placeholder="請選擇生日"
-            :class="{ 'error': errors.birth }" required>
+            :class="{ 'error': errors.birth }" 
+            :aria-required="isFieldRequired('birth')"
+          :required="isFieldRequired('birth')" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
         <div class="form-group">
-          <label for="phone">聯絡電話</label>
-          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" required
-            :class="{ 'error': errors.phone }">
+          <label for="phone">聯絡電話
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('phone')" class="field-hint">(必填)</small>
+          </label>
+          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" 
+            :class="{ 'error': errors.phone }"
+            :aria-required="isFieldRequired('phone')"
+          :required="isFieldRequired('phone')" required>
           <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="email">信箱</label>
+          <label for="email">信箱
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('email')" class="field-hint">(必填)</small>
+          </label>
           <input type="email" id="email" v-model="formData.email" placeholder="請輸入電子郵件信箱"
-            :class="{ 'error': errors.email }" required>
+            :class="{ 'error': errors.email }" 
+            :aria-required="isFieldRequired('email')"
+          :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
         <div class="form-group ">
@@ -57,9 +80,14 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="password">密碼</label>
+          <label for="password">密碼
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('password')" class="field-hint">(必填)</small>
+          </label>
           <input type="password" id="password" v-model="formData.password" placeholder="6位密碼，至少一個字母和一個數字"
-            :class="{ 'error': errors.password }" required>
+            :class="{ 'error': errors.password }" 
+            :aria-required="isFieldRequired('password')"
+          :required="isFieldRequired('password')" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
         <div class="form-group">
@@ -103,6 +131,12 @@ export default {
   },
 
   methods: {
+    isFieldRequired(fieldName) {
+      // 可以集中管理必填欄位
+      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone','password'];
+      return requiredFields.includes(fieldName);
+    },
+
     async sendVerificationCode() {
       try {
         const response = await axios.post('http://localhost:8080/api/send-verification-code', {
@@ -529,4 +563,63 @@ input[type="password"]::placeholder {
   color: #dc3545;
 }
 
+/* 必填＊提醒 */
+.form-header {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.required-legend {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.required-mark {
+  color: #dc3545;
+  margin-left: 4px;
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+.field-hint {
+  color: #dc3545;
+  font-size: 0.75em;
+  margin-left: 8px;
+}
+
+.field-description {
+  color: #666;
+  font-size: 0.875em;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:required:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #dc3545;
+}
+
+.form-input:required:valid {
+  border-color: #28a745;
+}
+
+/* 無障礙支援 */
+.form-input:required {
+  /* 為使用螢幕閱讀器的用戶添加提示 */
+  aria-required: "true";
+}
 </style>
