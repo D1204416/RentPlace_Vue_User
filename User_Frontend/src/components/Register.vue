@@ -17,6 +17,7 @@
             :required="isFieldRequired('username')" required>
           <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
         </div>
+
         <div class="form-group">
           <label for="gender">性別
             <span class="required-mark" title="此欄位為必填">*</span>
@@ -44,6 +45,7 @@
           :required="isFieldRequired('birth')" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
+
         <div class="form-group">
           <label for="phone">聯絡電話
             <span class="required-mark" title="此欄位為必填">*</span>
@@ -69,6 +71,7 @@
           :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
+
         <div class="form-group ">
           <label for="verification-code">信箱驗證</label>
           <div class="verification">
@@ -90,6 +93,7 @@
           :required="isFieldRequired('password')" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
+        
         <div class="form-group">
           <label for="confirm-password">確認密碼</label>
           <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" required>
