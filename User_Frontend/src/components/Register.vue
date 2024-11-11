@@ -58,7 +58,7 @@
       <div class="form-row">
         <div class="form-group">
           <label for="password">密碼</label>
-          <input type="password" id="password" v-model="formData.password" placeholder=""
+          <input type="password" id="password" v-model="formData.password" placeholder="6位密碼，至少一個字母和一個數字"
             :class="{ 'error': errors.password }" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
@@ -131,54 +131,99 @@ export default {
 
 
     validateForm() {
-      this.errors = {}
-      let isValid = true
+      this.errors = {};
+      let isValid = true;
 
-      // 驗證用戶名
-      if (this.formData.username.length < 3) {
-        this.errors.username = '用戶名稱至少需要3個字符'
-        isValid = false
+      // 用戶名驗證
+      const usernameRegex = /^[\u4e00-\u9fa5_a-zA-Z0-9]{2,20}$/;
+      if (!this.formData.username) {
+        this.errors.username = '請輸入用戶名稱';
+        isValid = false;
+      } else if (!usernameRegex.test(this.formData.username)) {
+        this.errors.username = '用戶名稱只能包含中文、英文、數字和底線，長度2-20字元';
+        isValid = false;
       }
 
-      // 驗證密碼
-      if (this.formData.password.length < 6) {
-        this.errors.password = '密碼至少需要6個字符'
-        isValid = false
+      // 密碼強度驗證
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      if (!this.formData.password) {
+        this.errors.password = '請輸入密碼';
+        isValid = false;
+      } else if (!passwordRegex.test(this.formData.password)) {
+        this.errors.password = '密碼必須至少6個字符，包含至少一個字母和一個數字';
+        isValid = false;
       }
 
+      // 確認密碼驗證
       if (this.formData.password !== this.confirmPassword) {
         this.errors.confirmPassword = '確認密碼與密碼不一致';
-        console.log('Password mismatch');
-        isValid = false
+        isValid = false;
       }
 
-      // 驗證電子郵件
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(this.formData.email)) {
-        this.errors.email = '請輸入有效的電子郵件地址'
-        isValid = false
+      // 電子郵件驗證
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!this.formData.email) {
+        this.errors.email = '請輸入電子郵件地址';
+        isValid = false;
+      } else if (!emailRegex.test(this.formData.email)) {
+        this.errors.email = '請輸入有效的電子郵件地址';
+        isValid = false;
       }
 
-      // 驗證手機號碼
-      const phoneRegex = /^[0-9]{10}$/
-      if (!phoneRegex.test(this.formData.phone)) {
-        this.errors.phone = '請輸入有效的10位手機號碼'
-        isValid = false
+      // 手機號碼驗證
+      const phoneRegex = /^09\d{8}$/;
+      if (!this.formData.phone) {
+        this.errors.phone = '請輸入手機號碼';
+        isValid = false;
+      } else if (!phoneRegex.test(this.formData.phone)) {
+        this.errors.phone = '請輸入有效的台灣手機號碼（格式：09xxxxxxxx）';
+        isValid = false;
       }
 
-      // 驗證出生日期
+      // 生日驗證
       if (!this.formData.birth) {
-        this.errors.birth = '請選擇出生日期'
-        isValid = false
+        this.errors.birth = '請選擇出生日期';
+        isValid = false;
+      } else {
+        const birthDate = new Date(this.formData.birth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (birthDate > today) {
+          this.errors.birth = '出生日期不能晚於今天';
+          isValid = false;
+        } else if (age > 120 || (age === 120 && monthDiff > 0)) {
+          this.errors.birth = '請輸入有效的出生日期';
+          isValid = false;
+        } else if (age < 13 || (age === 13 && monthDiff < 0)) {
+          this.errors.birth = '需年滿13歲才能註冊';
+          isValid = false;
+        }
       }
 
-      // 驗證同意條款
+      // 性別驗證
+      if (!this.formData.gender) {
+        this.errors.gender = '請選擇性別';
+        isValid = false;
+      }
+
+      // 驗證碼驗證
+      if (!this.verificationCode) {
+        this.errors.verificationCode = '請輸入驗證碼';
+        isValid = false;
+      } else if (this.verificationCode.length !== 6) {
+        this.errors.verificationCode = '驗證碼必須為6位數';
+        isValid = false;
+      }
+
+      // 同意條款驗證
       if (!this.agreedToTerms) {
-        this.errors.terms = '請同意服務條款和隱私政策'
-        isValid = false
+        this.errors.terms = '請同意服務條款和隱私政策';
+        isValid = false;
       }
 
-      return isValid
+      return isValid;
     },
 
     async handleSubmit() {
@@ -443,4 +488,45 @@ input[type="password"]::placeholder {
     gap: 8px;
   }
 }
+
+/* 錯誤提示文字樣式 */
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* 輸入框錯誤狀態樣式 */
+.form-group input.error,
+.form-group select.error {
+  border-color: #dc3545;
+  background-color: #fff;
+}
+
+/* 錯誤狀態下輸入框focus時的樣式 */
+.form-group input.error:focus,
+.form-group select.error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* 可選：添加錯誤圖標 */
+.form-group {
+  position: relative;
+}
+
+.form-group input.error {
+  padding-right: 2rem;
+}
+
+.form-group input.error+.error-icon::after {
+  content: "⚠";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #dc3545;
+}
+
 </style>
