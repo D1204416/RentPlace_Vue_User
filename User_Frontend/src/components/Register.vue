@@ -580,14 +580,14 @@ input[type="password"]::placeholder {
 }
 
 .required-mark {
-  color: #d1636e;
+  color: #ffc107;
   margin-left: 4px;
   font-size: 1.2em;
   vertical-align: middle;
 }
 
 .field-hint {
-  color:  #d1636e;
+  color:  #6c757d;
   font-size: 0.75em;
   margin-left: 8px;
 }
