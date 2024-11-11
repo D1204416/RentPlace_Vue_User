@@ -24,7 +24,7 @@
             <small v-if="isFieldRequired('gender')" class="field-hint">(必填)</small>
           </label>
           <select id="gender" v-model="formData.gender" :aria-required="isFieldRequired('gender')"
-          :required="isFieldRequired('gender')" required>
+            :required="isFieldRequired('gender')" required>
             <option value="">請選擇性別</option>
             <option value="male">男</option>
             <option value="female">女</option>
@@ -40,9 +40,8 @@
             <small v-if="isFieldRequired('birth')" class="field-hint">(必填)</small>
           </label>
           <input type="date" id="birthdate" v-model="formData.birth" placeholder="請選擇生日"
-            :class="{ 'error': errors.birth }" 
-            :aria-required="isFieldRequired('birth')"
-          :required="isFieldRequired('birth')" required>
+            :class="{ 'error': errors.birth }" :aria-required="isFieldRequired('birth')"
+            :required="isFieldRequired('birth')" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
 
@@ -51,10 +50,8 @@
             <span class="required-mark" title="此欄位為必填">*</span>
             <small v-if="isFieldRequired('phone')" class="field-hint">(必填)</small>
           </label>
-          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" 
-            :class="{ 'error': errors.phone }"
-            :aria-required="isFieldRequired('phone')"
-          :required="isFieldRequired('phone')" required>
+          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" :class="{ 'error': errors.phone }"
+            :aria-required="isFieldRequired('phone')" :required="isFieldRequired('phone')" required>
           <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
         </div>
       </div>
@@ -66,9 +63,8 @@
             <small v-if="isFieldRequired('email')" class="field-hint">(必填)</small>
           </label>
           <input type="email" id="email" v-model="formData.email" placeholder="請輸入電子郵件信箱"
-            :class="{ 'error': errors.email }" 
-            :aria-required="isFieldRequired('email')"
-          :required="isFieldRequired('email')" required>
+            :class="{ 'error': errors.email }" :aria-required="isFieldRequired('email')"
+            :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
 
@@ -88,12 +84,11 @@
             <small v-if="isFieldRequired('password')" class="field-hint">(必填)</small>
           </label>
           <input type="password" id="password" v-model="formData.password" placeholder="6位密碼，至少一個字母和一個數字"
-            :class="{ 'error': errors.password }" 
-            :aria-required="isFieldRequired('password')"
-          :required="isFieldRequired('password')" required>
+            :class="{ 'error': errors.password }" :aria-required="isFieldRequired('password')"
+            :required="isFieldRequired('password')" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
-        
+
         <div class="form-group">
           <label for="confirm-password">確認密碼</label>
           <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" required>
@@ -137,7 +132,7 @@ export default {
   methods: {
     isFieldRequired(fieldName) {
       // 可以集中管理必填欄位
-      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone','password'];
+      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password'];
       return requiredFields.includes(fieldName);
     },
 
@@ -587,7 +582,7 @@ input[type="password"]::placeholder {
 }
 
 .field-hint {
-  color:  #6c757d;
+  color: #6c757d;
   font-size: 0.75em;
   margin-left: 8px;
 }
