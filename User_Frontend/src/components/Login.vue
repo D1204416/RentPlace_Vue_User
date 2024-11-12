@@ -440,7 +440,7 @@ body {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  /* border-radius: 4px; */
+  border-radius: 4px;
   margin-bottom: 5px;
 }
 
