@@ -8,14 +8,23 @@
     <form class="registration-form" @submit.prevent="handleSubmit">
       <div class="form-row">
         <div class="form-group">
-          <label for="name">姓名</label>
+          <label for="name">姓名
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('username')" class="field-hint">(必填)</small>
+          </label>
           <input type="text" id="name" v-model="formData.username" placeholder="輸入您的名字"
-            :class="{ 'error': errors.username }" required>
+            :class="{ 'error': errors.username }" :aria-required="isFieldRequired('username')"
+            :required="isFieldRequired('username')" required>
           <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
         </div>
+
         <div class="form-group">
-          <label for="gender">性別</label>
-          <select id="gender" v-model="formData.gender" required>
+          <label for="gender">性別
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('gender')" class="field-hint">(必填)</small>
+          </label>
+          <select id="gender" v-model="formData.gender" :aria-required="isFieldRequired('gender')"
+            :required="isFieldRequired('gender')" required>
             <option value="">請選擇性別</option>
             <option value="male">男</option>
             <option value="female">女</option>
@@ -26,26 +35,39 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="birthdate">生日</label>
+          <label for="birthdate">生日
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('birth')" class="field-hint">(必填)</small>
+          </label>
           <input type="date" id="birthdate" v-model="formData.birth" placeholder="請選擇生日"
-            :class="{ 'error': errors.birth }" required>
+            :class="{ 'error': errors.birth }" :aria-required="isFieldRequired('birth')"
+            :required="isFieldRequired('birth')" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
+
         <div class="form-group">
-          <label for="phone">聯絡電話</label>
-          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" required
-            :class="{ 'error': errors.phone }">
+          <label for="phone">聯絡電話
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('phone')" class="field-hint">(必填)</small>
+          </label>
+          <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" :class="{ 'error': errors.phone }"
+            :aria-required="isFieldRequired('phone')" :required="isFieldRequired('phone')" required>
           <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="email">信箱</label>
+          <label for="email">信箱
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('email')" class="field-hint">(必填)</small>
+          </label>
           <input type="email" id="email" v-model="formData.email" placeholder="請輸入電子郵件信箱"
-            :class="{ 'error': errors.email }" required>
+            :class="{ 'error': errors.email }" :aria-required="isFieldRequired('email')"
+            :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
+
         <div class="form-group ">
           <label for="verification-code">信箱驗證</label>
           <div class="verification">
@@ -57,11 +79,16 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="password">密碼</label>
-          <input type="password" id="password" v-model="formData.password" placeholder=""
-            :class="{ 'error': errors.password }" required>
+          <label for="password">密碼
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('password')" class="field-hint">(必填)</small>
+          </label>
+          <input type="password" id="password" v-model="formData.password" placeholder="6位密碼，至少一個字母和一個數字"
+            :class="{ 'error': errors.password }" :aria-required="isFieldRequired('password')"
+            :required="isFieldRequired('password')" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
+
         <div class="form-group">
           <label for="confirm-password">確認密碼</label>
           <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" required>
@@ -103,6 +130,12 @@ export default {
   },
 
   methods: {
+    isFieldRequired(fieldName) {
+      // 可以集中管理必填欄位
+      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password'];
+      return requiredFields.includes(fieldName);
+    },
+
     async sendVerificationCode() {
       try {
         const response = await axios.post('http://localhost:8080/api/send-verification-code', {
@@ -131,54 +164,99 @@ export default {
 
 
     validateForm() {
-      this.errors = {}
-      let isValid = true
+      this.errors = {};
+      let isValid = true;
 
-      // 驗證用戶名
-      if (this.formData.username.length < 3) {
-        this.errors.username = '用戶名稱至少需要3個字符'
-        isValid = false
+      // 用戶名驗證
+      const usernameRegex = /^[\u4e00-\u9fa5_a-zA-Z0-9]{2,20}$/;
+      if (!this.formData.username) {
+        this.errors.username = '請輸入用戶名稱';
+        isValid = false;
+      } else if (!usernameRegex.test(this.formData.username)) {
+        this.errors.username = '用戶名稱只能包含中文、英文、數字和底線，長度2-20字元';
+        isValid = false;
       }
 
-      // 驗證密碼
-      if (this.formData.password.length < 6) {
-        this.errors.password = '密碼至少需要6個字符'
-        isValid = false
+      // 密碼強度驗證
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      if (!this.formData.password) {
+        this.errors.password = '請輸入密碼';
+        isValid = false;
+      } else if (!passwordRegex.test(this.formData.password)) {
+        this.errors.password = '密碼必須至少6個字符，包含至少一個字母和一個數字';
+        isValid = false;
       }
 
+      // 確認密碼驗證
       if (this.formData.password !== this.confirmPassword) {
         this.errors.confirmPassword = '確認密碼與密碼不一致';
-        console.log('Password mismatch');
-        isValid = false
+        isValid = false;
       }
 
-      // 驗證電子郵件
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(this.formData.email)) {
-        this.errors.email = '請輸入有效的電子郵件地址'
-        isValid = false
+      // 電子郵件驗證
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!this.formData.email) {
+        this.errors.email = '請輸入電子郵件地址';
+        isValid = false;
+      } else if (!emailRegex.test(this.formData.email)) {
+        this.errors.email = '請輸入有效的電子郵件地址';
+        isValid = false;
       }
 
-      // 驗證手機號碼
-      const phoneRegex = /^[0-9]{10}$/
-      if (!phoneRegex.test(this.formData.phone)) {
-        this.errors.phone = '請輸入有效的10位手機號碼'
-        isValid = false
+      // 手機號碼驗證
+      const phoneRegex = /^09\d{8}$/;
+      if (!this.formData.phone) {
+        this.errors.phone = '請輸入手機號碼';
+        isValid = false;
+      } else if (!phoneRegex.test(this.formData.phone)) {
+        this.errors.phone = '請輸入有效的台灣手機號碼（格式：09xxxxxxxx）';
+        isValid = false;
       }
 
-      // 驗證出生日期
+      // 生日驗證
       if (!this.formData.birth) {
-        this.errors.birth = '請選擇出生日期'
-        isValid = false
+        this.errors.birth = '請選擇出生日期';
+        isValid = false;
+      } else {
+        const birthDate = new Date(this.formData.birth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (birthDate > today) {
+          this.errors.birth = '出生日期不能晚於今天';
+          isValid = false;
+        } else if (age > 120 || (age === 120 && monthDiff > 0)) {
+          this.errors.birth = '請輸入有效的出生日期';
+          isValid = false;
+        } else if (age < 13 || (age === 13 && monthDiff < 0)) {
+          this.errors.birth = '需年滿13歲才能註冊';
+          isValid = false;
+        }
       }
 
-      // 驗證同意條款
+      // 性別驗證
+      if (!this.formData.gender) {
+        this.errors.gender = '請選擇性別';
+        isValid = false;
+      }
+
+      // 驗證碼驗證
+      if (!this.verificationCode) {
+        this.errors.verificationCode = '請輸入驗證碼';
+        isValid = false;
+      } else if (this.verificationCode.length !== 6) {
+        this.errors.verificationCode = '驗證碼必須為6位數';
+        isValid = false;
+      }
+
+      // 同意條款驗證
       if (!this.agreedToTerms) {
-        this.errors.terms = '請同意服務條款和隱私政策'
-        isValid = false
+        this.errors.terms = '請同意服務條款和隱私政策';
+        isValid = false;
       }
 
-      return isValid
+      return isValid;
     },
 
     async handleSubmit() {
@@ -442,5 +520,105 @@ input[type="password"]::placeholder {
     flex-direction: row;
     gap: 8px;
   }
+}
+
+/* 錯誤提示文字樣式 */
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* 輸入框錯誤狀態樣式 */
+.form-group input.error,
+.form-group select.error {
+  border-color: #dc3545;
+  background-color: #fff;
+}
+
+/* 錯誤狀態下輸入框focus時的樣式 */
+.form-group input.error:focus,
+.form-group select.error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* 可選：添加錯誤圖標 */
+.form-group {
+  position: relative;
+}
+
+.form-group input.error {
+  padding-right: 2rem;
+}
+
+.form-group input.error+.error-icon::after {
+  content: "⚠";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #dc3545;
+}
+
+/* 必填＊提醒 */
+.form-header {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.required-legend {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.required-mark {
+  color: #ffc107;
+  margin-left: 4px;
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+.field-hint {
+  color: #6c757d;
+  font-size: 0.75em;
+  margin-left: 8px;
+}
+
+.field-description {
+  color: #666;
+  font-size: 0.875em;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:required:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #dc3545;
+}
+
+.form-input:required:valid {
+  border-color: #28a745;
+}
+
+/* 無障礙支援 */
+.form-input:required {
+  /* 為使用螢幕閱讀器的用戶添加提示 */
+  aria-required: "true";
 }
 </style>
