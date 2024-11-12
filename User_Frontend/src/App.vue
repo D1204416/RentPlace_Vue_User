@@ -4,6 +4,7 @@ import SideBar from './components/SideBar.vue'
 import Login from './components/Login.vue'
 import Foot from './components/Foot.vue';
 
+
 </script>
 
 <template>
@@ -28,4 +29,13 @@ import Foot from './components/Foot.vue';
 
 </template>
 
-<style scoped></style>
+<script>
+const handleLoginSuccess = (userInfo) => {
+  console.log('使用者登入成功:', userInfo)
+  // 處理登入成功後的邏輯
+}
+</script>
+
+<style scoped>
+
+</style>
