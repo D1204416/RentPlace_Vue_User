@@ -50,8 +50,8 @@
 
     <!-- 輸入帳號 -->
     <div class="input-group">
-      <label class="input-label">帳號（Email 或 手機號碼）</label>
-      <input type="text" class="input-field" v-model="loginForm.email" :disabled="isLoading" placeholder="輸入您的Email 或 手機號碼">
+      <label class="input-label">帳號</label>
+      <input type="text" class="input-field" v-model="loginForm.email" :disabled="isLoading" placeholder="輸入您的Email">
     </div>
 
     <!-- 輸入密碼 -->
@@ -286,7 +286,7 @@ const initializeGoogleIdentity = () => {
         size: 'large',
         text: 'signin_with',
         shape: 'rectangular',
-        logo_alignment: 'left',
+        logo_alignment: 'center',
         locale: 'zh_TW',
         width: '100%'   // 設置為 100% 以符合容器寬度
       }
@@ -362,7 +362,7 @@ body {
   font-size: 20px;
 }
 
-.google-button {
+/* .google-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,27 +373,48 @@ body {
   border-radius: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+} */
+
+/* Google 按鈕容器樣式 */
+.google-button-container {
+  margin-bottom: 12px;
+  width: 100%;
 }
 
 /* 自訂 Google 按鈕容器樣式 */
 #googleButtonDiv {
   margin: 1rem 0;
+  width: 100% !important;
 }
 
 .social-buttons {
   display: flex;
   gap: 10px;
+  height: 40px;
   margin-bottom: 30px;
 }
+/* .social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+} */
 
 .social-button {
   flex: 1;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 4px;
   border: 1px solid #ddd;
-  background-color: #f8f9fa;
+  background-color: #fff;
   cursor: pointer;
 }
+
+.social-button:hover {
+  border-color: #d2e3fc;
+  background-color:#d2e3fc2c;
+  transition: background-color .218s, border-color .218s;
+}
+
 
 .input-group {
   margin-bottom: 20px;
