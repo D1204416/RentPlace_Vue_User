@@ -46,6 +46,7 @@
     text-align: center;
     font-family: Arial, sans-serif;
     overflow: hidden; /* 防止裝飾元素溢出 */
+    flex-shrink: 0; /* 防止 footer 被壓縮 */
   }
   
   .footer-content {
