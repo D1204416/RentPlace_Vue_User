@@ -278,6 +278,7 @@ const initializeGoogleIdentity = () => {
       cancel_on_tap_outside: true
     })
 
+    // 在組件掛載後渲染 Google 按鈕
     window.google.accounts.id.renderButton(
       document.getElementById('googleButtonDiv'),
       {
@@ -308,8 +309,6 @@ onMounted(() => {
     initializeGoogleIdentity()
   }
 })
-
-
 </script>
 
 <style scoped>
@@ -375,15 +374,27 @@ body {
   cursor: pointer;
 } */
 
+.google-button {
+  /* 保持原有樣式 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* 替代 margin-right */
+}
+
 /* Google 按鈕容器樣式 */
 .google-button-container {
   margin-bottom: 12px;
   width: 100%;
 }
 
-/* 自訂 Google 按鈕容器樣式 */
+/* 覆蓋 Google 按鈕容器樣式 */
 #googleButtonDiv {
   margin: 1rem 0;
+  width: 100% !important;
+}
+
+#googleButtonDiv iframe {
   width: 100% !important;
 }
 
@@ -402,7 +413,6 @@ body {
 
 .social-button {
   flex: 1;
-  padding: 8px;
   border-radius: 4px;
   border: 1px solid #ddd;
   background-color: #fff;
@@ -430,7 +440,7 @@ body {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  /* border-radius: 4px; */
   margin-bottom: 5px;
 }
 
@@ -461,22 +471,4 @@ body {
   background-color: #0074a9;
 }
 
-.google-button {
-  /* 保持原有樣式 */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  /* 替代 margin-right */
-}
-
-.social-button svg {
-  /* 設置 SVG 顏色 */
-  color: #000;
-  /* Apple logo 顏色 */
-}
-
-.social-button:hover svg {
-  /* hover 效果 */
-  opacity: 0.8;
-}
 </style>
