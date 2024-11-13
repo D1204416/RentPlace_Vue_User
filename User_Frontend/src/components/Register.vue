@@ -69,10 +69,15 @@
         </div>
 
         <div class="form-group ">
-          <label for="verification-code">信箱驗證</label>
+          <label for="verification-code">信箱驗證
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('verificationCode')" class="field-hint">(必填)</small>
+          </label>
           <div class="verification">
             <button type="button" class="send-code-btn" @click="sendVerificationCode">發送驗證碼</button>
-            <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼" required>
+            <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼" 
+            :aria-required="isFieldRequired('password')"
+            :required="isFieldRequired('password')" required>
           </div>
         </div>
       </div>
@@ -90,14 +95,19 @@
         </div>
 
         <div class="form-group">
-          <label for="confirm-password">確認密碼</label>
-          <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" required>
+          <label for="confirm-password">確認密碼
+            <span class="required-mark" title="此欄位為必填">*</span>
+            <small v-if="isFieldRequired('confirmPassword')" class="field-hint">(必填)</small>
+          </label>
+          <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" 
+          :aria-required="isFieldRequired('confirmPassword')"
+            :required="isFieldRequired('confirmPassword')"required>
         </div>
       </div>
 
-      <div class="form-row agreement">
+      <div class="form-row agreement" style="gap: 0px;">
         <input type="checkbox" id="agreement" v-model="agreedToTerms" required>
-        <label for="agreement">本人已確認 <span style="color:#007bff">並同意</span></label>
+        <label for="agreement" style="margin: 10px;">本人已確認 <span style="color:#007bff;">並同意</span></label>
       </div>
 
       <button type="submit" class="submit-btn" :disabled="!agreedToTerms"> {{ isSubmitting ? '註冊中...' : '註冊' }}</button>
@@ -133,7 +143,7 @@ export default {
     // 必填欄位
     isFieldRequired(fieldName) {
       // 可以集中管理必填欄位
-      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password'];
+      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password', 'confirmPassword', 'verificationCode'];
       return requiredFields.includes(fieldName);
     },
 
