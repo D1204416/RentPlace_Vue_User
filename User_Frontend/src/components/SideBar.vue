@@ -180,7 +180,6 @@
 
   </div>
 
-  <RouterView />
 </template>
 
 <style>
