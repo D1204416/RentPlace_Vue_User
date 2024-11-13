@@ -319,7 +319,7 @@ body {
   border-radius: 8px;
   width: 100%;
   /* max-width: 800px; */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   text-align: start;
   margin: 0 auto;
 }
