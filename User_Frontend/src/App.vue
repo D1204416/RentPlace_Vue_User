@@ -36,13 +36,6 @@ const handleLoginSuccess = (userInfo) => {
 }
 </script>
 
-<script>
-const handleLoginSuccess = (userInfo) => {
-  console.log('使用者登入成功:', userInfo)
-  // 處理登入成功後的邏輯
-}
-</script>
-
 <style scoped>
 
 </style>
