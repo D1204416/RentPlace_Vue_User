@@ -280,6 +280,16 @@ export default {
           const response = await axios.post('http://localhost:8080/api/register', this.formData);
           console.log('Register response:', response.data);
           this.$emit('register-success', response.data);
+
+          // 註冊成功後跳轉
+          this.$router.push('/'); // 跳轉到登入頁面
+          // 或者使用命名路由
+          // this.$router.push({ name: 'login' });
+          
+          // 可以加入提示訊息
+          // alert('註冊成功！請重新登入。');
+          // 或使用其他提示組件，如 Toast
+
         } else {
           this.errors.verificationCode = '驗證碼不正確';
         }
