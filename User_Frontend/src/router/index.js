@@ -8,8 +8,8 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: '/',   //該頁面網址
+      name: 'home',  // 呼叫該頁面的名稱
       component: HomeView
     },
     {

@@ -130,12 +130,14 @@ export default {
   },
 
   methods: {
+    // 必填欄位
     isFieldRequired(fieldName) {
       // 可以集中管理必填欄位
       const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password'];
       return requiredFields.includes(fieldName);
     },
 
+    // 發送信箱驗證碼
     async sendVerificationCode() {
       try {
         const response = await axios.post('http://localhost:8080/api/send-verification-code', {
@@ -147,6 +149,7 @@ export default {
       }
     },
 
+    // 比對驗證碼
     async verifyCode() {
       try {
         const response = await axios.post('http://localhost:8080/api/verify-code', {
@@ -162,7 +165,7 @@ export default {
       }
     },
 
-
+    // 驗證輸入欄位
     validateForm() {
       this.errors = {};
       let isValid = true;

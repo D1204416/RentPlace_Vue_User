@@ -107,7 +107,6 @@ const api = axios.create({
 
 // 處理Google登入
 const handleCredentialResponse = async (response) => {
-  console.log('Google 登入成功！')
 
   try {
     // 1.解碼 Google 回傳的 credential (JWT token)
@@ -152,6 +151,8 @@ const handleCredentialResponse = async (response) => {
 
     // 8. 導航到首頁或儀表板
     router.push('/')
+
+    console.log('Google 登入成功！')
 
   } catch (err) {
     console.error('登入處理失敗:', err)
@@ -224,6 +225,7 @@ const handleLogin = async () => {
       // 登入成功後跳轉首頁
       console.log("登入成功")
       router.push('/')
+
     } else {
       errorMessage.value = '登入失敗：伺服器回應格式錯誤'
       console.error('Invalid response format:', response.data)
@@ -404,6 +406,7 @@ body {
   height: 40px;
   margin-bottom: 30px;
 }
+
 /* .social-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -421,7 +424,7 @@ body {
 
 .social-button:hover {
   border-color: #d2e3fc;
-  background-color:#d2e3fc2c;
+  background-color: #d2e3fc2c;
   transition: background-color .218s, border-color .218s;
 }
 
@@ -440,7 +443,8 @@ body {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px !important;;
+  border-radius: 4px !important;
+  ;
   margin-bottom: 5px;
 }
 
@@ -470,5 +474,4 @@ body {
 .login-button:hover {
   background-color: #0074a9;
 }
-
 </style>
