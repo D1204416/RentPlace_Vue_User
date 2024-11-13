@@ -1,132 +1,188 @@
+<!-- Footer.vue -->
 <template>
-
-
-  <footer class="foot">
-    <div class="foot-container">
-      <nav class="foot-nav">
-        <a href="#" class="foot-link">政府網站資料開放宣告</a>
-        <span class="divider">|</span>
-        <a href="#" class="foot-link">資訊安全政策</a>
-        <span class="divider">|</span>
-        <a href="#" class="foot-link">隱私權政策</a>
-        <span class="divider">|</span>
-        <a href="#" class="foot-link">市民卡客服信箱</a>
-        <span class="divider">|</span>
-        <a href="#" class="foot-link">市政信箱</a>
-      </nav>
-
-      <div class="foot-address">
-        407610 台中市西屯區台灣大道三段99號
+    <footer class="footer-container">
+      <div class="decorative-left"></div>
+      <div class="decorative-right"></div>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a v-for="(link, index) in links" 
+             :key="index" 
+             :href="link.url"
+             class="footer-link"
+          >{{ link.text }}</a>
+        </div>
+        <div class="footer-address">
+          {{ address }}
+        </div>
+        <div class="footer-browser">
+          請使用{{ supportedBrowsers.join('、') }} 瀏覽器
+        </div>
       </div>
-
-      <div class="foot-browser">
-        請使用Chrome、FireFox、Edge、Safari 瀏覽器
-      </div>
-    </div>
-
-    <img src="/img/tree.svg" class="trees" alt="decorative trees">
-
-  </footer>
+    </footer>
+  </template>
   
-</template>
-
-<script>
-export default {
-  name: 'Foot'
-}
-</script>
-
-<style scoped>
-.foot {
-  background-color: rgb(224, 242, 254);
-  padding: 20px 16px;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  margin-top: 30px;
-}
-
-.foot-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-}
-
-.foot-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.foot-link {
-  color: #4b5563;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.2s ease;
-}
-
-.foot-link:hover {
-  color: #1f2937;
-}
-
-.divider {
-  color: #9ca3af;
-}
-
-.foot-address,
-.foot-browser {
-  text-align: center;
-  color: #4b5563;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.trees {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 180px;
-  height: auto;
-  z-index: 1;
-  pointer-events: none;
-  object-fit: contain;
-}
-
-
-@media screen and (max-width: 768px) {
-  .divider {
-    display: none;
+  <script setup>
+  import { ref } from 'vue'
+  
+  const links = ref([
+    { text: '政府網站資料開放宣告', url: 'https://tcpass.taichung.gov.tw/openInfo/index' },
+    { text: '資訊安全政策', url: 'https://tcpass.taichung.gov.tw/security/index' },
+    { text: '隱私權政策', url: 'https://tcpass.taichung.gov.tw/privacy/index' },
+    { text: '市民卡客服信箱', url: 'https://tcpass.taichung.gov.tw/contact/index' },
+    { text: '市政信箱', url: 'https://talk.taichung.gov.tw/' }
+  ])
+  
+  const address = ref('407610 台中市西屯區台灣大道三段99號')
+  const supportedBrowsers = ref(['Chrome', 'FireFox', 'Edge', 'Safari'])
+  </script>
+  
+  <style scoped>
+  .footer-container {
+    margin-top: 24px;
+    position: relative;
+    width: 100%;
+    background-color: #b4e2f8;
+    padding: 20px 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* 防止裝飾元素溢出 */
+    flex-shrink: 0; /* 防止 footer 被壓縮 */
   }
-
-  .foot-nav {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
-
-  .foot-link {
-    font-size: 16px;
+  
+  .footer-links {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
   }
-
-  .foot-address,
-  .foot-browser {
-    font-size: 16px;
+  
+  .footer-link {
+    color: #2956B6;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 10px;
+    white-space: nowrap;
   }
-
-  .trees {
-    width: 90px;
-    height: auto;
+  
+  .footer-link:hover {
+    text-decoration: underline;
   }
-
-}
-
-@media screen and (max-width: 480px) {
-  .trees {
-    width: 60px;
-    height: auto;
+  
+  .footer-address {
+    color: #666;
+    margin: 10px 0;
+    font-size: 14px;
+    padding: 0 10px;
+    word-break: break-all;
   }
-}
-</style>
+  
+  .footer-browser {
+    color: #666;
+    font-size: 14px;
+    padding: 0 10px;
+  }
+  
+  .decorative-left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 150px;
+    height: 100px;
+    background-image: url('/img/tree.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+  
+  .decorative-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 150px;
+    height: 100px;
+    background-image: url('/img/taichung.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* 響應式設計 */
+  @media screen and (max-width: 1024px) {
+    .decorative-left,
+    .decorative-right {
+      width: 120px;
+      height: 80px;
+    }
+  
+    .footer-content {
+      padding: 0 30px;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .decorative-left,
+    .decorative-right {
+      width: 100px;
+      height: 70px;
+    }
+  
+    .footer-link {
+      font-size: 13px;
+    }
+  
+    .footer-address,
+    .footer-browser {
+      font-size: 13px;
+    }
+  }
+  
+  @media screen and (max-width: 576px) {
+    .decorative-left,
+    .decorative-right {
+      width: 80px;
+      height: 60px;
+      opacity: 1; /* 在小螢幕上可以降低裝飾圖片透明度 */
+    }
+  
+    .footer-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+  
+    .footer-link {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+  
+    .footer-address,
+    .footer-browser {
+      font-size: 12px;
+    }
+  
+    .footer-content {
+      padding: 0 15px;
+    }
+  }
+  
+  /* 超小螢幕 */
+  @media screen and (max-width: 375px) {
+    .decorative-left,
+    .decorative-right {
+      display: none; /* 在極小螢幕上隱藏裝飾圖片 */
+    }
+  
+    .footer-content {
+      padding: 0 10px;
+    }
+  }
+  </style>

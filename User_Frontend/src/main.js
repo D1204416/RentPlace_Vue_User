@@ -6,7 +6,8 @@ import App from './App.vue'
 import router from './router'
 import SideBar from './components/SideBar.vue'
 import Login from './components/Login.vue'
-import Foot from './components/Foot.vue'    
+import Foot from './components/Foot.vue' 
+   
 
 
 
@@ -17,7 +18,7 @@ app.use(pinia)  // 這行很重要！
 app.use(router)
 app.component('SideBar',SideBar)
 app.component('Login', Login)
-app.component('Footer',Foot)
+app.component('Foot',Foot)
 
 
 
