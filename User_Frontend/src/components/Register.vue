@@ -282,7 +282,7 @@ export default {
           this.$emit('register-success', response.data);
 
           // 註冊成功後跳轉
-          this.$router.push('/'); // 跳轉到登入頁面
+          this.$router.replace('/'); // 跳轉到登入頁面
           // 或者使用命名路由
           // this.$router.push({ name: 'login' });
           

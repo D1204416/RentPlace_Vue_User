@@ -25,6 +25,9 @@ import Foot from './components/Foot.vue';
     </div>
   </div>
 
+  <!-- RoutrtView 切換分頁 -->
+  <RouterView />
+
   <Foot />
 
 </template>

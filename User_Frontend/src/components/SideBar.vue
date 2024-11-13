@@ -64,8 +64,11 @@
               登入
             </button>
             <RouterLink to="/register" type="button" class="btn btn-primary">註冊</RouterLink>
+            
           </div>
 
+          
+          
           <!-- 漢堡選單（在小於 576px 時顯示） -->
           <div class="d-block d-sm-none">
             <button class="btn btn-outline-primary" data-bs-toggle="dropdown" aria-expanded="false">
