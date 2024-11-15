@@ -1,37 +1,5 @@
 <template>
   <div class="booking-container">
-    <!-- Search Bar -->
-    <div class="search-bar">
-      <div class="search-filters">
-        <select class="filter-item" v-model="selectedRegion">
-          <option value="" disabled selected>行政區域</option>
-          <option v-for="region in regions" :key="region" :value="region">
-            {{ region }}
-          </option>
-        </select>
-
-        <select class="filter-item" v-model="selectedVenueType">
-          <option value="" disabled selected>場地類型</option>
-          <option v-for="type in venueTypes" :key="type" :value="type">
-            {{ type }}
-          </option>
-        </select>
-
-        <input type="date" class="filter-item" v-model="selectedDate" />
-
-        <select class="filter-item" v-model="selectedCapacity">
-          <option value="" disabled selected>容納人數</option>
-          <option v-for="cap in capacities" :key="cap" :value="cap">
-            {{ cap }}
-          </option>
-        </select>
-
-        <button class="search-button">
-          <span class="search-icon">🔍</span>
-        </button>
-      </div>
-    </div>
-
     <!-- Venue Types Section -->
     <h2 class="section-title">場地類型</h2>
     <div class="venue-grid">
@@ -48,13 +16,9 @@
 
 <script>
 export default {
-  name: 'VenueBooking',
+  name: 'card_divide',
   data() {
     return {
-      selectedRegion: '',  // 行政區域
-      selectedVenueType: '',  // 場地類型
-      selectedDate: '',  // 日期
-      selectedCapacity: '', //容納人數
       regions: ['中區', '東區', '南區', '西區', '北區', '西屯區', '南屯區', '北屯區', '豐原區', '東勢區',
         '大甲區', '清水區', '沙鹿區', '梧棲區', '后里區', '神岡區', '潭子區', '大雅區', '新社區', '石岡區',
         '外埔區', '大安區', '龍井區', '霧峰區', '太平區', '大里區', '和平區'],
@@ -103,40 +67,6 @@ export default {
   font-family: Arial, sans-serif;
 }
 
-.search-bar {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
-}
-
-.search-filters {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.filter-item {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  min-width: 150px;
-  font-size: 14px;
-}
-
-.search-button {
-  background: #FFD700;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.search-button:hover {
-  background: #FFC700;
-}
 
 .section-title {
   text-align: center;
@@ -166,7 +96,7 @@ export default {
 
 .venue-icon {
   /* width: 48px;
-  height: 48px; */
+    height: 48px; */
   margin-bottom: 15px;
 }
 
