@@ -81,22 +81,23 @@ export default {
 }
 
 .venue-card {
-  background: white;
+  background: #F3F3F3;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
   text-align: center;
   transition: transform 0.3s;
+
 }
 
 .venue-card:hover {
   transform: translateY(-5px);
-  background-color: azure;
+  background-color: #cbeeff;
 }
 
 .venue-icon {
-  /* width: 48px;
-    height: 48px; */
+  /* width: 390px;
+    height: 230px;   */
   margin-bottom: 15px;
 }
 
@@ -113,7 +114,7 @@ export default {
 
 img {
   width: 200px;
-  height: 200px;
+  height: 160px;
 }
 
 @media (max-width: 768px) {
