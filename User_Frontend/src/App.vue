@@ -49,6 +49,8 @@ const handleLoginSuccess = (userInfo) => {
 
 <style scoped>
 
+/* 設置 footer 隨內容自適應底部 */
+
 .main-content {
   flex: 1; /* 主內容填滿多餘空間 */
 }
