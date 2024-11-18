@@ -3,6 +3,7 @@
   <div class="container mx-auto p-4">
     <h2 class="text-xl mb-4">符合您搜尋的條件：{{ rooms.length }}筆</h2>
 
+     <!-- 卡片網格 -->
     <div class="grid grid-cols-1 gap-4 
     sm:grid-cols-1 
     md:grid-cols-2 
