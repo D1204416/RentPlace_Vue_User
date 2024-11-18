@@ -1,10 +1,13 @@
 <!-- MeetingRoomCards.vue -->
 <template>
-
   <div class="container mx-auto p-4">
     <h2 class="text-xl mb-4">符合您搜尋的條件：{{ rooms.length }}筆</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 gap-4 
+    sm:grid-cols-1 
+    md:grid-cols-2 
+    lg:grid-cols-3
+    xl:grid-cols-3">
       <div v-for="room in rooms" :key="room.id" class="card border rounded-lg overflow-hidden shadow-md">
         <img :src="room.imageId" :alt="room.name" class="w-full h-48 object-cover">
         <div class="p-4">
@@ -61,5 +64,28 @@ export default {
 
 .card:hover {
   transform: translateY(-4px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 </style>
