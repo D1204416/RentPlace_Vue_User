@@ -10,7 +10,7 @@
     lg:grid-cols-3
     xl:grid-cols-3">
       <div v-for="room in rooms" :key="room.id" class="card border rounded-lg overflow-hidden shadow-md">
-        <img :src="`/img/${room.imageId}.jpg`" :alt="room.name" class="w-full h-48 object-cover" @error="handleImageError">
+        <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="w-full h-48 object-cover" @error="handleImageError">
         <div class="p-4">
           <h3 class="font-bold mb-2">{{ room.placeName }}</h3>
           <div class="text-sm text-gray-600">
