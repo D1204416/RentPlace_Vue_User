@@ -75,9 +75,8 @@
           </label>
           <div class="verification">
             <button type="button" class="send-code-btn" @click="sendVerificationCode">發送驗證碼</button>
-            <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼" 
-            :aria-required="isFieldRequired('password')"
-            :required="isFieldRequired('password')" required>
+            <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼"
+              :aria-required="isFieldRequired('password')" :required="isFieldRequired('password')" required>
           </div>
         </div>
       </div>
@@ -99,15 +98,52 @@
             <span class="required-mark" title="此欄位為必填">*</span>
             <small v-if="isFieldRequired('confirmPassword')" class="field-hint">(必填)</small>
           </label>
-          <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="" 
-          :aria-required="isFieldRequired('confirmPassword')"
-            :required="isFieldRequired('confirmPassword')"required>
+          <input type="password" id="confirm-password" v-model="confirmPassword" placeholder=""
+            :aria-required="isFieldRequired('confirmPassword')" :required="isFieldRequired('confirmPassword')" required>
         </div>
       </div>
 
       <div class="form-row agreement" style="gap: 0px;">
-        <input type="checkbox" id="agreement" v-model="agreedToTerms" required>
-        <label for="agreement" style="margin: 10px;">本人已確認 <span style="color:#007bff;">並同意</span></label>
+        <input type="checkbox" id="agreement" v-model="agreedToTerms" @click.prevent="showModal" required>
+        <label for="agreement" style="margin: 10px;" @click.prevent="showModal">本人已確認 <span
+            style="color:#007bff;">並同意</span></label>
+      </div>
+
+      <!-- Modal -->
+      <div v-if="isModalOpen" class="modal" @click.self="closeModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>網路同意申請書</h2>
+            <button class="close-btn" @click="closeModal">&times;</button>
+          </div>
+
+          <div class="modal-body">
+            <!-- 在這裡放入你的條款內容 -->
+            <p>申請同意書   歡迎您使用「運動服務e櫃檯」網路申辦功能，在使用本功能之前，請您務必詳閱下列說明：
+              辦理申請案件中，若為CA申辦項目，須先使用您的憑證進行驗證，始可使用「臺中市政府服務e櫃檯」所提供之網路申請服務。
+              利用「臺中市政府服務e櫃檯」網路申請服務，如未依受理機關約定，於一定期間內補足申請案件所需證明文件時，申請人同意受理機關得註銷該申請案。
+              申請人於辦理案件申請時同意詳填聯絡電話及住址等通訊資訊，以利資料處理和郵寄作業進行，若因申請人未填寫個人通訊資訊或資訊填寫錯誤致受理機關無法正確完成申請案件處理時，該申請案件延遲處理或無法處理之後果由申請人自行承擔。
+              申請人用「臺中市政府服務e櫃檯」網路申請內容之傳訊，如經不可抗拒之外力(如斷電、斷線、網路傳輸壅塞等)干擾而導致傳送時間延遲，甚或無法接收、傳送致影響申請人權益時，各受理機關不負任何責任。
+              申請人使用本網路申請服務，有下列情形之一者，臺中市政府得終止其使用，並由申請人負相關之法律責任： (1) 有竊取、更改、破壞他人資訊情事者。 (2) 有擅自複製他人資訊轉售、轉載情事者。 (3) 散播電腦病毒者。
+              (4) 有盜用他人資訊申請案件者。 (5) 擷取非經所有者正式開放或授權之資源。 (6) 其他有危害通信或違反法令之情事者。
+              申請人因本同意書第5點之規定而終止其「臺中市政府服務e櫃檯」辦理申請案件權利時，得提出申訴，如經「臺中市政府服務e櫃檯」系統管理機關調查認為有理由時，得恢復其權利。
+              歡迎使用臺中市政府服務e櫃檯，本網站所提供之各項網路服務，部分需要您提供個人資料，為遵守個人資料保護法規定，在您提供個人資料前，依法告知下列事項： (1) 本府獲取您的個人資料種類如下：
+              識別類個人資料（例如：中、英文姓名、國民身分證統一編號、識別碼、學生或員工證號、聯絡電話號碼、地址、性別、出生地、電子郵遞地址、帳戶號碼與戶名、其它識別證號或電子識別標章）。
+              特徵類（例如：出生年月日、國籍、個人照片、筆跡與紙本文件）、社會情況類（例如：職業、學經歷）。 (2) 本府將依個人資料保護法及相關法令之規定下，依隱私權保護政策，蒐集、處理及合理利用您的個人資料。 (3)
+              您可依個人資料保護法第3條規定，就您的個人資料向本府行使之下列權利： 查詢或請求閱覽。 請求製給複製本。 請求補充或更正。 請求停止蒐集、處理及利用。 請求刪除。 (4)
+              您因行使上述權利而導致對您的權益產生減損時，本府不負相關賠償責任。另依個人資料保護法第14 條規定，本府得酌收行政作業費用。 (5) 若您未提供正確之個人資料，本府將無法為您提供特定目的之相關業務。 (6)
+              若您不同意上述聲明內容，請勿於本網站內提供您的個人資料，另本網站多數服務無須提供您的資料也可進行瀏覽，並不影響您資訊瀏覽的權益，如需服務請洽管理者信箱。 (7)
+              臺中市政府數位治理局保有修訂本告知內容之權利，修正時亦同，以上條文參考自中華民國資料保護協會。 (8)
+              依石岡公所-民政課之規範，蒐集姓名、身分證字(居留證)號、申請人聯絡電話、申請人E-Mail、申請人行動電話欄位 (9)您的個人資料將於機關辦理案件時利用，並保留至法定保存期限後銷毀。
+              (10)您的個人資料僅會於各機關管轄區域、業務範圍內使用。 (11)機關將檢視您的個人資料是否符合申辦條件，必要時會電話聯繫或郵寄公務文件至您的地址。
+              按下「同意」鍵後，視同申請人已仔細審閱明白上述各條規定，並完全同意遵守各條款之約定。</p>
+          </div>
+
+          <div class="modal-footer">
+            <button @click="decline" class="decline-btn">不同意</button>
+            <button @click="accept" class="accept-btn">同意</button>
+          </div>
+        </div>
       </div>
 
       <button type="submit" class="submit-btn" :disabled="!agreedToTerms"> {{ isSubmitting ? '註冊中...' : '註冊' }}</button>
@@ -135,7 +171,8 @@ export default {
       verificationCode: '',
       agreedToTerms: false, // 添加同意條款的數據屬性
       errors: {},
-      isSubmitting: false
+      isSubmitting: false,
+      isModalOpen: false
     }
   },
 
@@ -145,6 +182,24 @@ export default {
       // 可以集中管理必填欄位
       const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password', 'confirmPassword', 'verificationCode'];
       return requiredFields.includes(fieldName);
+    },
+
+    showModal() {
+      this.isModalOpen = true
+    },
+
+    closeModal() {
+      this.isModalOpen = false
+    },
+
+    accept() {
+      this.agreedToTerms = true
+      this.closeModal()
+    },
+
+    decline() {
+      this.agreedToTerms = false
+      this.closeModal()
     },
 
     // 發送信箱驗證碼
@@ -295,7 +350,7 @@ export default {
           this.$router.replace('/'); // 跳轉到登入頁面
           // 或者使用命名路由
           // this.$router.push({ name: 'login' });
-          
+
           // 可以加入提示訊息
           // alert('註冊成功！請重新登入。');
           // 或使用其他提示組件，如 Toast
@@ -643,5 +698,86 @@ input[type="password"]::placeholder {
 .form-input:required {
   /* 為使用螢幕閱讀器的用戶添加提示 */
   aria-required: "true";
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items:self-start;
+  justify-content: center;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #d9d9d9;
+  margin-bottom: 10px;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  height: 90vh; /* 設置高度為視窗高度的 90% */
+  width: 80%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto; /* 內容過多時可以滾動 */
+  padding: 20px 0;
+  background-color: #f3f3f3;
+}
+
+.modal-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.decline-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #f3f3f3;
+}
+
+.accept-btn {
+  color: white;
+  padding: 8px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #019ee7;
+  border: none;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  
+}
+
+/* 為了確保標題和按鈕不會被擠壓 */
+h2 {
+  margin: 0;
+  padding-bottom: 10px;
 }
 </style>
