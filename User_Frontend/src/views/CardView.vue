@@ -7,7 +7,7 @@ import Card_v3 from '../components/Card_v3.vue';
 
 <template>
 
-    <!-- <Card />   -->
+    <Card />  
     <!-- <Card_v2 /> -->
-    <Card_v3 />
+    <!-- <Card_v3 /> -->
 </template>

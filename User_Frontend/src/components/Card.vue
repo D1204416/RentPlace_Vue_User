@@ -3,14 +3,14 @@
   <div class="container mx-auto p-4">
     <h2 class="text-xl mb-4">符合您搜尋的條件：{{ rooms.length }}筆</h2>
 
-     <!-- 卡片網格 -->
+    <!-- 卡片網格 -->
     <div class="grid grid-cols-1 gap-4 
     sm:grid-cols-1 
     md:grid-cols-2 
     lg:grid-cols-3
     xl:grid-cols-3">
       <div v-for="room in rooms" :key="room.id" class="card border rounded-lg overflow-hidden shadow-md">
-        <img :src="room.imageId" :alt="room.name" class="w-full h-48 object-cover">
+        <img :src="`/img/${room.imageId}.jpg`" :alt="room.name" class="w-full h-48 object-cover" @error="handleImageError">
         <div class="p-4">
           <h3 class="font-bold mb-2">{{ room.placeName }}</h3>
           <div class="text-sm text-gray-600">
@@ -38,11 +38,31 @@ import axios from 'axios'
 
 export default {
   name: 'MeetingRoomCards',
-  
+
   data() {
     return {
       rooms: [],
       currentPage: 1
+    }
+  },
+
+  methods: {
+    handleImageError(e) {
+      const currentSrc = e.target.src
+      
+      // 已經是預設圖片就不再處理
+      if (currentSrc.includes('logo.svg')) {
+        return
+      }
+      
+      // 設置預設圖片
+      try {
+        e.target.src = '/img/logo.svg'
+        // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
+        e.target.removeEventListener('error', this.handleImageError)
+      } catch (error) {
+        console.error('Failed to load default image:', error)
+      }
     }
   },
 
