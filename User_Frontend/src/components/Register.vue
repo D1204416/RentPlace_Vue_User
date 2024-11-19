@@ -342,7 +342,7 @@ export default {
         console.log('Verification code valid:', isCodeValid);
 
         if (isCodeValid) {
-          const response = await axios.post('http://localhost:8080/api/register', this.formData);
+          const response = await axios.post('http://localhost:8080/api/user', this.formData);
           console.log('Register response:', response.data);
           this.$emit('register-success', response.data);
 
