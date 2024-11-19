@@ -51,13 +51,13 @@ export default {
       const currentSrc = e.target.src
       
       // 已經是預設圖片就不再處理
-      if (currentSrc.includes('logo.svg')) {
+      if (currentSrc.includes('default.svg')) {
         return
       }
       
       // 設置預設圖片
       try {
-        e.target.src = '/img/logo.svg'
+        e.target.src = '/img/'
         // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
         e.target.removeEventListener('error', this.handleImageError)
       } catch (error) {
