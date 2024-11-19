@@ -1,8 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import SideBar from './components/SideBar.vue'
+import Breadcrumb from './components/Breadcrumb.vue'
 import Login from './components/Login.vue'
-import Foot from './components/Foot.vue';
+import Foot from './components/Foot.vue'
+
 
 
 </script>
@@ -14,6 +16,9 @@ import Foot from './components/Foot.vue';
 
       <!-- 導覽列 -->
       <SideBar />
+
+      <!-- 新增 Breadcrumb -->
+      <Breadcrumb />
 
       <!-- 登入模組 -->
       <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -48,15 +53,17 @@ const handleLoginSuccess = (userInfo) => {
 </script>
 
 <style scoped>
-
 /* 設置 footer 隨內容自適應底部 */
 
 .main-content {
-  flex: 1; /* 主內容填滿多餘空間 */
+  flex: 1;
+  /* 主內容填滿多餘空間 */
 }
 
-html, body {
-  height: 100%; /* 設定 html 和 body 滿高 */
+html,
+body {
+  height: 100%;
+  /* 設定 html 和 body 滿高 */
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -65,7 +72,7 @@ html, body {
 #app {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 確保內容至少佔滿視窗高度 */
+  min-height: 100vh;
+  /* 確保內容至少佔滿視窗高度 */
 }
-
 </style>
