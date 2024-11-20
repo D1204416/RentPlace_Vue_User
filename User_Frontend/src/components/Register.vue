@@ -105,8 +105,8 @@
 
       <div class="form-row agreement" style="gap: 0px;">
         <input type="checkbox" id="agreement" v-model="agreedToTerms" @click.prevent="showModal" required>
-        <label for="agreement" style="margin: 10px;" @click.prevent="showModal">本人已確認 <span
-            style="color:#007bff;">並同意</span></label>
+        <label for="agreement" style="margin: 10px;" @click.prevent="showModal"><a
+          style="color:#007bff; cursor: pointer;">閱讀網路同意書 </a>本人已確認 <span>並同意</span></label>
       </div>
 
       <!-- Modal -->
@@ -119,7 +119,9 @@
 
           <div class="modal-body">
             <!-- 在這裡放入你的條款內容 -->
-            <p>申請同意書   歡迎您使用「運動服務e櫃檯」網路申辦功能，在使用本功能之前，請您務必詳閱下列說明：
+            <p>申請同意書   
+              歡迎您使用「運動服務e櫃檯」網路申辦功能，在使用本功能之前，請您務必詳閱下列說明：
+
               辦理申請案件中，若為CA申辦項目，須先使用您的憑證進行驗證，始可使用「臺中市政府服務e櫃檯」所提供之網路申請服務。
               利用「臺中市政府服務e櫃檯」網路申請服務，如未依受理機關約定，於一定期間內補足申請案件所需證明文件時，申請人同意受理機關得註銷該申請案。
               申請人於辦理案件申請時同意詳填聯絡電話及住址等通訊資訊，以利資料處理和郵寄作業進行，若因申請人未填寫個人通訊資訊或資訊填寫錯誤致受理機關無法正確完成申請案件處理時，該申請案件延遲處理或無法處理之後果由申請人自行承擔。
