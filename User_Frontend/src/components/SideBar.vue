@@ -190,6 +190,8 @@ const userStore = useUserStore()
 const { user } = storeToRefs(userStore)
 const router = useRouter()
 
+console.log('userStore state:', userStore.user) // 確認 store 中的資料
+
 const handleLogout = () => {
   userStore.resetUser()
   localStorage.removeItem('accessToken')
