@@ -29,34 +29,32 @@
 
 
         <!-- 會員登入頭像和下拉選單 -->
-        <!-- 
-                    <div class="d-flex align-items-center" style="margin-right: 15px;">
-                    <div class="dropdown">
-                        <a class="d-flex align-items-center text-gray text-decoration-none dropdown-toggle"
-                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                             假設這裡是會員頭像
-                            <img src="https://picsum.photos/id/684/600/400" alt="user-avatar" width="40" height="40"
-                                class="rounded-circle border" style="border-width: 8px; ">
+        <div v-if="userStore.isLoggedIn" class="d-flex align-items-center" style="margin-right: 15px;">
+          <div class="dropdown">
+            <a class="d-flex align-items-center text-gray text-decoration-none dropdown-toggle" id="userDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <img :src="userStore.user?.avatar || 'https://picsum.photos/id/684/600/400'" alt="user-avatar" width="40" height="40"
+                class="rounded-circle border" style="border-width: 8px; ">
 
-                            <h5 style="margin-left: 10px; color: #4A4A4A;">Jocelyn</h5>
-                        </a>
+              <h5 style="margin-left: 10px; color: #4A4A4A;">{{ user?.name }}</h5>
+            </a>
 
 
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="#">會員資訊</a></li>
-                            <li><a class="dropdown-item" href="#">會員</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">登出</a></li>
-                        </ul>
-                    </div>
-                </div>
-                 -->
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="#">會員資訊</a></li>
+              <li><a class="dropdown-item" href="#">會員</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#" @click="handleLogout">登出</a></li>
+            </ul>
+          </div>
+        </div>
+
 
 
         <!-- 登入註冊 -->
-        <div class="col-md-3 text-end" style="margin-right: 20px;">
+        <div v-else class="col-md-3 text-end" style="margin-right: 20px;">
           <!-- 登入和註冊按鈕（在大於 576px 時顯示） -->
           <div class="d-none d-sm-block">
             <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
@@ -117,7 +115,8 @@
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3" style="margin-left: 30px;">
 
                 <li class="nav-item">
-                  <a href="https://tcpass.taichung.gov.tw/" class="nav-link" aria-current="page" style="color: #4A4A4A;">
+                  <a href="https://tcpass.taichung.gov.tw/" class="nav-link" aria-current="page"
+                    style="color: #4A4A4A;">
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-caret-right-fill" viewBox="0 0 16 16">
@@ -181,6 +180,22 @@
   </div>
 
 </template>
+
+<script setup>
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+
+const userStore = useUserStore()
+const { user } = storeToRefs(userStore)
+const router = useRouter()
+
+const handleLogout = () => {
+  userStore.resetUser()
+  localStorage.removeItem('accessToken')
+  router.push('/login')
+}
+</script>
 
 <style>
 /* 使用者頭像與名稱對齊 */
