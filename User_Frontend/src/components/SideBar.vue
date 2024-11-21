@@ -33,10 +33,10 @@
           <div class="dropdown">
             <a class="d-flex align-items-center text-gray text-decoration-none dropdown-toggle" id="userDropdown"
               data-bs-toggle="dropdown" aria-expanded="false">
-              <img :src="userStore.user?.avatar || 'https://picsum.photos/id/684/600/400'" alt="user-avatar" width="40" height="40"
-                class="rounded-circle border" style="border-width: 8px; ">
+              <img :src="userStore.user?.avatar || 'https://picsum.photos/id/684/600/400'" alt="user-avatar" width="40"
+                height="40" class="rounded-circle border" style="border-width: 8px; ">
 
-              <h5 style="margin-left: 10px; color: #4A4A4A;">{{ user?.name }}</h5>
+              <h5 style="margin-left: 10px; color: #4A4A4A;">{{ userStore.user.username }}</h5>
             </a>
 
 
@@ -195,6 +195,7 @@ console.log('userStore state:', userStore.user) // 確認 store 中的資料
 const handleLogout = () => {
   userStore.resetUser()
   localStorage.removeItem('accessToken')
+  localStorage.removeItem('token')
   router.push('/login')
 }
 </script>

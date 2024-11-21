@@ -208,6 +208,7 @@ const handleLogin = async () => {
 
       // 更新 user store
       userStore.setUser({
+        id: response.data.id,  // 確保後端返回 id
         username: response.data.username,
         email: response.data.email  // 確保從回應中獲取 email
       })
