@@ -70,7 +70,7 @@ export default {
 
 .section-title {
   text-align: center;
-  margin: 10px 0 30px 0;
+  margin: 0 0 30px 0;
   font-size: 24px;
 }
 
