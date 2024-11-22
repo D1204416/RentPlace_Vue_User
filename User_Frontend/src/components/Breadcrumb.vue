@@ -1,21 +1,17 @@
 <template>
-
-    
-        <nav class="breadcrumb" v-if="currentBreadcrumbs.length">
+    <nav class="breadcrumb" v-if="currentBreadcrumbs.length">
         <ul class="breadcrumb-list">
-            <li v-for="(item, index) in currentBreadcrumbs" :key="index" class="breadcrumb-item">
-                <router-link :to="item.path" class="breadcrumb-link">
-                    {{ item.text.replace('/', '') }}
-                </router-link>
-                <span v-if="index < currentBreadcrumbs.length - 1" class="breadcrumb-separator">
-                    &gt;
-                </span>
-            </li>
+            <template v-for="(item, index) in currentBreadcrumbs" :key="index">
+                <li class="breadcrumb-item">
+                    <router-link :to="item.path" class="breadcrumb-link">{{ item.text }}</router-link>
+                </li>
+                <!-- 在麵包屑項目之間添加分隔符 -->
+                <li v-if="index < currentBreadcrumbs.length - 1" class="breadcrumb-separator" aria-hidden="true">
+                    >
+                </li>
+            </template>
         </ul>
     </nav>
-
-    
-
 </template>
 
 <script>
@@ -59,12 +55,14 @@ export default {
     /* 確保內容不會被壓縮 */
 }
 
-.breadcrumb-item {
+
+.breadcrumb-item, .breadcrumb-separator {
     display: flex;
     align-items: center;
-    white-space: nowrap;
-    /* 防止文字換行 */
+    margin: 0 4px; /* 添加一些間距 */
+    white-space: nowrap; /* 防止文字換行 */
 }
+
 
 .breadcrumb-link {
     color: black;
@@ -74,16 +72,16 @@ export default {
 }
 
 .breadcrumb-link:hover {
-    text-decoration: underline;
+    
     color: #0066cc;
 }
 
 .breadcrumb-separator {
     color: #666;
-    margin: 0 8px;
-    font-size: 18px;
-    transition: font-size 0.3s ease;
+    font-size: 20px;
 }
+
+
 
 /* 響應式設計 */
 /* 大螢幕 */
