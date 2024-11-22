@@ -5,7 +5,7 @@
         <ul class="breadcrumb-list">
             <li v-for="(item, index) in currentBreadcrumbs" :key="index" class="breadcrumb-item">
                 <router-link :to="item.path" class="breadcrumb-link">
-                    {{ item.text }}
+                    {{ item.text.replace('/', '') }}
                 </router-link>
                 <span v-if="index < currentBreadcrumbs.length - 1" class="breadcrumb-separator">
                     &gt;

@@ -15,7 +15,7 @@ const router = createRouter({
         breadcrumb: [
           {
             text: '場地租借',
-            path: '/cardDivide'
+            path: '/'
           }
         ]
       }
@@ -40,7 +40,11 @@ const router = createRouter({
       meta: {
         breadcrumb: [
           {
-            text: '場地查詢',
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
             path: '/card'
           }
         ]
