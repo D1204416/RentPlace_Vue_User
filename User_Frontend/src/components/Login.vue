@@ -116,6 +116,7 @@ const handleCredentialResponse = async (response) => {
 
     // 4. 處理後端回傳的資料
     const { accessToken, user } = data
+    
 
     // 5. 儲存 JWT token 到 localStorage
     localStorage.setItem('accessToken', accessToken)
@@ -198,15 +199,20 @@ const handleLogin = async () => {
       hasToken: !!response.data.token
     })
 
+    console.log('API response:', response) // 確認 user 資料結構
+    console.log('登入返回資料:', response.data) // 檢查完整返回
+
     if (response.data.token) {
       // 儲存 token
       localStorage.setItem('token', response.data.token)
 
       // 更新 user store
       userStore.setUser({
+        id: response.data.id,  // 確保後端返回 id
         username: response.data.username,
         email: response.data.email  // 確保從回應中獲取 email
       })
+      console.log('更新後的 userStore:', userStore.user)
 
       // 設置 axios 默認 header
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
