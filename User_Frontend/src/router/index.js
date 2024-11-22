@@ -36,7 +36,15 @@ const router = createRouter({
     {
       path: '/card',
       name: 'cardView',
-      component: CardView
+      component: CardView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地查詢',
+            path: '/card'
+          }
+        ]
+      }
     },
   ]
 })
