@@ -42,7 +42,7 @@
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" href="#">會員資訊</a></li>
-              <li><a class="dropdown-item" href="#">會員</a></li>
+              <li><a class="dropdown-item" href="#">租借紀錄</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
