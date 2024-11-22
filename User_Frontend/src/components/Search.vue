@@ -69,7 +69,7 @@ export default {
     display: flex;
     align-items: center;
     max-width: 1200px;
-    margin: 30px auto;
+    margin: 30px auto 10px auto;
     background: white;
     border-radius: 50px;
     padding: 10px;
