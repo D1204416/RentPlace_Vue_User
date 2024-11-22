@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import CardDivideView from '../views/CardDivideView.vue'
 import CardView from '../views/CardView.vue'
 
 const router = createRouter({
