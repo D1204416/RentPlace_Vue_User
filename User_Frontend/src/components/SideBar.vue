@@ -4,7 +4,7 @@
 <template>
 
   <!-- navbackground -> background-image: url('img/navBar_bg.png'); -->
-  <div style="background-color: #FFFFFF; height: 100px; border-radius: 0px 0px 0px 70px; margin-bottom: 20px;">
+  <div style="background-color: #FFFFFF; height: 90px; border-radius: 0px 0px 0px 70px;">
 
     <nav class="navbar" aria-label="Light offcanvas navbar">
 

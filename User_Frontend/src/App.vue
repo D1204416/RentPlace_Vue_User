@@ -2,7 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router'
 import SideBar from './components/SideBar.vue'
 import Breadcrumb from './components/Breadcrumb.vue'
-import Search from './components/Search.vue'
 import Login from './components/Login.vue'
 import Foot from './components/Foot.vue'
 
@@ -20,8 +19,6 @@ import Foot from './components/Foot.vue'
 
       <!-- 新增 Breadcrumb -->
       <Breadcrumb />
-
-      <Search /> 
 
       <!-- 登入模組 -->
       <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">

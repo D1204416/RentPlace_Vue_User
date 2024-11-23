@@ -89,7 +89,7 @@ export default {
 
 .search-label {
     display: block;
-    font-size: 14px;
+    font-size: 15px;
     color: #333;
     margin-top: 10px;
     text-align: center;
@@ -104,7 +104,7 @@ export default {
     border: none;
     background: transparent;
     color: #999;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
     outline: none;
     text-align: center;
