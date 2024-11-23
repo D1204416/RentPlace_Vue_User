@@ -205,6 +205,7 @@ const handleLogin = async () => {
     if (response.data.token) {
       // 儲存 token
       localStorage.setItem('token', response.data.token)
+      localStorage.setItem('user', JSON.stringify(userStore.user))
 
       // 更新 user store
       userStore.setUser({

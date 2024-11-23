@@ -11,13 +11,11 @@ import Login from './components/Login.vue'
 import Foot from './components/Foot.vue' 
 
    
-
-
-
 const app = createApp(App)
 const pinia = createPinia()
 
-app.use(pinia)  // 這行很重要！
+
+app.use(pinia)  // 順序很重要: 先使用 pinia, 再使用 router
 app.use(router)
 app.component('SideBar',SideBar)
 app.component('Breadcrumb',Breadcrumb)
