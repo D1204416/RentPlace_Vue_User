@@ -96,6 +96,8 @@ const handleCredentialResponse = async (response) => {
     const credential = response.credential
     const payload = decodeJwtResponse(credential)
 
+    // console.log('Google 回傳的 payload:', payload) // 檢查 Google 資料
+
     const userInfo = {
       id: payload.sub,
       name: payload.name,
@@ -113,6 +115,7 @@ const handleCredentialResponse = async (response) => {
 
     // 3. 發送登入請求到 Spring Boot 後端
     const { data } = await api.post('/api/auth/google-login', loginData)
+    console.log('後端回傳的資料:', data) // 檢查後端回傳
 
     // 4. 處理後端回傳的資料
     const { accessToken, user } = data
@@ -123,11 +126,14 @@ const handleCredentialResponse = async (response) => {
     // 儲存用戶資料
     const userData = {
       id: user.id,
-      name: user.name,
+      name: user.username, 
       email: user.email,
-      avatar: user.picture
+      avatar: payload.picture, // 直接使用 Google 的圖片
     }
+    // console.log('準備存入 store 的資料:', userData)
     localStorage.setItem('user', JSON.stringify(userData))
+    userStore.setUser(userData)
+    console.log('存入 store 後:', userStore.user) // 檢查是否成功存入
 
     // 6. 設定 axios 預設 header
     api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
@@ -135,7 +141,7 @@ const handleCredentialResponse = async (response) => {
     // 7. 更新 Pinia store 中的用戶資訊
     userStore.setUser({
       id: user.id,
-      name: user.name,
+      name: user.username,
       email: user.email,
       avatar: user.picture
     })
