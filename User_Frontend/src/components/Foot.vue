@@ -41,6 +41,7 @@ const supportedBrowsers = ref(['Chrome', 'FireFox', 'Edge', 'Safari'])
   text-align: center;
   font-family: Arial, sans-serif;
   flex-shrink: 0;
+  margin-top: 10px;
   overflow: hidden; /* 防止裝飾元素溢出  */
 }
 
@@ -62,7 +63,7 @@ const supportedBrowsers = ref(['Chrome', 'FireFox', 'Edge', 'Safari'])
 .footer-link {
   color: #2956B6;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
   padding: 5px 10px;
   white-space: nowrap;
 }

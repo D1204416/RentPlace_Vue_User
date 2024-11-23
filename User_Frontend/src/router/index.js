@@ -27,6 +27,10 @@ const router = createRouter({
       meta: {
         breadcrumb: [
           {
+            text: '場地租借',
+            path: '/'
+          },
+          {
             text: '註冊',
             path: '/register'
           }
