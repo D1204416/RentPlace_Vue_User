@@ -116,10 +116,18 @@ const handleCredentialResponse = async (response) => {
 
     // 4. 處理後端回傳的資料
     const { accessToken, user } = data
-    
 
     // 5. 儲存 JWT token 到 localStorage
     localStorage.setItem('accessToken', accessToken)
+
+    // 儲存用戶資料
+    const userData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.picture
+    }
+    localStorage.setItem('user', JSON.stringify(userData))
 
     // 6. 設定 axios 預設 header
     api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
@@ -129,16 +137,15 @@ const handleCredentialResponse = async (response) => {
       id: user.id,
       name: user.name,
       email: user.email,
-      avatar: user.picture,
-      roles: user.roles // 如果有角色權限
+      avatar: user.picture
     })
 
     // 8. 關閉 Modal
-     const loginModal = document.getElementById('loginModal')
-      const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
-      if (bootstrapModal) {
-        bootstrapModal.hide()
-      }
+    const loginModal = document.getElementById('loginModal')
+    const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
+    if (bootstrapModal) {
+      bootstrapModal.hide()
+    }
 
     // 9. 導航到首頁或儀表板
     router.push('/')
@@ -167,6 +174,7 @@ const handleCredentialResponse = async (response) => {
     // 重置狀態
     userStore.resetUser()
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('user')  // 同時清除用戶資料
   }
 }
 
@@ -205,15 +213,28 @@ const handleLogin = async () => {
     if (response.data.token) {
       // 儲存 token
       localStorage.setItem('token', response.data.token)
-      localStorage.setItem('user', JSON.stringify(userStore.user))
+
+      // 儲存用戶資料到 localStorage
+      const userData = {
+        id: response.data.id,
+        name: response.data.username,
+        phone: response.data.phone,
+        email: response.data.email,
+        avatar: response.data.avatar
+      }
+      localStorage.setItem('user', JSON.stringify(userData))
 
       // 更新 user store
       userStore.setUser({
         id: response.data.id,  // 確保後端返回 id
         username: response.data.username,
-        email: response.data.email  // 確保從回應中獲取 email
+        email: response.data.email,  // 確保從回應中獲取 email
+        phone: response.data.phone
       })
       console.log('更新後的 userStore:', userStore.user)
+      console.log('準備儲存的用戶資料:', userData)
+      localStorage.setItem('user', JSON.stringify(userData))
+      userStore.setUser(userData)
 
       // 設置 axios 默認 header
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
@@ -241,17 +262,6 @@ const handleLogin = async () => {
       message: error.message,
       error: error
     })
-
-    // if (error.response) {
-    //   // 伺服器回傳錯誤
-    //   errorMessage.value = error.response.data.message || '登入失敗'
-    // } else if (error.request) {
-    //   // 請求發送失敗
-    //   errorMessage.value = '無法連接到伺服器，請檢查網路連接'
-    // } else {
-    //   // 其他錯誤
-    //   errorMessage.value = '登入過程發生錯誤'
-    // }
     errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試'
   } finally {
     isLoading.value = false

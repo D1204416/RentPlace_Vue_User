@@ -51,12 +51,7 @@ const initializeApp = () => {
   const savedUser = localStorage.getItem('user')
   if (savedUser) {
     userStore.setUser(JSON.parse(savedUser))
-  }
-  // 如果有 token 也要一併恢復
-  const token = localStorage.getItem('token')
-  if (token) {
-    // 可以設置 axios headers
-    // api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    console.log('已恢復用戶狀態:', userStore.user)
   }
 }
 
