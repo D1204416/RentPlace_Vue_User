@@ -3,7 +3,7 @@
     <!-- Venue Types Section -->
     <h2 class="section-title">場地類型</h2>
     <div class="venue-grid">
-      <div v-for="venue in venues" :key="venue.id" class="venue-card">
+      <div v-for="venue in venues" :key="venue.id" class="venue-card" @click="handleVenueClick(venue)">
         <div class="venue-icon">
           <img :src="`/img/${venue.icon}`" :alt="venue.title" />
         </div>
@@ -55,7 +55,19 @@ export default {
         }
       ]
     }
+  },
+
+  methods: {
+    handleVenueClick(venue) {
+      this.$router.push({
+        name: 'CardView',
+        query: {
+          '場地類型': venue.title
+        }
+      });
+    }
   }
+
 }
 </script>
 
