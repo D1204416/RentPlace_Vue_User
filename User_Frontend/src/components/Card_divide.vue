@@ -53,7 +53,7 @@ export default {
           icon: 'classroom.png'
         }
       ],
-      allVenues: [] // 存儲 API 返回的所有場地數據
+      allVenues: [] // 儲存 API 返回的所有場地數據
     }
   },
 
@@ -79,6 +79,7 @@ export default {
       })
     },
 
+    // 帶query參數跳轉頁面
     handleVenueClick(venue) {
       this.$router.push({
         name: 'cardView',
