@@ -65,7 +65,7 @@ export default {
       // 使用 router 導航到 CardView 並帶上查詢參數
       this.$router.push({
         name: 'cardView',
-        query: searchQuery
+        query: searchQuery   // 這裡的 searchQuery 會變成 URL 的參數
       });
     },
   },

@@ -79,7 +79,7 @@ export default {
 
     applyFilters() {
       let filtered = [...this.rooms]
-      const query = this.$route.query
+      const query = this.$route.query   // 從 URL 取得參數
 
       // 根據 URL 查詢參數過濾
       if (query['行政區域']) {
