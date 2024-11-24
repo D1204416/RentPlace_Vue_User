@@ -15,57 +15,83 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'card_divide',
   data() {
     return {
-      regions: ['中區', '東區', '南區', '西區', '北區', '西屯區', '南屯區', '北屯區', '豐原區', '東勢區',
-        '大甲區', '清水區', '沙鹿區', '梧棲區', '后里區', '神岡區', '潭子區', '大雅區', '新社區', '石岡區',
-        '外埔區', '大安區', '龍井區', '霧峰區', '太平區', '大里區', '和平區'],
-      venueTypes: ['會議室', '活動中心', '運動場所', '教室'],
-      capacities: ['10人以下', '11-30人', '31-50人', '50人以上'],
+      // venueTypes: ['會議室', '活動中心', '運動場所', '教室'],
+      // capacities: ['10人以下', '11-30人', '31-50人', '50人以上'],
       venues: [
         {
           id: 1,
           title: '會議室',
-          count: 158,
+          count: 0, // 初始化為 0
           description: '包含中型與小型會議室、簡報室、聯誼室.....',
           icon: 'meeting-room.png'
         },
         {
           id: 2,
           title: '活動中心',
-          count: 120,
+          count: 0, // 初始化為 0
           description: '包含一般禮堂、音樂廳、集會空間、演藝廳.....',
           icon: 'theater.png'
         },
         {
           id: 3,
           title: '運動場所',
-          count: 158,
+          count: 0, // 初始化為 0
           description: '包含健身中心、韻律教室、廣場、校園操場.....',
           icon: 'playground.png'
         },
         {
           id: 4,
           title: '教室',
-          count: 158,
+          count: 0, // 初始化為 0
           description: '包含一般教室、多功能教室、電腦教室.....',
           icon: 'classroom.png'
         }
-      ]
+      ],
+      allVenues: [] // 存儲 API 返回的所有場地數據
     }
   },
 
   methods: {
+    async fetchVenues() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/venues')
+        this.allVenues = response.data
+        this.updateVenueCounts()
+      } catch (error) {
+        console.error('Failed to fetch venues:', error)
+      }
+    },
+
+    updateVenueCounts() {
+      // 計算每種場地類型的數量
+      this.venues = this.venues.map(venue => {
+        const count = this.allVenues.filter(v => v.venueType === venue.title).length
+        return {
+          ...venue,
+          count: count
+        }
+      })
+    },
+
     handleVenueClick(venue) {
       this.$router.push({
-        name: 'CardView',
+        name: 'cardView',
         query: {
           '場地類型': venue.title
         }
       });
     }
+  },
+
+  // 在組件創建時獲取數據
+  created() {
+    this.fetchVenues()
   }
 
 }
