@@ -56,9 +56,10 @@ const router = createRouter({
       }
     },
     {
-      path: '/cardInfo',
+      path: '/cardInfo/:id',
       name: 'cardInfoView',
       component: CardInfoView,
+      props: true,  // 啟用 props 傳遞路由參數
       meta: {
         breadcrumb: [
           {
