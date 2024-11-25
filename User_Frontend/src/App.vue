@@ -1,13 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import SideBar from './components/SideBar.vue'
-import Breadcrumb from './components/Breadcrumb.vue'
-import Login from './components/Login.vue'
-import Foot from './components/Foot.vue'
-
-
-
-</script>
 
 <template>
 
@@ -45,7 +35,31 @@ import Foot from './components/Foot.vue'
 
 </template>
 
-<script>
+<script setup>
+import { useUserStore } from '@/stores/user'
+import { onMounted } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import SideBar from './components/SideBar.vue'
+import Breadcrumb from './components/Breadcrumb.vue'
+import Login from './components/Login.vue'
+import Foot from './components/Foot.vue'
+
+const userStore = useUserStore()
+
+// 初始化函數
+const initializeApp = () => {
+  const savedUser = localStorage.getItem('user')
+  if (savedUser) {
+    userStore.setUser(JSON.parse(savedUser))
+    console.log('已恢復用戶狀態:', userStore.user)
+  }
+}
+
+// 在組件掛載時初始化
+onMounted(() => {
+  initializeApp()
+})
+
 const handleLoginSuccess = (userInfo) => {
   console.log('使用者登入成功:', userInfo)
   // 處理登入成功後的邏輯

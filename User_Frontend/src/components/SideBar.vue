@@ -36,7 +36,7 @@
               <img :src="userStore.user?.avatar || 'https://picsum.photos/id/684/600/400'" alt="user-avatar" width="40"
                 height="40" class="rounded-circle border" style="border-width: 8px; ">
 
-              <h5 style="margin-left: 10px; color: #4A4A4A;">{{ userStore.user.username }}</h5>
+              <h5 style="margin-left: 10px; color: #4A4A4A;">{{ userStore.user?.name || userStore.user?.username || "Hi, Welcome"}}</h5>
             </a>
 
 
@@ -194,10 +194,13 @@ console.log('userStore state:', userStore.user) // 確認 store 中的資料
 
 const handleLogout = () => {
   userStore.resetUser()
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('token')
+  localStorage.removeItem('accessToken')  // google登入
+  localStorage.removeItem('token')  // 一般登入
+  localStorage.removeItem('user')
   router.push('/login')
 }
+
+
 </script>
 
 <style>

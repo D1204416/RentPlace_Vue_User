@@ -96,6 +96,8 @@ const handleCredentialResponse = async (response) => {
     const credential = response.credential
     const payload = decodeJwtResponse(credential)
 
+    // console.log('Google 回傳的 payload:', payload) // 檢查 Google 資料
+
     const userInfo = {
       id: payload.sub,
       name: payload.name,
@@ -113,13 +115,25 @@ const handleCredentialResponse = async (response) => {
 
     // 3. 發送登入請求到 Spring Boot 後端
     const { data } = await api.post('/api/auth/google-login', loginData)
+    console.log('後端回傳的資料:', data) // 檢查後端回傳
 
     // 4. 處理後端回傳的資料
     const { accessToken, user } = data
-    
 
     // 5. 儲存 JWT token 到 localStorage
     localStorage.setItem('accessToken', accessToken)
+
+    // 儲存用戶資料
+    const userData = {
+      id: user.id,
+      name: user.username, 
+      email: user.email,
+      avatar: payload.picture, // 直接使用 Google 的圖片
+    }
+    // console.log('準備存入 store 的資料:', userData)
+    localStorage.setItem('user', JSON.stringify(userData))
+    userStore.setUser(userData)
+    console.log('存入 store 後:', userStore.user) // 檢查是否成功存入
 
     // 6. 設定 axios 預設 header
     api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
@@ -127,18 +141,17 @@ const handleCredentialResponse = async (response) => {
     // 7. 更新 Pinia store 中的用戶資訊
     userStore.setUser({
       id: user.id,
-      name: user.name,
+      name: user.username,
       email: user.email,
-      avatar: user.picture,
-      roles: user.roles // 如果有角色權限
+      avatar: user.picture
     })
 
     // 8. 關閉 Modal
-     const loginModal = document.getElementById('loginModal')
-      const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
-      if (bootstrapModal) {
-        bootstrapModal.hide()
-      }
+    const loginModal = document.getElementById('loginModal')
+    const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
+    if (bootstrapModal) {
+      bootstrapModal.hide()
+    }
 
     // 9. 導航到首頁或儀表板
     router.push('/')
@@ -167,6 +180,7 @@ const handleCredentialResponse = async (response) => {
     // 重置狀態
     userStore.resetUser()
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('user')  // 同時清除用戶資料
   }
 }
 
@@ -206,13 +220,27 @@ const handleLogin = async () => {
       // 儲存 token
       localStorage.setItem('token', response.data.token)
 
+      // 儲存用戶資料到 localStorage
+      const userData = {
+        id: response.data.id,
+        name: response.data.username,
+        phone: response.data.phone,
+        email: response.data.email,
+        avatar: response.data.avatar
+      }
+      localStorage.setItem('user', JSON.stringify(userData))
+
       // 更新 user store
       userStore.setUser({
         id: response.data.id,  // 確保後端返回 id
         username: response.data.username,
-        email: response.data.email  // 確保從回應中獲取 email
+        email: response.data.email,  // 確保從回應中獲取 email
+        phone: response.data.phone
       })
       console.log('更新後的 userStore:', userStore.user)
+      console.log('準備儲存的用戶資料:', userData)
+      localStorage.setItem('user', JSON.stringify(userData))
+      userStore.setUser(userData)
 
       // 設置 axios 默認 header
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
@@ -240,17 +268,6 @@ const handleLogin = async () => {
       message: error.message,
       error: error
     })
-
-    // if (error.response) {
-    //   // 伺服器回傳錯誤
-    //   errorMessage.value = error.response.data.message || '登入失敗'
-    // } else if (error.request) {
-    //   // 請求發送失敗
-    //   errorMessage.value = '無法連接到伺服器，請檢查網路連接'
-    // } else {
-    //   // 其他錯誤
-    //   errorMessage.value = '登入過程發生錯誤'
-    // }
     errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試'
   } finally {
     isLoading.value = false
