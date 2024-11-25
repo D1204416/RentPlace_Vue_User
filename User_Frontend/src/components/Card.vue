@@ -1,7 +1,7 @@
 <!-- MeetingRoomCards.vue -->
 <template>
-  <div class="container mx-auto p-4">
-    <h2 class="text-xl mb-4">符合您搜尋的條件：{{ filteredRooms.length }}筆</h2>
+  <div class="container mx-auto p-5">
+    <h4 class="text-xl mb-4">符合您搜尋的條件：{{ filteredRooms.length }}筆</h4>
 
     <!-- 卡片網格 -->
     <div class="grid grid-cols-1 gap-4 
@@ -13,7 +13,7 @@
         <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="w-full h-48 object-cover"
           @error="handleImageError">
         <div class="p-4">
-          <h3 class="font-bold mb-2">{{ room.placeName }}</h3>
+          <h5 class="font-bold mb-2">{{ room.placeName }}</h5>
           <div class="text-sm text-gray-600">
             <p>場地類型：{{ room.venueType }}</p>
             <p>聯絡電話：{{ room.phoneNumber }}</p>
