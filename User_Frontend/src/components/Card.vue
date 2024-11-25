@@ -16,7 +16,7 @@
           <h3 class="font-bold mb-2">{{ room.placeName }}</h3>
           <div class="text-sm text-gray-600">
             <p>場地類型：{{ room.venueType }}</p>
-            <p>聯絡電話：{{ room.phone }}</p>
+            <p>聯絡電話：{{ room.phoneNumber }}</p>
             <p>行政區域：{{ room.regionName }}</p>
             <p>容納人數：{{ room.capacity }}人</p>
           </div>
