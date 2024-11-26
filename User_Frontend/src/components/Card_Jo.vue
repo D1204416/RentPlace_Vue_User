@@ -1,11 +1,11 @@
-<!-- MeetingRoomCards.vue -->
+<!-- Card.vue -->
 <template>
   <div class="container">
     <h4 class="search-result">符合您搜尋的條件：{{ filteredRooms.length }}筆</h4>
 
     <!-- 卡片網格 -->
     <div class="room-grid">
-      <div v-for="room in filteredRooms" :key="room.id" class="room-card">
+      <div v-for="room in filteredRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
         <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
         <div class="card-content">
           <h5 class="venue-name">{{ room.placeName }}</h5>
@@ -35,7 +35,7 @@
 import axios from 'axios'
 
 export default {
-  name: 'MeetingRoomCards',
+  name: 'Card',
 
   data() {
     return {
@@ -67,6 +67,7 @@ export default {
     async fetchVenues() {
       try {
         const response = await axios.get('http://localhost:8080/api/venues')
+        console.log('API Response:', response.data) // 檢查 API 返回的數據結構
         this.rooms = response.data
         this.applyFilters()
       } catch (error) {
@@ -102,13 +103,29 @@ export default {
       // 如果有預約日期的過濾邏輯，也可以在這裡添加
 
       this.filteredRooms = filtered
-    }
+    },
+
+    goToDetail(room) {
+      // 確保 room.id 存在
+      if (room && room.id) {
+        console.log('Navigating to room:', room.id); // 用於調試
+        this.$router.push({
+          name: 'cardInfoView',
+          params: { id: room.id },
+
+          // 如果需要保留搜尋條件，可以加上現有的 query 參數
+          query: this.$route.query
+        })
+      } else {
+        console.error('Room ID is missing:', room);
+      }
+    },
   },
 
   watch: {
     // 監聽 route 變化，當 URL 參數改變時重新過濾
     '$route.query': {
-      handler() {
+      handler(newQuery) {
         this.applyFilters()
       },
       deep: true
@@ -119,15 +136,6 @@ export default {
     this.fetchVenues()
   }
 
-
-  // async created() {
-  //   try {
-  //     const response = await axios.get('http://localhost:8080/api/venues')
-  //     console.log('API Response:', response.data)
-  //     this.rooms = response.data
-  //   } catch (error) {
-  //     console.error('Failed to fetch venues:', error)
-  //   }
 }
 
 </script>

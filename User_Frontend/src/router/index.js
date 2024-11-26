@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import CardView from '../views/CardView.vue'
+import CardInfoView from '../views/CardInfoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,7 +54,30 @@ const router = createRouter({
           }
         ]
       }
+    },
+    {
+      path: '/cardInfo/:id',
+      name: 'cardInfoView',
+      component: CardInfoView,
+      props: true,  // 啟用 props 傳遞路由參數
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
+            path: '/card'
+          },
+          {
+            text: '詳細資訊',
+            path: '/cardInfo'
+          }
+        ]
+      }
     }
+
   ]
 })
 
