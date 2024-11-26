@@ -92,7 +92,7 @@ export default {
           "場地位址：": venue.address,
           "容納人數：": `${venue.capacity}人`,
           "營業時間：": venue.availableTime,
-          "繳費方式：": venue.unitPrice,
+          "繳費方式：": `${venue.unitPrice} / ${venue.unit}`,
         }
 
         this.loading = false
