@@ -85,7 +85,7 @@ export default {
         // 設置場地信息
         this.info = {
           "場地名稱：": venue.placeName,
-          "聯絡電話：": venue.phone,
+          "聯絡電話：": venue.phoneNumber,
           "場地位址：": venue.address,
           "容納人數：": `${venue.capacity}人`,
           "營業時間：": venue.avaliableTime,
