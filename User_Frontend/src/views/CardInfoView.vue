@@ -75,15 +75,17 @@ export default {
 
         console.log('Fetching venue detail for ID:', this.venueId)
         // 並行請求場地和設施資料
-        const [venueResponse, facilitiesResponse] = await Promise.all([
+        const [venueResponse, equipmentResponse] = await Promise.all([
           axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
           axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
         ])
 
         const venue = venueResponse.data
 
-        // 設置設施列表
-        this.facilities = facilitiesResponse.data || []
+        // 從設備資料中只提取 equipmentName
+        this.facilities = Array.isArray(equipmentResponse.data) 
+          ? equipmentResponse.data.map(item => item.equipmentName)
+          : [equipmentResponse.data.equipmentName]
 
         // 設置場地信息
         this.info = {
