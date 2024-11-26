@@ -120,10 +120,9 @@ export default {
 }
 
 .venue-card {
-  background: #F3F3F3;
+  /* background: #F3F3F3; */
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
   text-align: center;
   transition: transform 0.3s;
 
@@ -131,7 +130,9 @@ export default {
 
 .venue-card:hover {
   transform: translateY(-5px);
-  background-color: #cbeeff;
+  /* background-color: #cbeeff; */
+  /* box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25); */
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
 }
 
 .venue-icon {
@@ -152,8 +153,11 @@ export default {
 }
 
 img {
-  width: 200px;
-  height: 160px;
+  /* width: 200px;
+  height: 160px; */
+
+  width: 150px;
+  height: 150px;
 }
 
 @media (max-width: 768px) {
