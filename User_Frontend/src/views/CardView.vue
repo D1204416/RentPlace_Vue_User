@@ -1,8 +1,6 @@
 <script setup>
 import Search from '../components/Search.vue'
-import Card_v3 from '../components/Card_v3.vue';
 import Card_Jo from '@/components/Card_Jo.vue';
-
 </script>
 
 <template>
@@ -41,8 +39,6 @@ import Card_Jo from '@/components/Card_Jo.vue';
 </template>
 
 <script>
-// 保持原本的 script 部分不變
-
 import axios from 'axios'
 
 export default {
@@ -52,7 +48,8 @@ export default {
     return {
       rooms: [],
       filteredRooms: [],
-      currentPage: 1
+      currentPage: 1,
+      reservations: {} // 用來存儲每個場地的預約資訊
     }
   },
 
@@ -80,10 +77,45 @@ export default {
         const response = await axios.get('http://localhost:8080/api/venues')
         console.log('API Response:', response.data) // 檢查 API 返回的數據結構
         this.rooms = response.data
+        await this.fetchReservations()
         this.applyFilters()
       } catch (error) {
         console.error('Failed to fetch venues:', error)
       }
+    },
+
+    async fetchReservations() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/reservations')
+        // 將預約資訊按場地ID分組
+        this.reservations = response.data.reduce((acc, reservation) => {
+          if (!acc[reservation.venueId]) {
+            acc[reservation.venueId] = []
+          }
+          acc[reservation.venueId].push(reservation)
+          return acc
+        }, {})
+      } catch (error) {
+        console.error('Failed to fetch reservations:', error)
+      }
+    },
+
+    isVenueAvailable(venueId, selectedDate, selectedTimePeriod) {
+      // 如果沒有選擇日期，返回true
+      if (!selectedDate) return true
+      
+      // 獲取該場地的所有預約
+      const venueReservations = this.reservations[venueId] || []
+      
+      // 檢查是否有任何預約在選定的日期和時段是"不可預約"狀態
+      return !venueReservations.some(reservation => {
+        const isSelectedDate = reservation.reservationDate === selectedDate
+        const isSelectedTimePeriod = selectedTimePeriod ? 
+          reservation.timePeriodId === parseInt(selectedTimePeriod) : true
+        const isUnavailable = reservation.statusInfo.status === "不可預約"
+        
+        return isSelectedDate && isSelectedTimePeriod && isUnavailable
+      })
     },
 
     applyFilters() {
@@ -111,7 +143,12 @@ export default {
         )
       }
 
-      // 如果有預約日期的過濾邏輯，也可以在這裡添加
+      // 日期和時段過濾
+      if (query['預約日期'] || query['時段']) {
+        filtered = filtered.filter(room => 
+          this.isVenueAvailable(room.id, query['預約日期'], query['時段'])
+        )
+      }
 
       this.filteredRooms = filtered
     },
@@ -123,9 +160,7 @@ export default {
         this.$router.push({
           name: 'cardInfoView',
           params: { id: room.id },
-
-          // 如果需要保留搜尋條件，可以加上現有的 query 參數
-          query: this.$route.query
+          query: this.$route.query   // 如果需要保留搜尋條件，可以加上現有的 query 參數
         })
       } else {
         console.error('Room ID is missing:', room);
@@ -143,8 +178,8 @@ export default {
     },
   },
 
-  created() {
-    this.fetchVenues()
+  async created() {
+    await this.fetchVenues()
   }
 
 }
