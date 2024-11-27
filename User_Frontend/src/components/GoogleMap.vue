@@ -30,7 +30,7 @@
         return encodeURIComponent(this.address)
       },
       mapUrl() {
-        return `https://www.google.com/maps/embed/v1/place?key=AIzaSyAwutzXnM2pKuQV-j6Y1XHdJ4eXHCKIvGE&q=${this.encodedAddress}&zoom=16&language=zh-TW`
+        return `https://www.google.com/maps/embed/v1/place?key=YOUR_KEY&q=${this.encodedAddress}&zoom=16&language=zh-TW`
       }
     }
   }
