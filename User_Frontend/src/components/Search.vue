@@ -51,6 +51,7 @@ export default {
       ],
     };
   },
+
   methods: {
     handleSearch() {
       const searchQuery = this.searchFields.reduce((acc, field) => {
@@ -69,7 +70,7 @@ export default {
       });
     },
   },
-};
+}
 </script>
 
 <style scoped>
