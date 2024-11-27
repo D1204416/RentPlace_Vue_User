@@ -31,7 +31,8 @@
 
         <div class="map-container">
           <h4>地圖資訊</h4>
-          <img src="/venueImg/map.svg" alt="地圖" />
+          <!-- <img src="/venueImg/map.svg" alt="地圖" /> -->
+          <google-map :address="info['場地位址：']"></google-map>
         </div>
       </div>
     </div>
@@ -45,9 +46,14 @@
 
 <script>
 import axios from 'axios'
+import GoogleMap from '../components/GoogleMap.vue'
 
 export default {
   name: "cardInfoView",
+  components: {
+    GoogleMap
+  },
+
   data() {
     return {
       // facilities: ["電梯", "停車場", "無障礙設施", "桌子"],
@@ -145,6 +151,7 @@ export default {
 </script>
 
 <style scoped>
+
 * {
   margin: 0;
   padding: 0;
