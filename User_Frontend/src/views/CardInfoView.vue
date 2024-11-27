@@ -255,6 +255,7 @@ h4 {
   width: 100%;
   height: 300px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .map-container img {
