@@ -74,13 +74,18 @@ export default {
         this.loading = true
 
         console.log('Fetching venue detail for ID:', this.venueId)
-        const response = await axios.get(`http://localhost:8080/api/venues/${this.venueId}`)
-        console.log('Venue detail response:', response.data) // 用於調試, 檢查 API 回傳
+        // 並行請求場地和設施資料
+        const [venueResponse, equipmentResponse] = await Promise.all([
+          axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
+          axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
+        ])
 
-        const venue = response.data
+        const venue = venueResponse.data
 
-        // 設置設施列表
-        this.facilities = venue.facilities || []
+        // 從設備資料中只提取 equipmentName
+        this.facilities = Array.isArray(equipmentResponse.data) 
+          ? equipmentResponse.data.map(item => item.equipmentName)
+          : [equipmentResponse.data.equipmentName]
 
         // 設置場地信息
         this.info = {
@@ -89,12 +94,12 @@ export default {
           "場地位址：": venue.address,
           "容納人數：": `${venue.capacity}人`,
           "營業時間：": venue.availableTime,
-          "繳費方式：": venue.fee,
+          "繳費方式：": `${venue.unitPrice} / ${venue.unit}`,
         }
 
         this.loading = false
       } catch (error) {
-        console.error('Failed to fetch venue details:', error)
+        console.error('Failed to fetch data:', error)
         this.error = '無法載入場地資訊'
         this.loading = false
       }
