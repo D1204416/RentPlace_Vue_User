@@ -1,71 +1,70 @@
 <template>
   <div class="container">
-
     <!-- 添加載入中狀態 -->
     <div v-if="loading" class="loading">載入中...</div>
-
     <!-- 添加錯誤提示 -->
     <div v-else-if="error" class="error">{{ error }}</div>
-
-    <div v-else class="content">
-      <div class="left-column">
-        <!-- <img src="/venueImg/1.svg" alt="會議室照片" class="room-image" /> -->
-        <img :src="`/venueImg/${venueId}.svg`" :alt="info['場地名稱：']" class="room-image" />
-
-        <div class="facilities">
-          <h3>有提供的設備與服務</h3>
-          <div class="facilities-list">
-            <div class="facilities-item" v-for="facility in facilities" :key="facility">{{ facility }}</div>
+    
+    <div v-else>
+      <div class="content">
+        <div class="left-column">
+          <img :src="`/venueImg/${venueId}.svg`" :alt="info['場地名稱：']" class="room-image" />
+          
+        </div>
+        
+        <div class="right-column">
+          <div class="info-grid">
+            <h4>{{ info['場地名稱：'] }}</h4>
+            <div class="info-item" v-for="(value, label) in info" :key="label">
+              <div class="info-label">{{ label }}</div>
+              <div class="info-value">{{ value }}</div>
+            </div>
           </div>
+
+          <div class="facilities">
+            <h4>有提供的設備與服務</h4>
+            <div class="facilities-list">
+              <div class="facilities-item" v-for="facility in facilities" :key="facility">{{ facility }}</div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="right-column">
-        <div class="info-grid">
-          <h4>{{ info['場地名稱：'] }}</h4>
-          <div class="info-item" v-for="(value, label) in info" :key="label">
-            <div class="info-label">{{ label }}</div>
-            <div class="info-value">{{ value }}</div>
-          </div>
-        </div>
-
-        <div class="map-container">
-          <h4>地圖資訊</h4>
-          <!-- <img src="/venueImg/map.svg" alt="地圖" /> -->
-          <google-map :address="info['場地位址：']"></google-map>
-        </div>
+      <!-- 地圖區塊 -->
+      <div class="map-section">
+        <h4>地圖資訊</h4>
+        <iframe
+          v-if="info['場地位址：']"
+          width="100%"
+          height="400"
+          style="border:0"
+          loading="lazy"
+          :src="`https://maps.google.com/maps?q=${encodeURIComponent(info['場地位址：'])}&t=&z=13&ie=UTF8&iwloc=&output=embed`"
+          allowfullscreen
+        ></iframe>
       </div>
-    </div>
 
-    <div class="button-group">
-      <button class="btn btn-back" @click="goBack">回上一頁</button>
-      <button class="btn btn-book" @click="goToBooking">前往預約</button>
+      <div class="button-group">
+        <button class="btn btn-back" @click="goBack">回上一頁</button>
+        <button class="btn btn-book" @click="goToBooking">前往預約</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import GoogleMap from '../components/GoogleMap.vue'
+// import GoogleMap from '../components/GoogleMap.vue'
 
 export default {
   name: "cardInfoView",
-  components: {
-    GoogleMap
-  },
+  // components: {
+  //   GoogleMap
+  // },
 
   data() {
     return {
-      // facilities: ["電梯", "停車場", "無障礙設施", "桌子"],
-      // info: {
-      //   "場地名稱：": "會議室",
-      //   "聯絡電話：": "04-25602710 #11",
-      //   "場地位址：": "台中市霧峰區中正路578巷25號",
-      //   "容納人數：": "20人",
-      //   "營業時間：": "07:00 - 21:00",
-      //   "繳費方式：": "2000/次",
-      // },
-
       venueId: null,
       facilities: [],
       info: {},
@@ -199,7 +198,7 @@ h4 {
 
 .room-image {
   width: 100%;
-  height: 400px;
+  height: 500px;
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 20px;
@@ -218,6 +217,7 @@ h4 {
 .info-label {
   color: #333;
   min-width: 100px;
+  font-size: 16px;
 }
 
 .info-value {
@@ -225,12 +225,12 @@ h4 {
 }
 
 .facilities {
-  margin-top: 10px;
+  margin-top: 80px;
 }
 
-.facilities h3 {
+.facilities h4 {
   margin-bottom: 15px;
-  font-size: 18px;
+  /* font-size: 18px; */
 }
 
 .facilities-list {
@@ -244,14 +244,14 @@ h4 {
   padding: 8px 16px;
   border-radius: 20px;
   color: #495057;
-  font-size: 14px;
+  font-size: 16px;
   border: 1px solid #e9ecef;
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.map-container {
+/* .map-container {
   width: 100%;
   height: 300px;
   margin-top: 20px;
@@ -264,6 +264,37 @@ h4 {
   object-fit: cover;
   border-radius: 4px;
   padding: 20px 0;
+} */
+
+.map-section {
+  width: 100%;
+  padding: 0 20px 20px 20px;
+}
+
+/* 新增樣式確保地圖容器正確顯示 */
+.map-section iframe {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.map-section h4 {
+  margin-bottom: 15px;
+  /* padding: 0 20px; */
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+  
+  .map-section {
+    padding: 0 10px 10px 10px;
+    margin-top: 50PX;
+  }
+
+  .map-section h4 {
+    padding: 0 10px;
+  }
 }
 
 .button-group {
