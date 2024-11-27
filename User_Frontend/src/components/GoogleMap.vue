@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-      <h4>地圖資訊</h4>
+      <!-- <h4>地圖資訊</h4> -->
       <iframe
         v-if="encodedAddress"
         width="100%"
@@ -30,7 +30,7 @@
         return encodeURIComponent(this.address)
       },
       mapUrl() {
-        return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBp8SJhYj3i0889W1is2G1VqTaOZ5PkwYMq=${this.encodedAddress}&zoom=16&language=zh-TW`
+        return `https://www.google.com/maps/embed/v1/place?key=AIzaSyAwutzXnM2pKuQV-j6Y1XHdJ4eXHCKIvGE&q=${this.encodedAddress}&zoom=16&language=zh-TW`
       }
     }
   }
