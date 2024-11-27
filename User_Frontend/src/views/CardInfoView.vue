@@ -88,7 +88,7 @@ export default {
           "聯絡電話：": venue.phoneNumber,
           "場地位址：": venue.address,
           "容納人數：": `${venue.capacity}人`,
-          "營業時間：": venue.avaliableTime,
+          "營業時間：": venue.availableTime,
           "繳費方式：": venue.fee,
         }
 
