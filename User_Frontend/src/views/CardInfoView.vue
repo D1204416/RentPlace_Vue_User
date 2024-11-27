@@ -1,4 +1,11 @@
+<script setup>
+import Search from '../components/Search_Jo.vue'
+
+</script>
+
 <template>
+
+  <Search />
   <div class="container">
     <!-- 添加載入中狀態 -->
     <div v-if="loading" class="loading">載入中...</div>

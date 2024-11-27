@@ -1,5 +1,6 @@
 <script setup>
-import Search from '../components/Search.vue'
+// import Search from '../components/Search.vue'
+import Search from '../components/Search_Jo.vue'
 import Card_Jo from '@/components/Card_Jo.vue';
 </script>
 
