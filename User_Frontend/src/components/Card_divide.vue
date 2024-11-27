@@ -156,7 +156,6 @@ export default {
 img {
   /* width: 200px;
   height: 160px; */
-
   width: 150px;
   height: 140px;
 }
