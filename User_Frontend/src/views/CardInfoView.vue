@@ -9,7 +9,6 @@
       <div class="content">
         <div class="left-column">
           <img :src="`/venueImg/${venueId}.svg`" :alt="info['場地名稱：']" class="room-image" />
-          
         </div>
         
         <div class="right-column">
@@ -24,10 +23,10 @@
           <div class="facilities">
             <h4>有提供的設備與服務</h4>
             <div class="facilities-list">
-              <div class="facilities-item" v-for="facility in facilities" :key="facility">{{ facility }}</div>
+              <div v-if="facilities.length === 0" class="facilities-item">無</div>
+              <div v-else class="facilities-item" v-for="facility in facilities" :key="facility">{{ facility }}</div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -55,13 +54,10 @@
 
 <script>
 import axios from 'axios'
-// import GoogleMap from '../components/GoogleMap.vue'
+
 
 export default {
   name: "cardInfoView",
-  // components: {
-  //   GoogleMap
-  // },
 
   data() {
     return {
