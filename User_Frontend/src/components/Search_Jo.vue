@@ -376,7 +376,8 @@ export default {
 #district-dropdown {
   width: 500px;
   height: 380px;
-  padding: 20px;  /* 增加內部空間 */
+  padding: 20px;
+  /* 增加內部空間 */
 }
 
 #venue-dropdown {
@@ -544,5 +545,152 @@ export default {
 .calendar-day.disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .search-container {
+    padding: 0 10px;
+  }
+
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* 三欄等寬 */
+    padding: 15px;
+    gap: 12px;
+  }
+
+  /* 清除每個 search-field 原本的樣式 */
+  .search-field {
+    display: contents;
+    border: none;
+    padding: 0;
+  }
+
+  /* 左欄 labels */
+  .search-field label {
+    grid-column: 1;
+    text-align: left;
+    margin: 0;
+    padding: 8px 0;
+    font-size: 14px;
+    white-space: nowrap;
+    /* 確保文字不換行 */
+  }
+
+  /* 右欄 inputs */
+  .search-field input {
+    grid-column: 2;
+    text-align: left;
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  /* 搜尋按鈕置中 */
+  .search-button {
+    grid-column: 3;
+    width: 40px;
+    height: 40px;
+    justify-self: center;
+    /* 水平置中 */
+    align-self: center;
+    /* 垂直置中 */
+    background: #FFC107;
+  }
+
+  /* Dropdown 調整 */
+  .dropdown {
+    width: 90vw !important;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .search-container {
+    padding: 0 10px;
+  }
+
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* 三欄等寬 */
+    padding: 15px;
+    gap: 3px;
+    position: relative;
+    /* 添加相對定位 */
+  }
+
+  /* 為右欄添加左邊框 */
+  .search-field input {
+    grid-column: 2;
+    text-align: left;
+    font-size: 14px;
+    padding: 8px 0 8px 12px;
+    /* 增加左側padding */
+    border-left: 1px solid #ddd;
+    /* 添加左側分隔線 */
+    position: relative;
+  }
+
+  .search-field input::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    /* 開始位置 */
+    height: 60%;
+    /* 線的長度 */
+    width: 1px;
+    background-color: #eee;
+  }
+
+  /* 清除每個 search-field 原本的樣式 */
+  .search-field {
+    display: contents;
+    border: none;
+    padding: 0;
+  }
+
+  /* 左欄 labels */
+  .search-field label {
+    grid-column: 1;
+    text-align: center;
+    margin: 0;
+    padding: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    /* 確保文字不換行 */
+  }
+
+  /* 右欄 inputs */
+  .search-field input {
+    grid-column: 2;
+    text-align: center;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* 搜尋按鈕置中 */
+  .search-button {
+    position: absolute;
+    /* 改為絕對定位 */
+    right: 15px;
+    /* 距離右側 15px */
+    top: 50%;
+    /* 上方 50% */
+    transform: translateY(-50%);
+    /* 往上移動自身高度的 50% 以達到垂直置中 */
+    width: 40px;
+    height: 40px;
+    background: #FFC107;
+  }
+
+  /* Dropdown 調整 */
+  .dropdown {
+    width: 90vw !important;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 </style>
