@@ -373,7 +373,7 @@
 /* 下拉選單樣式 */
 .dropdown {
     position: absolute;
-    top: 105%;
+    top: 105%;   /* 改為相對於 search-field 底部 */
     left: 0%;
     background: white;
     border-radius: 8px;
@@ -386,6 +386,7 @@
     white-space: nowrap;
 }
 
+/* 當 dropdown 顯示時，固定其位置 */
 .dropdown.active {
     display: block;
 }
