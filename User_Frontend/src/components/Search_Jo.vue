@@ -557,65 +557,6 @@ export default {
     grid-template-columns: 1fr 1fr 1fr;
     /* 三欄等寬 */
     padding: 15px;
-    gap: 12px;
-  }
-
-  /* 清除每個 search-field 原本的樣式 */
-  .search-field {
-    display: contents;
-    border: none;
-    padding: 0;
-  }
-
-  /* 左欄 labels */
-  .search-field label {
-    grid-column: 1;
-    text-align: left;
-    margin: 0;
-    padding: 8px 0;
-    font-size: 14px;
-    white-space: nowrap;
-    /* 確保文字不換行 */
-  }
-
-  /* 右欄 inputs */
-  .search-field input {
-    grid-column: 2;
-    text-align: left;
-    font-size: 14px;
-    padding: 8px 0;
-  }
-
-  /* 搜尋按鈕置中 */
-  .search-button {
-    grid-column: 3;
-    width: 40px;
-    height: 40px;
-    justify-self: center;
-    /* 水平置中 */
-    align-self: center;
-    /* 垂直置中 */
-    background: #FFC107;
-  }
-
-  /* Dropdown 調整 */
-  .dropdown {
-    width: 90vw !important;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-@media (max-width: 640px) {
-  .search-container {
-    padding: 0 10px;
-  }
-
-  .search-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    /* 三欄等寬 */
-    padding: 15px;
     gap: 3px;
     position: relative;
     /* 添加相對定位 */
