@@ -641,8 +641,7 @@ export default {
     margin: 0;
     padding: 8px;
     font-size: 14px;
-    white-space: nowrap;
-    /* 確保文字不換行 */
+    white-space: nowrap;     /* 確保文字不換行 */
   }
 
   /* 右欄 inputs */
@@ -667,22 +666,20 @@ export default {
   /* 當有 dropdown active 時的調整 */
   .search-field.active {
     display: block;
-    grid-column: 1 / -1;
-    /* 橫跨所有列 */
+    grid-column: 1 / -1;     /* 橫跨所有列 */
   }
 
   .search-field.active+.search-field {
-    margin-top: 200px;
-    /* 為 dropdown 預留空間 */
+    margin-top: 200px;     /* 為 dropdown 預留空間 */
   }
 
   /* dropdown 樣式調整 */
   .dropdown {
     position: absolute;
-    width: 100% !important;
+    width: 110% !important;
     max-height: 320px;     /* 限制最大高度 */
     overflow-y: auto;     /* 內容過多時可滾動 */
-    left: 0px;
+    left: -10px;
     margin-top: 8px;
     z-index: 1000;
   }
