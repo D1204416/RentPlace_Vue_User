@@ -232,7 +232,7 @@ h4 {
 }
 
 .facilities h4 {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
   /* font-size: 18px; */
 }
 
