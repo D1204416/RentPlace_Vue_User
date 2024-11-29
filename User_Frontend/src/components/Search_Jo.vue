@@ -550,6 +550,7 @@ export default {
 @media (max-width: 640px) {
   .search-container {
     padding: 0 10px;
+    overflow: visible;  /* 允許 dropdown 顯示 */
   }
 
   .search-bar {
@@ -558,6 +559,7 @@ export default {
     padding: 15px;
     gap: 3px;
     position: relative;     /* 添加相對定位 */
+    overflow: visible;  /* 允許 dropdown 顯示 */
   }
 
    /* 當有 dropdown active 時，調整 search-bar 的布局 */
@@ -671,22 +673,55 @@ export default {
     margin-top: 200px;  /* 為 dropdown 預留空間 */
   }
 
-  /* dropdown 定位 */
+  /* dropdown 樣式調整 */
   .dropdown {
     position: absolute;
     width: calc(100% - 30px) !important;
+    max-height: 320px;  /* 限制最大高度 */
+    overflow-y: auto;   /* 內容過多時可滾動 */
     left: 15px;
     margin-top: 8px;
+    z-index: 1000;
   }
 
-  .search-button {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: #FFC107;
+
+  #date-dropdown {
+    /* max-height: 320px; */
+    overflow-y: auto;
+  }
+
+  /* 調整日曆內部佈局 */
+  .calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;  /* 減少間距 */
+    padding: 0 5px;  /* 減少側邊padding */
+  }
+
+  .calendar-header > div {
+    width: auto;  /* 移除固定寬度 */
+    height: 30px; /* 減少高度 */
+    font-size: 13px;
+  }
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;  /* 減少間距 */
+    padding: 5px;
+  }
+
+  .calendar-day {
+    width: auto;  /* 移除固定寬度 */
+    height: 30px; /* 減少高度 */
+    font-size: 13px;
+  }
+
+
+  /* 調整 checkbox-group 在 dropdown 中的排列 */
+  #district-dropdown .checkbox-group {
+    grid-template-columns: repeat(2, 1fr);  /* 改為兩列 */
+    padding: 10px;
   }
 }
 </style>
