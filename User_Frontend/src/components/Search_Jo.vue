@@ -554,12 +554,48 @@ export default {
 
   .search-bar {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    /* 三欄等寬 */
+    grid-template-columns: 1fr 1fr 1fr;     /* 三欄等寬 */
     padding: 15px;
     gap: 3px;
-    position: relative;
-    /* 添加相對定位 */
+    position: relative;     /* 添加相對定位 */
+  }
+
+   /* 當有 dropdown active 時，調整 search-bar 的布局 */
+   .search-bar:has(.dropdown.active) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 當 dropdown active 時，調整 search-field 的布局 */
+  .search-bar:has(.dropdown.active) .search-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  /* 當有 dropdown active 時，input 和 label 的位置調整 */
+  .search-bar:has(.dropdown.active) .search-field label {
+    grid-column: 1;
+  }
+
+  .search-bar:has(.dropdown.active) .search-field input {
+    grid-column: 2;
+  }
+
+  /* active 的 search-field 樣式 */
+  .search-field:has(.dropdown.active) {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  /* 搜尋按鈕固定在最後一個 */
+  .search-bar:has(.dropdown.active) .search-button {
+    position: static;
+    align-self: flex-end;
+    transform: none;
+    margin-top: 8px;
   }
 
   /* 為右欄添加左邊框 */
@@ -567,10 +603,8 @@ export default {
     grid-column: 2;
     text-align: left;
     font-size: 14px;
-    padding: 8px 0 8px 12px;
-    /* 增加左側padding */
-    border-left: 1px solid #ddd;
-    /* 添加左側分隔線 */
+    padding: 8px 0 8px 12px;     /* 增加左側padding */
+    border-left: 1px solid #ddd;     /* 添加左側分隔線 */
     position: relative;
   }
 
@@ -627,11 +661,32 @@ export default {
     background: #FFC107;
   }
 
-  /* Dropdown 調整 */
+  /* 當有 dropdown active 時的調整 */
+  .search-field.active {
+    display: block;
+    grid-column: 1 / -1;  /* 橫跨所有列 */
+  }
+
+  .search-field.active + .search-field {
+    margin-top: 200px;  /* 為 dropdown 預留空間 */
+  }
+
+  /* dropdown 定位 */
   .dropdown {
-    width: 90vw !important;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
+    width: calc(100% - 30px) !important;
+    left: 15px;
+    margin-top: 8px;
+  }
+
+  .search-button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: #FFC107;
   }
 }
 </style>
