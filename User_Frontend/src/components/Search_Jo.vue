@@ -224,15 +224,51 @@
         this.selectedCapacity = capacity
         this.activeDropdown = null
       },
+      // search() {
+      //   // Emit search event with all selected values
+      //   this.$emit('search', {
+      //     districts: this.selectedDistricts,
+      //     venues: this.selectedVenues,
+      //     date: this.selectedDate,
+      //     capacity: this.selectedCapacity
+      //   })
+      // }
       search() {
-        // Emit search event with all selected values
-        this.$emit('search', {
-          districts: this.selectedDistricts,
-          venues: this.selectedVenues,
-          date: this.selectedDate,
-          capacity: this.selectedCapacity
-        })
-      }
+      // 處理區域選擇
+      const selectedDistrictNames = this.selectedDistricts.map(id => {
+        const district = this.districts.find(d => d.id === id);
+        return district ? district.name : '';
+      }).filter(name => name);
+
+      // 處理場地類型選擇
+      const selectedVenueNames = this.selectedVenues.map(id => {
+        const venue = this.venueTypes.find(v => v.id === id);
+        return venue ? venue.name : '';
+      }).filter(name => name);
+
+      // 組合搜尋條件
+      const searchQuery = {
+        districts: selectedDistrictNames.length ? selectedDistrictNames.join(',') : null,
+        venues: selectedVenueNames.length ? selectedVenueNames.join(',') : null,
+        date: this.selectedDate || null,
+        capacity: this.selectedCapacity || null
+      };
+
+      // 移除空值
+      const cleanQuery = Object.fromEntries(
+        Object.entries(searchQuery).filter(([_, value]) => value != null)
+      );
+
+      // 使用 Vue Router 導航
+      this.$router.push({
+        name: 'cardView',
+        query: cleanQuery
+      }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          throw err;
+        }
+      });
+    }
     },
     mounted() {
       // Close dropdowns when clicking outside
