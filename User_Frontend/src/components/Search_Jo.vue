@@ -418,7 +418,6 @@ export default {
 
 .checkbox-item input[type="checkbox"] {
   width: 16px;
-  height: 16px;
 }
 
 .checkbox-item label {
