@@ -10,7 +10,7 @@ import Card_Jo from '@/components/Card_Jo.vue';
 
   <!-- <Card_Jo /> -->
   <div class="container">
-    <h4 class="search-result">符合您搜尋的條件：{{ filteredRooms.length }}筆</h4>
+    <h4 class="search-result">符合您搜尋條件的場地：{{ filteredRooms.length }}筆</h4>
 
     <!-- 卡片網格 -->
     <div class="room-grid">
