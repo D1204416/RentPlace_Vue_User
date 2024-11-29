@@ -676,7 +676,7 @@ export default {
   /* dropdown 樣式調整 */
   .dropdown {
     position: absolute;
-    width: 110% !important;
+    width: 112% !important;
     max-height: 320px;     /* 限制最大高度 */
     overflow-y: auto;     /* 內容過多時可滾動 */
     left: -10px;
