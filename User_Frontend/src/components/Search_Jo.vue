@@ -547,7 +547,6 @@ export default {
 }
 
 @media (max-width: 640px) {
-
   .search-container {
     padding: 0 10px;
     overflow: visible;
@@ -599,7 +598,7 @@ export default {
   /* 搜尋按鈕固定在最後一個 */
   .search-bar:has(.dropdown.active) .search-button {
     position: static;
-    align-self: flex-end;
+    align-self: center;
     transform: none;
     margin-top: 8px;
   }
@@ -656,14 +655,10 @@ export default {
 
   /* 搜尋按鈕置中 */
   .search-button {
-    position: absolute;
-    /* 改為絕對定位 */
-    right: 15px;
-    /* 距離右側 15px */
-    top: 50%;
-    /* 上方 50% */
-    transform: translateY(-50%);
-    /* 往上移動自身高度的 50% 以達到垂直置中 */
+    position: absolute;     /* 改為絕對定位 */
+    right: 15px;     /* 距離右側 15px */
+    top: 50%;     /* 上方 50% */
+    transform: translateY(-50%);     /* 往上移動自身高度的 50% 以達到垂直置中 */
     width: 40px;
     height: 40px;
     background: #FFC107;
@@ -684,12 +679,10 @@ export default {
   /* dropdown 樣式調整 */
   .dropdown {
     position: absolute;
-    width: calc(100% - 30px) !important;
-    max-height: 320px;
-    /* 限制最大高度 */
-    overflow-y: auto;
-    /* 內容過多時可滾動 */
-    left: 15px;
+    width: 100% !important;
+    max-height: 320px;     /* 限制最大高度 */
+    overflow-y: auto;     /* 內容過多時可滾動 */
+    left: 0px;
     margin-top: 8px;
     z-index: 1000;
   }
