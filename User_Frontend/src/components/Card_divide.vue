@@ -26,7 +26,7 @@ export default {
           id: 1,
           title: '會議室',
           count: 0, // 初始化為 0
-          description: '包含中型與小型會議室、簡報室、聯誼室.....',
+          description: '包含會議室、簡報室、聯誼室.....',
           icon: 'meeting-room.png',
           filterValue: ['會議室','簡報室','聯誼室']  
         },
@@ -34,7 +34,7 @@ export default {
           id: 2,
           title: '活動中心',
           count: 0, // 初始化為 0
-          description: '包含一般禮堂、音樂廳、集會空間、演藝廳.....',
+          description: '包含禮堂、音樂廳、集會空間、演藝廳.....',
           icon: 'theater.png',
           filterValue: ['禮堂','音樂廳','集會空間','演藝廳']
         },
@@ -50,7 +50,7 @@ export default {
           id: 4,
           title: '教室',
           count: 0, // 初始化為 0
-          description: '包含一般教室、多功能教室、電腦教室.....',
+          description: '包含教室、多功能教室、電腦教室.....',
           icon: 'classroom.png',
           filterValue: ['教室','多功能教室','電腦教室']
         }
