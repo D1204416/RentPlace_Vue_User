@@ -234,4 +234,11 @@ const handleLogout = () => {
   --bs-btn-active-bg: #0074a9;
   --bs-btn-active-border-color: #0074a9;
 }
+
+@media (max-width: 359px) {
+    /* 使用 CSS 層疊層級 */
+    html body .m-3 {
+        margin: 0.5rem !important;
+    }
+}
 </style>
