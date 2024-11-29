@@ -28,7 +28,7 @@ export default {
           count: 0, // 初始化為 0
           description: '包含中型與小型會議室、簡報室、聯誼室.....',
           icon: 'meeting-room.png',
-          filterValue: '會議室' 
+          filterValue: ['會議室','簡報室','聯誼室']  
         },
         {
           id: 2,
@@ -36,7 +36,7 @@ export default {
           count: 0, // 初始化為 0
           description: '包含一般禮堂、音樂廳、集會空間、演藝廳.....',
           icon: 'theater.png',
-          filterValue: '活動中心'
+          filterValue: ['禮堂','音樂廳','集會空間','演藝廳']
         },
         {
           id: 3,
@@ -44,7 +44,7 @@ export default {
           count: 0, // 初始化為 0
           description: '包含健身中心、韻律教室、廣場、校園操場.....',
           icon: 'playground.png',
-          filterValue: '運動場地'
+          filterValue: ['運動場地','健身中心','韻律教室','廣場','校園操場']
         },
         {
           id: 4,
@@ -52,7 +52,7 @@ export default {
           count: 0, // 初始化為 0
           description: '包含一般教室、多功能教室、電腦教室.....',
           icon: 'classroom.png',
-          filterValue: '教室'
+          filterValue: ['教室','多功能教室','電腦教室']
         }
       ],
       allVenues: [] // 儲存 API 返回的所有場地數據
@@ -73,12 +73,16 @@ export default {
     updateVenueCounts() {
       // 計算每種場地類型的數量
       this.venues = this.venues.map(venue => {
-        const count = this.allVenues.filter(v => v.venueType === venue.title).length
-        return {
-          ...venue,
-          count: count
-        }
-      })
+      // 計算符合該大類別下所有場地類型的總數
+      const count = this.allVenues.filter(v => 
+        venue.filterValue.some(type => v.venueType.includes(type))
+      ).length;
+      
+      return {
+        ...venue,
+        count: count
+      }
+    })
     },
 
     // 帶query參數跳轉頁面
@@ -87,7 +91,7 @@ export default {
       this.$router.push({
         name: 'cardView',
         query: {
-          venues: venue.filterValue
+          venues: venue.filterValue.join(',')
         }
       }).catch(err => {
         if (err.name !== 'NavigationDuplicated') {
