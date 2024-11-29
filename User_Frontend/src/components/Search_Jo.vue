@@ -298,27 +298,6 @@
     height: 100%; /*讓高度填滿 */
 }
 
-/* 設定各欄位寬度 */
-.district-field {
-    width: 25%;  /* 行政區域較寬 */
-}
-
-.venue-field {
-    width: 25%;  /* 場地類型次之 */
-}
-
-.date-field {
-    width: 25%;  /* 日期 */
-}h
-
-.capacity-field {
-    width: 25%;  /* 容納人數 */
-}
-
-.search-button {
-  width: 10%;
-}
-
 /* 讓 hover 區域跟 search-bar 一致 */
 .search-field:hover {
     border-right: 1px solid transparent;
