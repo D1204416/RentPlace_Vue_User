@@ -152,6 +152,7 @@
         venueTypes: [
           { id: 'meeting', name: '會議室' },
           { id: 'activity', name: '活動中心' },
+          { id: 'playground', name: '運動場地' },
           { id: 'classroom', name: '教室' }
         ],
         capacityRanges: [

@@ -7,7 +7,7 @@ import Card_Jo from '@/components/Card_Jo.vue';
 <template>
 
   <Search />
-  
+
   <!-- <Card_Jo /> -->
   <div class="container">
     <h4 class="search-result">符合您搜尋的條件：{{ filteredRooms.length }}筆</h4>
@@ -76,10 +76,9 @@ export default {
     async fetchVenues() {
       try {
         const response = await axios.get('http://localhost:8080/api/venues')
-        console.log('API Response:', response.data) // 檢查 API 返回的數據結構
         this.rooms = response.data
         await this.fetchReservations()
-        this.applyFilters()
+        this.applyFilters() // 確保在獲取數據後立即應用過濾
       } catch (error) {
         console.error('Failed to fetch venues:', error)
       }
@@ -104,17 +103,17 @@ export default {
     isVenueAvailable(venueId, selectedDate, selectedTimePeriod) {
       // 如果沒有選擇日期，返回true
       if (!selectedDate) return true
-      
+
       // 獲取該場地的所有預約
       const venueReservations = this.reservations[venueId] || []
-      
+
       // 檢查是否有任何預約在選定的日期和時段是"不可預約"狀態
       return !venueReservations.some(reservation => {
         const isSelectedDate = reservation.reservationDate === selectedDate
-        const isSelectedTimePeriod = selectedTimePeriod ? 
+        const isSelectedTimePeriod = selectedTimePeriod ?
           reservation.timePeriodId === parseInt(selectedTimePeriod) : true
         const isUnavailable = reservation.statusInfo.status === "不可預約"
-        
+
         return isSelectedDate && isSelectedTimePeriod && isUnavailable
       })
     },
@@ -124,30 +123,44 @@ export default {
       const query = this.$route.query   // 從 URL 取得參數
 
       // 根據 URL 查詢參數過濾
-      if (query['行政區域']) {
+
+      // 處理區域
+      if (query.districts) {
+        const selectedDistricts = query.districts.split(',')
         filtered = filtered.filter(room =>
-          room.regionName === query['行政區域']
+          selectedDistricts.includes(room.regionName)
         )
       }
 
-      if (query['場地類型']) {
-        filtered = filtered.filter(room =>
-          room.venueType === query['場地類型']
+      // 處理場地類型
+      if (query.venues) {
+      const selectedVenues = query.venues.split(',')
+      filtered = filtered.filter(room =>
+        // 只要場地類型包含任何一個關鍵字就符合條件
+        selectedVenues.some(keyword => 
+          room.venueType.includes(keyword)
         )
-      }
+      )
+    }
 
-      if (query['容納人數']) {
-        // 假設容納人數的選項格式是 "10人"，需要處理字串轉數字
-        const capacity = parseInt(query['容納人數'])
+      // 處理容納人數
+      if (query.capacity) {
+        const capacityRange = query.capacity.split('~')
+        const minCapacity = parseInt(capacityRange[0])
+        const maxCapacity = capacityRange[1] ?
+          (capacityRange[1].includes('以上') ? Infinity : parseInt(capacityRange[1])) :
+          minCapacity
+
         filtered = filtered.filter(room =>
-          room.capacity >= capacity
+          room.capacity >= minCapacity &&
+          (maxCapacity === Infinity ? true : room.capacity <= maxCapacity)
         )
       }
 
       // 日期和時段過濾
-      if (query['預約日期'] || query['時段']) {
+      if (query.date) {
         filtered = filtered.filter(room => 
-          this.isVenueAvailable(room.id, query['預約日期'], query['時段'])
+          this.isVenueAvailable(room.id, query.date)
         )
       }
 
@@ -170,13 +183,14 @@ export default {
   },
 
   watch: {
-    // 監聽 route 變化，當 URL 參數改變時重新過濾
     '$route.query': {
       handler(newQuery) {
+        console.log('Route query changed:', newQuery) // 用於調試
         this.applyFilters()
       },
-      deep: true
-    },
+      deep: true,
+      immediate: true
+    }
   },
 
   async created() {

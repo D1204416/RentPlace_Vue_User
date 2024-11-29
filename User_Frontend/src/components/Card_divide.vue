@@ -21,36 +21,38 @@ export default {
   name: 'card_divide',
   data() {
     return {
-      // venueTypes: ['會議室', '活動中心', '運動場所', '教室'],
-      // capacities: ['10人以下', '11-30人', '31-50人', '50人以上'],
       venues: [
         {
           id: 1,
           title: '會議室',
           count: 0, // 初始化為 0
           description: '包含中型與小型會議室、簡報室、聯誼室.....',
-          icon: 'meeting-room.png'
+          icon: 'meeting-room.png',
+          filterValue: '會議室' 
         },
         {
           id: 2,
           title: '活動中心',
           count: 0, // 初始化為 0
           description: '包含一般禮堂、音樂廳、集會空間、演藝廳.....',
-          icon: 'theater.png'
+          icon: 'theater.png',
+          filterValue: '活動中心'
         },
         {
           id: 3,
-          title: '運動場所',
+          title: '運動場地',
           count: 0, // 初始化為 0
           description: '包含健身中心、韻律教室、廣場、校園操場.....',
-          icon: 'playground.png'
+          icon: 'playground.png',
+          filterValue: '運動場地'
         },
         {
           id: 4,
           title: '教室',
           count: 0, // 初始化為 0
           description: '包含一般教室、多功能教室、電腦教室.....',
-          icon: 'classroom.png'
+          icon: 'classroom.png',
+          filterValue: '教室'
         }
       ],
       allVenues: [] // 儲存 API 返回的所有場地數據
@@ -81,12 +83,17 @@ export default {
 
     // 帶query參數跳轉頁面
     handleVenueClick(venue) {
+      // 使用與 Search 組件相同的參數格式
       this.$router.push({
         name: 'cardView',
         query: {
-          '場地類型': venue.title
+          venues: venue.filterValue
         }
-      });
+      }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          throw err
+        }
+      })
     }
   },
 
