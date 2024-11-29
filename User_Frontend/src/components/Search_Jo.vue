@@ -591,8 +591,8 @@ export default {
   /* active 的 search-field 樣式 */
   .search-field:has(.dropdown.active) {
     background-color: #f9f9f9;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 50px;
+    padding: 8px;
   }
 
   /* 搜尋按鈕固定在最後一個 */
