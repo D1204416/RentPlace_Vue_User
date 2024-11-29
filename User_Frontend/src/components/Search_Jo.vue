@@ -2,7 +2,9 @@
     <div class="search-container">
       <div class="search-bar">
         <!-- District Field -->
-        <div class="search-field">
+        <div class="search-field district-field" :class="{ 'hide-border': hoveredIndex === 1 }"
+         @mouseenter="hoveredIndex = 0"
+         @mouseleave="hoveredIndex = null">
           <label>行政區域</label>
           <input type="text" :placeholder="districtPlaceholder" readonly @click="toggleDropdown('district')">
           <div class="dropdown" id="district-dropdown" :class="{ active: activeDropdown === 'district' }">
@@ -21,7 +23,10 @@
         </div>
   
         <!-- Venue Type Field -->
-        <div class="search-field">
+        <div class="search-field venue-field"
+         :class="{ 'hide-border': hoveredIndex === 2 }"
+         @mouseenter="hoveredIndex = 1"
+         @mouseleave="hoveredIndex = null">
           <label>場地類型</label>
           <input type="text" :placeholder="venuePlaceholder" readonly @click="toggleDropdown('venue')">
           <div class="dropdown" id="venue-dropdown" :class="{ active: activeDropdown === 'venue' }">
@@ -40,7 +45,10 @@
         </div>
   
         <!-- Date Field -->
-        <div class="search-field">
+        <div class="search-field date-field"
+         :class="{ 'hide-border': hoveredIndex === 3 }"
+         @mouseenter="hoveredIndex = 2"
+         @mouseleave="hoveredIndex = null">
           <label>預約日期</label>
           <input 
             type="text" 
@@ -89,7 +97,9 @@
         </div>
   
         <!-- Capacity Field -->
-        <div class="search-field">
+        <div class="search-field capacity-field"
+         @mouseenter="hoveredIndex = 3"
+         @mouseleave="hoveredIndex = null">
           <label>容納人數</label>
           <input 
             type="text" 
@@ -129,6 +139,7 @@
     name: 'Search',
     data() {
       return {
+        hoveredIndex: null,
         activeDropdown: null,
         selectedDistricts: [],
         selectedVenues: [],
@@ -272,6 +283,7 @@
     border-radius: 50px;
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* 添加這行 */
 }
 
 /* 搜尋欄位樣式 */
@@ -283,6 +295,48 @@
     border-right: 1px solid #eee;
     position: relative;
     align-items: center;
+    height: 100%; /*讓高度填滿 */
+}
+
+/* 設定各欄位寬度 */
+.district-field {
+    width: 25%;  /* 行政區域較寬 */
+}
+
+.venue-field {
+    width: 25%;  /* 場地類型次之 */
+}
+
+.date-field {
+    width: 25%;  /* 日期 */
+}h
+
+.capacity-field {
+    width: 25%;  /* 容納人數 */
+}
+
+.search-button {
+  width: 10%;
+}
+
+/* 讓 hover 區域跟 search-bar 一致 */
+.search-field:hover {
+    border-right: 1px solid transparent;
+    border-radius: 50px;
+    outline: 2px solid #019ee7;
+    margin: -10px 0; /*抵消 search-bar 的 padding*/
+    padding: 20px 20px; /*增加 padding 來維持內容位置*/
+}
+
+/* 特別調整最左邊的 district-field */
+.district-field:hover {
+    margin: -10px 0 -10px -10px; /* 左邊 margin 設為 -10px，對齊 search-bar */
+    padding: 20px 20px 20px 30px; /* 左邊 padding 增加 10px 來補償 margin */
+}
+
+/* 當下一個欄位被 hover 時隱藏當前欄位的右邊框 */
+.search-field.hide-border {
+    border-right: 1px solid transparent;
 }
 
 .search-field:last-of-type {
