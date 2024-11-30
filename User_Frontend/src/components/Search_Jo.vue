@@ -359,13 +359,14 @@ export default {
   background: #ffc107;
   border: none;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: 8px;
+  margin-left: 4px;
 }
 
 .search-icon {
