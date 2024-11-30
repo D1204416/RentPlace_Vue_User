@@ -2,6 +2,7 @@
 // import Search from '../components/Search.vue'
 import Search from '../components/Search_Jo.vue'
 import Card_Jo from '@/components/Card_Jo.vue';
+import Pagination from'../components/pagination.vue';
 </script>
 
 <template>
@@ -30,10 +31,12 @@ import Card_Jo from '@/components/Card_Jo.vue';
 
     <!-- 分頁 -->
     <div class="pagination">
-      <button v-for="page in 10" :key="page" class="page-button" :class="{ active: currentPage === page }"
+      <!-- <button v-for="page in 10" :key="page" class="page-button" :class="{ active: currentPage === page }"
         @click="currentPage = page">
         {{ page }}
-      </button>
+      </button> -->
+
+      <Pagination :total-pages="10" @update:page="onPageChange" />
     </div>
   </div>
 
@@ -41,6 +44,11 @@ import Card_Jo from '@/components/Card_Jo.vue';
 
 <script>
 import axios from 'axios'
+
+const onPageChange = (page) => {
+  console.log('Current page:', page)
+  // 處理頁碼變化
+}
 
 export default {
   name: 'Card',
@@ -265,18 +273,6 @@ export default {
   margin-top: 30px;
 }
 
-.page-button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: #fff;
-  cursor: pointer;
-}
-
-.page-button.active {
-  background: #333;
-  color: #fff;
-  border-color: #333;
-}
 
 /* 響應式設計 */
 @media (min-width: 640px) {
