@@ -46,18 +46,29 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   totalPages: {
     type: Number,
-    default: 10
+    required: true
+  },
+  currentPage: {
+    type: Number,
+    default: 1
   }
 })
 
 const emit = defineEmits(['update:page'])
 
-const currentPage = ref(1)
+// 監聽外部currentPage的變化
+watch(() => props.currentPage, (newPage) => {
+  if (newPage !== currentPage.value) {
+    currentPage.value = newPage
+  }
+})
+
+const currentPage = ref(props.currentPage)
 
 const displayedPages = computed(() => {
   const pages = []
