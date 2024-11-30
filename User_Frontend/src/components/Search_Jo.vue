@@ -131,7 +131,6 @@ export default {
         { id: 'longjing', name: '龍井區' },
         { id: 'wufeng', name: '霧峰區' },
         { id: 'taiping', name: '太平區' },
-        { id: 'dali', name: '大里區' },
         { id: 'heping', name: '和平區' }
       ],
       venueTypes: [
@@ -151,6 +150,17 @@ export default {
       weekDays: ['日', '一', '二', '三', '四', '五', '六']
     }
   },
+
+  watch: {
+    // 監聽路由變化
+    '$route': {
+      immediate: true,
+      handler(to) {
+        this.initializeFromQuery(to.query);
+      }
+    }
+  },
+
   computed: {
     districtPlaceholder() {
       return this.selectedDistricts.length ? `(${this.selectedDistricts.length})` : '請選擇'
@@ -192,6 +202,7 @@ export default {
       return days
     }
   },
+
   methods: {
     toggleDropdown(type) {
       this.activeDropdown = this.activeDropdown === type ? null : type
@@ -210,6 +221,40 @@ export default {
       this.selectedCapacity = capacity
       this.activeDropdown = null
     },
+
+    // 初始化搜尋條件
+    initializeFromQuery(query) {
+      // 處理區域
+      if (query.districts) {
+        const districtNames = query.districts.split(',');
+        this.selectedDistricts = this.districts
+          .filter(d => districtNames.includes(d.name))
+          .map(d => d.id);
+      } else {
+        this.selectedDistricts = [];
+      }
+
+      // 處理場地類型
+      if (query.venues) {
+        const venueDetailTypes = query.venues.split(',');
+        this.selectedVenues = this.venueTypes
+          .filter(v => v.detailTypes.some(dt => venueDetailTypes.includes(dt)))
+          .map(v => v.id);
+      } else {
+        this.selectedVenues = [];
+      }
+
+      // 處理日期
+      this.selectedDate = query.date || '';
+      if (query.date) {
+        const [year, month, day] = query.date.split('-');
+        this.currentDate = new Date(year, parseInt(month) - 1, day);
+      }
+
+      // 處理容納人數
+      this.selectedCapacity = query.capacity || '';
+    },
+
     search() {
       // 處理區域選擇
       const selectedDistrictNames = this.selectedDistricts.map(id => {
@@ -236,8 +281,8 @@ export default {
         Object.entries(searchQuery).filter(([_, value]) => value != null)
       );
 
-      // 使用 Vue Router 導航
-      this.$router.push({
+       // 使用 Vue Router 導航
+       this.$router.push({
         name: 'cardView',
         query: cleanQuery
       }).catch(err => {
@@ -250,12 +295,16 @@ export default {
     clearDate() {
       this.selectedDate = '';
       this.activeDropdown = null;
+      this.search(); // 更新 URL
     },
 
     clearCapacity() {
       this.selectedCapacity = '';
       this.activeDropdown = null;
+      this.search(); // 更新 URL
     },
+
+
   },
 
   mounted() {
@@ -266,6 +315,7 @@ export default {
       }
     })
   },
+
   beforeDestroy() {
     document.removeEventListener('click', this.closeDropdowns)
   }
