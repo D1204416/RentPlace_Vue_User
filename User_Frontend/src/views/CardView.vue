@@ -224,7 +224,7 @@ export default {
 }
 
 .room-card {
-  background: #fff;
+  background: rgb(249, 249, 249);
   border: none;
 }
 

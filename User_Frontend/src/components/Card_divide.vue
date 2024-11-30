@@ -136,7 +136,7 @@ export default {
   border-radius: 10px;
   text-align: center;
   transition: transform 0.3s;
-  /* box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15); */
+  background-color: rgb(249, 249, 249);
 
 }
 

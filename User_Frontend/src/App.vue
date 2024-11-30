@@ -84,12 +84,14 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
+
 }
 
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* 確保內容至少佔滿視窗高度 */
+  background-color: rgb(249, 249, 249);
 }
 
 @media (max-width: 560px) {
