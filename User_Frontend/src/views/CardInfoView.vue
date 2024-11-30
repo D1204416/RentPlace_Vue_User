@@ -209,7 +209,7 @@ h4 {
 
 .info-grid {
   display: grid;
-  gap: 15px;
+  gap: 10px;
 }
 
 .info-item {
@@ -224,7 +224,7 @@ h4 {
 }
 
 .info-value {
-  color: #666;
+  color: #3c3c3c;
 }
 
 .facilities {
@@ -232,7 +232,7 @@ h4 {
 }
 
 .facilities h4 {
-  margin-bottom: 18px;
+  margin-bottom: 15px;
   /* font-size: 18px; */
 }
 
@@ -248,7 +248,7 @@ h4 {
   border-radius: 20px;
   color: #495057;
   font-size: 16px;
-  border: 1px solid #e9ecef;
+  border: 1px solid #aeaeae;
   display: flex;
   align-items: center;
   gap: 5px;
