@@ -35,7 +35,10 @@
       <div class="search-field date-field" :class="{ 'hide-border': hoveredIndex === 3 }" @mouseenter="hoveredIndex = 2"
         @mouseleave="hoveredIndex = null">
         <label>預約日期</label>
-        <input type="text" :value="selectedDate" placeholder="請選擇" readonly @click="toggleDropdown('date')">
+        <div class="input-with-clear">
+          <input type="text" :value="selectedDate" placeholder="請選擇" readonly @click="toggleDropdown('date')">
+          <button v-if="selectedDate" class="clear-button" @click.stop="clearDate">×</button>
+        </div>
         <div class="dropdown" id="date-dropdown" :class="{ active: activeDropdown === 'date' }">
           <div class="calendar-nav">
             <div class="calendar-nav-arrows">
@@ -65,7 +68,10 @@
       <!-- Capacity Field -->
       <div class="search-field capacity-field" @mouseenter="hoveredIndex = 3" @mouseleave="hoveredIndex = null">
         <label>容納人數</label>
-        <input type="text" :value="selectedCapacity" placeholder="請選擇" readonly @click="toggleDropdown('capacity')">
+        <div class="input-with-clear">
+          <input type="text" :value="selectedCapacity" placeholder="請選擇" readonly @click="toggleDropdown('capacity')">
+          <button v-if="selectedCapacity" class="clear-button" @click.stop="clearCapacity">×</button>
+        </div>
         <div class="dropdown" id="capacity-dropdown" :class="{ active: activeDropdown === 'capacity' }">
           <div class="capacity-buttons">
             <button v-for="capacity in capacityRanges" :key="capacity" type="button"
@@ -131,7 +137,7 @@ export default {
       venueTypes: [
         { id: 'meeting', name: '會議室', detailTypes: ['會議室', '簡報室', '聯誼室'] },
         { id: 'activity', name: '活動中心', detailTypes: ['禮堂', '音樂廳', '集會空間', '演藝廳'] },
-        { id: 'playground', name: '運動場地', detailTypes: ['運動場地','健身中心', '韻律教室', '廣場', '校園操場'] },
+        { id: 'playground', name: '運動場地', detailTypes: ['運動場地', '健身中心', '韻律教室', '廣場', '校園操場'] },
         { id: 'classroom', name: '教室', detailTypes: ['教室', '多功能教室', '電腦教室'] }
       ],
       capacityRanges: [
@@ -217,16 +223,16 @@ export default {
         return venue ? venue.detailTypes : [];
       }).flat();
 
-       // 組合搜尋條件
-       const searchQuery = {
+      // 組合搜尋條件
+      const searchQuery = {
         districts: selectedDistrictNames.length ? selectedDistrictNames.join(',') : null,
         venues: selectedVenueTypes.length ? selectedVenueTypes.join(',') : null,
         date: this.selectedDate || null,
         capacity: this.selectedCapacity || null
       };
 
-        // 移除空值
-        const cleanQuery = Object.fromEntries(
+      // 移除空值
+      const cleanQuery = Object.fromEntries(
         Object.entries(searchQuery).filter(([_, value]) => value != null)
       );
 
@@ -239,8 +245,19 @@ export default {
           throw err;
         }
       });
-    }
+    },
+
+    clearDate() {
+      this.selectedDate = '';
+      this.activeDropdown = null;
+    },
+
+    clearCapacity() {
+      this.selectedCapacity = '';
+      this.activeDropdown = null;
+    },
   },
+
   mounted() {
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
@@ -262,7 +279,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  
+
 }
 
 /* 搜尋容器樣式 */
@@ -271,7 +288,7 @@ export default {
   margin: 20px auto;
   padding: 0 20px;
   position: relative;
-  
+
 }
 
 .search-bar {
@@ -577,6 +594,28 @@ export default {
   cursor: not-allowed;
 }
 
+/* 取消選擇 */
+.input-with-clear {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.clear-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+
+.clear-button:hover {
+  color: #666;
+}
+
 @media (max-width: 750px) {
   .search-container {
     padding: 0 10px;
@@ -672,7 +711,8 @@ export default {
     margin: 0;
     padding: 8px;
     font-size: 14px;
-    white-space: nowrap;     /* 確保文字不換行 */
+    white-space: nowrap;
+    /* 確保文字不換行 */
   }
 
   /* 右欄 inputs */
@@ -685,10 +725,14 @@ export default {
 
   /* 搜尋按鈕置中 */
   .search-button {
-    position: absolute;     /* 改為絕對定位 */
-    right: 20px;     /* 距離右側 15px */
-    top: 50%;     /* 上方 50% */
-    transform: translateY(-50%);     /* 往上移動自身高度的 50% 以達到垂直置中 */
+    position: absolute;
+    /* 改為絕對定位 */
+    right: 20px;
+    /* 距離右側 15px */
+    top: 50%;
+    /* 上方 50% */
+    transform: translateY(-50%);
+    /* 往上移動自身高度的 50% 以達到垂直置中 */
     width: 50px;
     height: 50px;
     background: #FFC107;
@@ -697,19 +741,23 @@ export default {
   /* 當有 dropdown active 時的調整 */
   .search-field.active {
     display: block;
-    grid-column: 1 / -1;     /* 橫跨所有列 */
+    grid-column: 1 / -1;
+    /* 橫跨所有列 */
   }
 
   .search-field.active+.search-field {
-    margin-top: 200px;     /* 為 dropdown 預留空間 */
+    margin-top: 200px;
+    /* 為 dropdown 預留空間 */
   }
 
   /* dropdown 樣式調整 */
   .dropdown {
     position: absolute;
     width: 112% !important;
-    max-height: 320px;     /* 限制最大高度 */
-    overflow-y: auto;     /* 內容過多時可滾動 */
+    max-height: 320px;
+    /* 限制最大高度 */
+    overflow-y: auto;
+    /* 內容過多時可滾動 */
     left: -10px;
     margin-top: 8px;
     z-index: 1000;
