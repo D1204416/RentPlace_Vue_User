@@ -335,7 +335,7 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .search-icon {
@@ -421,7 +421,7 @@ export default {
 }
 
 .checkbox-item label {
-  font-size: 15px;
+  font-size: 17px;
   margin: 0;
   cursor: pointer;
 }
@@ -434,7 +434,7 @@ export default {
 }
 
 .capacity-buttons button {
-  font-size: 15px;
+  font-size: 17px;
   width: 100%;
   padding: 2px 14px;
   border: 1px solid #ffffff;
@@ -546,7 +546,7 @@ export default {
   cursor: not-allowed;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 750px) {
   .search-container {
     padding: 0 10px;
     overflow: visible;
@@ -655,11 +655,11 @@ export default {
   /* 搜尋按鈕置中 */
   .search-button {
     position: absolute;     /* 改為絕對定位 */
-    right: 15px;     /* 距離右側 15px */
+    right: 20px;     /* 距離右側 15px */
     top: 50%;     /* 上方 50% */
     transform: translateY(-50%);     /* 往上移動自身高度的 50% 以達到垂直置中 */
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background: #FFC107;
   }
 
@@ -730,6 +730,12 @@ export default {
     grid-template-columns: repeat(2, 1fr);
     /* 改為兩列 */
     padding: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .search-field input {
+    font-size: 12px;
   }
 }
 </style>
