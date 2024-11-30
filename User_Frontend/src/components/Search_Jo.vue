@@ -111,7 +111,22 @@ export default {
         { id: 'fengyuan', name: '豐原區' },
         { id: 'dongshi', name: '東勢區' },
         { id: 'dali', name: '大里區' },
-        { id: 'qingshui', name: '清水區' }
+        { id: 'qingshui', name: '清水區' },
+        { id: 'shalu', name: '沙鹿區' },
+        { id: 'wuqi', name: '梧棲區' },
+        { id: 'houli', name: '后里區' },
+        { id: 'shengang', name: '神岡區' },
+        { id: 'tanzi', name: '潭子區' },
+        { id: 'daya', name: '大雅區' },
+        { id: 'xinshe', name: '新社區' },
+        { id: 'shigang', name: '石岡區' },
+        { id: 'waipu', name: '外埔區' },
+        { id: 'daan', name: '大安區' },
+        { id: 'longjing', name: '龍井區' },
+        { id: 'wufeng', name: '霧峰區' },
+        { id: 'taiping', name: '太平區' },
+        { id: 'dali', name: '大里區' },
+        { id: 'heping', name: '和平區' }
       ],
       venueTypes: [
         { id: 'meeting', name: '會議室', detailTypes: ['會議室', '簡報室', '聯誼室'] },
