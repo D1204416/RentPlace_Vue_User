@@ -174,8 +174,14 @@ export default {
     canGoToPrevMonth() {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
-      const prevMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1)
-      return prevMonth.getMonth() === today.getMonth() && prevMonth.getFullYear() === today.getFullYear()
+      // const prevMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1)
+      // return prevMonth.getMonth() === today.getMonth() && prevMonth.getFullYear() === today.getFullYear()
+       
+      // 計算當前顯示月份的第一天
+       const firstDayOfCurrentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1)
+      
+      // 如果當前顯示月份的第一天早於今天，則不能再往前
+      return firstDayOfCurrentMonth > today
     },
     calendarDays() {
       const days = []
