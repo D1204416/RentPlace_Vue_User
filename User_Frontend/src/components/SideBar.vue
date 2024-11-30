@@ -4,7 +4,7 @@
 <template>
 
   <!-- navbackground -> background-image: url('img/navBar_bg.png'); -->
-  <div style="background-color: #FFFFFF; height: 80px; border-radius: 0px 0px 0px 70px;">
+  <div style="background-color: rgb(249, 249, 249); height: 80px; border-radius: 0px 0px 0px 70px;">
 
     <nav class="navbar" aria-label="Light offcanvas navbar">
 
@@ -220,7 +220,7 @@ const handleLogout = () => {
 }
 
 .btn-outline-primary {
-  --bs-btn-border-color: #ffffff;
+  --bs-btn-border-color: rgb(249, 249, 249);
   color: #000000;
   --bs-btn-hover-bg: #0074a9;
   --bs-btn-active-bg: #0074a9;

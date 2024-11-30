@@ -234,6 +234,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
 }
 
 /* 搜尋容器樣式 */
@@ -242,12 +243,13 @@ export default {
   margin: 20px auto;
   padding: 0 20px;
   position: relative;
+  
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  background: white;
+  background: rgb(249, 249, 249);
   border-radius: 50px;
   padding: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -317,7 +319,7 @@ export default {
 }
 
 .search-field input::placeholder {
-  color: #ccc;
+  color: #afafaf;
 }
 
 .search-field input:hover {
