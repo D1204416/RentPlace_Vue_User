@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>QR Code 掃描器</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .valid {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .invalid {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="reader"></div>
+  <div id="result"></div>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      try {
+        // 解析 QR Code 內容
+        const data = JSON.parse(decodedText);
+        const expiryTime = new Date(data.expiry_time);
+        const now = new Date();
+
+        // 顯示結果
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+
+        if (now < expiryTime) {
+          resultDiv.className = 'valid';
+          resultDiv.innerHTML = `
+                        <h3>掃描成功！</h3>
+                        <p>訂單編號：${data.content.order_id}</p>
+                        <p>有效期限：${expiryTime.toLocaleString()}</p>
+                    `;
+        } else {
+          resultDiv.className = 'invalid';
+          resultDiv.innerHTML = `
+                        <h3>QR Code 已過期</h3>
+                        <p>過期時間：${expiryTime.toLocaleString()}</p>
+                    `;
+        }
+      } catch (error) {
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'invalid';
+        resultDiv.innerHTML = '<h3>無效的 QR Code 格式</h3>';
+      }
+    }
+
+    // 初始化掃描器
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader",
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+      }
+    );
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+
+</html>
