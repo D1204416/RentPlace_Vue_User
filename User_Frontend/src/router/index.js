@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import CardView from '../views/CardView.vue'
 import CardInfoView from '../views/CardInfoView.vue'
+import BookingView from '../views/BookingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,6 +77,11 @@ const router = createRouter({
           }
         ]
       }
+    },
+    {
+      path: '/booking',
+      name: 'bookingView',
+      component: BookingView,
     }
 
   ]
