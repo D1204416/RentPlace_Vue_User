@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import CardView from '../views/CardView.vue'
 import CardInfoView from '../views/CardInfoView.vue'
-import BookingView from '../views/BookingView.vue'
+import BookingFinishView from '../views/BookingFinishView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,9 +79,30 @@ const router = createRouter({
       }
     },
     {
-      path: '/booking',
-      name: 'bookingView',
-      component: BookingView,
+      path: '/bookingFinish',
+      name: 'bookingFinishView',
+      component: BookingFinishView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
+            path: '/card'
+          },
+          {
+            text: '詳細資訊',
+            path: '/cardInfo'
+          },
+          {
+            text: '預約流程',
+            path: '/cardInfo'
+          }
+
+        ]
+      }
     }
 
   ]

@@ -4,7 +4,6 @@ import Search from '../components/Search.vue'
 </script>
 
 <template>
-
   <Search />
   <div class="container">
     <!-- 添加載入中狀態 -->
