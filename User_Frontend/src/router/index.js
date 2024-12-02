@@ -5,6 +5,8 @@ import RegisterView from '../views/RegisterView.vue'
 import CardView from '../views/CardView.vue'
 import CardInfoView from '../views/CardInfoView.vue'
 import BookingDateView from '@/views/BookingDateView.vue'
+import BookingFormView from '../views/BookingFormView.vue'
+import BookingPaymentView from '../views/BookingPaymentView.vue'
 import BookingFinishView from '../views/BookingFinishView.vue'
 
 const router = createRouter({
@@ -83,8 +85,80 @@ const router = createRouter({
     {
       path: '/bookingDate/:id',
       name: 'BookingDateView',
-      component: BookingDateView
+      component: BookingDateView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
+            path: '/card'
+          },
+          {
+            text: '詳細資訊',
+            path: '/cardInfo'
+          },
+          {
+            text: '預約流程',
+            path: '/bookingDate'
+          }
+        ]
+      }
     },
+    {
+      path: '/bookingForm',
+      name: 'BookingFormView',
+      component: BookingFormView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
+            path: '/card'
+          },
+          {
+            text: '詳細資訊',
+            path: '/cardInfo'
+          },
+          {
+            text: '預約流程',
+            path: '/bookingForm'
+          }
+
+        ]
+      }
+    },
+     {
+       path: '/bookingPayment',
+       name: 'BookingPaymentView',
+       component: BookingPaymentView,
+       meta: {
+         breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '場地資訊',
+             path: '/card'
+          },
+           {
+             text: '詳細資訊',
+             path: '/cardInfo'
+           },
+          {
+             text: '預約流程',
+             path: '/bookingPayment'
+           }
+
+         ]
+      }
+     },
     {
       path: '/bookingFinish',
       name: 'bookingFinishView',
@@ -105,7 +179,7 @@ const router = createRouter({
           },
           {
             text: '預約流程',
-            path: '/cardInfo'
+            path: '/bookingFinish'
           }
 
         ]
