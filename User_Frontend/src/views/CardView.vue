@@ -1,15 +1,12 @@
 <script setup>
-// import Search from '../components/Search.vue'
-import Search from '../components/Search_Jo.vue'
-import Card_Jo from '@/components/Card_Jo.vue';
-import Pagination from'../components/pagination.vue';
+import Search from '../components/Search.vue'
+import Pagination from'../components/Pagination.vue';
 </script>
 
 <template>
 
   <Search />
 
-  <!-- <Card_Jo /> -->
   <div class="container">
     <h4 class="search-result">符合您搜尋條件的場地：{{ filteredRooms.length }}筆</h4>
 
