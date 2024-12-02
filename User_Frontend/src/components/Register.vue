@@ -385,7 +385,7 @@ export default {
 }
 
 body {
-  background-color: #f9f9f9;
+  background-color: rgb(249, 249, 249);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -394,7 +394,7 @@ body {
 }
 
 .container {
-  background: #ffffff;
+  background: rgb(249, 249, 249);
   padding: 40px;
   border-radius: 8px;
   width: 100%;
