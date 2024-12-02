@@ -2,6 +2,7 @@
 // import Search from '../components/Search.vue'
 import Search from '../components/Search_Jo.vue'
 import Card_Jo from '@/components/Card_Jo.vue';
+import Pagination from'../components/pagination.vue';
 </script>
 
 <template>
@@ -14,7 +15,7 @@ import Card_Jo from '@/components/Card_Jo.vue';
 
     <!-- 卡片網格 -->
     <div class="room-grid">
-      <div v-for="room in filteredRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
+      <div v-for="room in paginatedRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
         <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
         <div class="card-content">
           <h5 class="venue-name">{{ room.placeName }}</h5>
@@ -29,11 +30,12 @@ import Card_Jo from '@/components/Card_Jo.vue';
     </div>
 
     <!-- 分頁 -->
-    <div class="pagination">
-      <button v-for="page in 10" :key="page" class="page-button" :class="{ active: currentPage === page }"
-        @click="currentPage = page">
-        {{ page }}
-      </button>
+    <div class="pagination" v-if="totalPages > 1">
+      <Pagination 
+        :total-pages="totalPages" 
+        :current-page="currentPage"
+        @update:page="handlePageChange" 
+      />
     </div>
   </div>
 
@@ -41,6 +43,11 @@ import Card_Jo from '@/components/Card_Jo.vue';
 
 <script>
 import axios from 'axios'
+
+// const onPageChange = (page) => {
+//   console.log('Current page:', page)
+//   // 處理頁碼變化
+// }
 
 export default {
   name: 'Card',
@@ -50,7 +57,20 @@ export default {
       rooms: [],
       filteredRooms: [],
       currentPage: 1,
+      itemsPerPage: 12,
       reservations: {} // 用來存儲每個場地的預約資訊
+    }
+  },
+
+  computed: {
+    totalPages() {
+      return Math.ceil(this.filteredRooms.length / this.itemsPerPage)
+    },
+    
+    paginatedRooms() {
+      const start = (this.currentPage - 1) * this.itemsPerPage
+      const end = start + this.itemsPerPage
+      return this.filteredRooms.slice(start, end)
     }
   },
 
@@ -180,12 +200,22 @@ export default {
         console.error('Room ID is missing:', room);
       }
     },
+
+    handlePageChange(page) {
+      this.currentPage = page
+      // 可以添加滾動到頂部的邏輯
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    },
   },
 
   watch: {
     '$route.query': {
       handler(newQuery) {
         console.log('Route query changed:', newQuery) // 用於調試
+        this.currentPage = 1 // 當搜尋條件改變時重置到第一頁
         this.applyFilters()
       },
       deep: true,
@@ -220,7 +250,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-
 }
 
 .room-card {
@@ -265,18 +294,6 @@ export default {
   margin-top: 30px;
 }
 
-.page-button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: #fff;
-  cursor: pointer;
-}
-
-.page-button.active {
-  background: #333;
-  color: #fff;
-  border-color: #333;
-}
 
 /* 響應式設計 */
 @media (min-width: 640px) {
