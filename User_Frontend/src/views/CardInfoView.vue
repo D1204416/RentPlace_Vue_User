@@ -119,7 +119,7 @@ export default {
     goToBooking() {
       this.$router.push({
         name: "BookingDateView",  // 修改成實際的預約頁名稱
-        params: { venueId: this.venueId }
+        params: { id: this.venueId }
       })
     },
 

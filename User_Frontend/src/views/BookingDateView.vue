@@ -1,4 +1,4 @@
-<!-- src/views/SelectedDate.vue -->
+<!-- src/views/BookingDate.vue -->
 <template>
     <div class="selected-date-container">
       <h1 class="page-title">選擇預約日期</h1>
