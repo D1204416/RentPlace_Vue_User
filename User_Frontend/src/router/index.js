@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import CardView from '../views/CardView.vue'
 import CardInfoView from '../views/CardInfoView.vue'
+import BookingDateView from '@/views/BookingDateView.vue'
 import BookingFinishView from '../views/BookingFinishView.vue'
 
 const router = createRouter({
@@ -78,6 +79,12 @@ const router = createRouter({
         ]
       }
     },
+    // 在路由配置中
+    {
+      path: '/bookingDate/:id',
+      name: 'BookingDateView',
+      component: BookingDateView
+    },
     {
       path: '/bookingFinish',
       name: 'bookingFinishView',
@@ -110,7 +117,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-  
+
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
     next('/login')
   } else {
