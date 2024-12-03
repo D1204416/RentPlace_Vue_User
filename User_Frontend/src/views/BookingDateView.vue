@@ -14,6 +14,12 @@
       {{ message }}
     </div>
   </div>
+
+  <div class="button-group">
+    <button class="btn btn-back" @click="goBack">上一步</button>
+    <button class="btn btn-book" @click="goNext">下一步</button>
+  </div>
+
 </template>
 
 <script>
@@ -137,6 +143,7 @@ export default {
       })
     }
 
+
     // 監聽路由參數變化
     watch(
       () => route.params.id,
@@ -167,8 +174,24 @@ export default {
       handleDateSelect,
       placeName
     }
+  },
+  methods: {
+    goBack() {
+      this.$router.push({
+        name: "cardInfoView",  // 修改成實際的預約頁名稱
+        params: { id: this.venueId }
+      })
+    },
+
+    goNext() {
+      this.$router.push({
+        name: "BookingFormView",  // 修改成實際的預約頁名稱
+        params: { id: this.venueId }
+      })
+    },
   }
 }
+
 </script>
 
 <style scoped>
@@ -207,6 +230,33 @@ export default {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.btn-back {
+  background: white;
+  color: #333;
+}
+
+.btn-book {
+  background: #3498db;
+  color: white;
+  border: none;
 }
 
 @keyframes fadeIn {
