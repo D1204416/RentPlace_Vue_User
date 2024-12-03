@@ -124,7 +124,7 @@ h1 {
 }
 
 .time-section {
-    background: #fff;
+    background: rgb(249, 249, 249);
 }
 
 .time-section-header {
