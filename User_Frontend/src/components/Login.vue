@@ -71,6 +71,7 @@ const userStore = useUserStore()
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL // 後端 API 基礎網址
 
+
 // 表單數據
 const loginForm = reactive({
   email: '',
@@ -126,7 +127,7 @@ const handleCredentialResponse = async (response) => {
     // 儲存用戶資料
     const userData = {
       id: user.id,
-      name: user.username, 
+      name: user.username,
       email: user.email,
       avatar: payload.picture, // 直接使用 Google 的圖片
     }
@@ -147,14 +148,31 @@ const handleCredentialResponse = async (response) => {
     })
 
     // 8. 關閉 Modal
-    const loginModal = document.getElementById('loginModal')
-    const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
-    if (bootstrapModal) {
-      bootstrapModal.hide()
+    // const loginModal = document.getElementById('loginModal')
+    // const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
+    // if (bootstrapModal) {
+    //   bootstrapModal.hide()
+    // }
+
+    // 使用新的函數關閉 Modal 並清空資料
+    clearAndCloseModal()
+
+    // 登入成功後的處理
+    emit('login-success', userData)
+
+    // 檢查是否有待處理的預約
+    const pendingBooking = localStorage.getItem('pendingBooking')
+    if (pendingBooking) {
+      const bookingRoute = JSON.parse(pendingBooking)
+      localStorage.removeItem('pendingBooking') // 清除暫存的路由
+      router.push(bookingRoute)
+    } else {
+      router.push('/') // 否則導向首頁
     }
 
+
     // 9. 導航到首頁或儀表板
-    router.push('/')
+    // router.push('/')
     console.log('Google 登入成功！')
 
   } catch (err) {
@@ -183,6 +201,9 @@ const handleCredentialResponse = async (response) => {
     localStorage.removeItem('user')  // 同時清除用戶資料
   }
 }
+
+// 新增一個 emit 用於通知父組件登入成功
+const emit = defineEmits(['login-success'])
 
 // 一般登入處理
 const handleLogin = async () => {
@@ -246,15 +267,33 @@ const handleLogin = async () => {
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
 
       // 關閉 Modal
-      const loginModal = document.getElementById('loginModal')
-      const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
-      if (bootstrapModal) {
-        bootstrapModal.hide()
+      // const loginModal = document.getElementById('loginModal')
+      // const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
+      // if (bootstrapModal) {
+      //   bootstrapModal.hide()
+      // }
+
+      // 使用新的函數關閉 Modal 並清空資料
+      clearAndCloseModal()
+
+      emit('login-success', userData)
+
+      // 檢查是否有待處理的預約路由
+      const pendingBooking = localStorage.getItem('pendingBooking')
+      if (pendingBooking) {
+        const bookingRoute = JSON.parse(pendingBooking)
+        localStorage.removeItem('pendingBooking') // 清除暫存的路由
+        router.push(bookingRoute)
+      } else {
+        router.push('/') // 否則導向首頁
       }
+
+
+
 
       // 登入成功後跳轉首頁
       console.log("登入成功")
-      router.push('/')
+      // router.push('/')
 
     } else {
       errorMessage.value = '登入失敗：伺服器回應格式錯誤'
@@ -271,6 +310,21 @@ const handleLogin = async () => {
     errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試'
   } finally {
     isLoading.value = false
+  }
+}
+
+// 關閉 Modal 並清空表單
+const clearAndCloseModal = () => {
+  // 清空表單資料
+  loginForm.email = ''
+  loginForm.password = ''
+  errorMessage.value = '' // 清空錯誤訊息
+
+  // 關閉 Modal
+  const loginModal = document.getElementById('loginModal')
+  const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
+  if (bootstrapModal) {
+    bootstrapModal.hide()
   }
 }
 
