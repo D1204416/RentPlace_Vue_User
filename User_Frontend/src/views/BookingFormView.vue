@@ -47,7 +47,7 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 
     <div class="button-group">
       <button class="btn btn-back" @click="goBack">上一步</button>
-      <button class="btn btn-book" @click="goToBooking">下一步</button>
+      <button class="btn btn-book" @click="goNext">下一步</button>
     </div>
 
   </div>
@@ -173,7 +173,7 @@ export default {
       })
     },
 
-    goToBooking() {
+    goNext() {
       this.$router.push({
         name: "BookingPaymentView",  // 修改成實際的預約頁名稱
         params: { id: this.venueId }
