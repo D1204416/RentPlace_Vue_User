@@ -44,9 +44,13 @@ export default {
 .progress-steps {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 48rem;
-  margin: 0 auto;
+  margin: 20px auto;
+  padding: 0 1rem; 
+  position: relative; 
+  left: 40%; 
+  transform: translateX(-50%); 
 }
 
 .step-container {
