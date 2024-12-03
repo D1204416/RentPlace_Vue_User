@@ -139,7 +139,7 @@ h1 {
 .time-slot {
     display: flex;
     align-items: center;
-    padding: 8px 0;
+    padding: 8px 4px;
 }
 
 .time-slot input[type="checkbox"] {

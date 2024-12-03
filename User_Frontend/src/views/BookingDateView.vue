@@ -302,7 +302,7 @@ export default {
 }
 
 /* 響應式設計 */
-@media (max-width: 1000px) {
+@media (max-width: 1023px) {
   .selected-date-container {
     flex-direction: column;
     /* 改為垂直排列 */
