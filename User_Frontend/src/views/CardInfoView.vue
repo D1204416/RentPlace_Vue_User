@@ -219,11 +219,12 @@ h4 {
 .info-label {
   color: #333;
   min-width: 100px;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .info-value {
   color: #535353;
+  font-size: 17px;
 }
 
 .facilities {
