@@ -151,7 +151,7 @@ export default {
 
     goNext() {
       // 保存資料
-      this.saveBookingData(),
+      // this.saveBookingData(),   // 待處理
         // 導航到付款頁面
         this.$router.push({
           name: "BookingFinishView",

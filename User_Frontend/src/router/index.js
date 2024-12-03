@@ -160,8 +160,8 @@ const router = createRouter({
       }
      },
     {
-      path: '/bookingFinish',
-      name: 'bookingFinishView',
+      path: '/bookingFinish/:id',
+      name: 'BookingFinishView',
       component: BookingFinishView,
       meta: {
         breadcrumb: [
