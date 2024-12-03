@@ -234,7 +234,7 @@ h4 {
   height: 500px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 20px;
+  /* margin-bottom: 10px; */
 }
 
 .info-grid {
@@ -312,7 +312,7 @@ h4 {
 }
 
 .map-section h4 {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
   /* padding: 0 20px; */
 }
 
