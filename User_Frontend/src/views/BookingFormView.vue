@@ -4,7 +4,7 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 
 <template>
   <div v-if="venueId">
-    <progress-steps :current-step="1" />
+    <progress-steps :current-step="2" />
 
     <div class="form-container">
       <!-- 左側表單 -->
@@ -77,33 +77,33 @@ export default {
     }
   },
 
-  computed: {
-    defaultName() {
-      const memberData = localStorage.getItem('memberData')
-      if (memberData) {
-        try {
-          const parsedData = JSON.parse(memberData)
-          return parsedData.username || ''
-        } catch {
-          return ''
-        }
-      }
-      return ''
-    },
+  // computed: {
+  //   defaultName() {
+  //     const memberData = localStorage.getItem('memberData')
+  //     if (memberData) {
+  //       try {
+  //         const parsedData = JSON.parse(memberData)
+  //         return parsedData.username || ''
+  //       } catch {
+  //         return ''
+  //       }
+  //     }
+  //     return ''
+  //   },
 
-    defaultPhone() {
-      const memberData = localStorage.getItem('memberData')
-      if (memberData) {
-        try {
-          const parsedData = JSON.parse(memberData)
-          return parsedData.phone || ''
-        } catch {
-          return ''
-        }
-      }
-      return ''
-    }
-  },
+  //   defaultPhone() {
+  //     const memberData = localStorage.getItem('memberData')
+  //     if (memberData) {
+  //       try {
+  //         const parsedData = JSON.parse(memberData)
+  //         return parsedData.phone || ''
+  //       } catch {
+  //         return ''
+  //       }
+  //     }
+  //     return ''
+  //   }
+  // },
 
   async created() {
     // 獲取會員資料
@@ -181,16 +181,19 @@ export default {
 
     goBack() {
       this.$router.push({
-        name: "BookingDateView",  // 修改成實際的預約頁名稱
+        name: "BookingDateView",
         params: { id: this.venueId }
       })
     },
 
     goNext() {
-      this.$router.push({
-        name: "BookingPaymentView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId }
-      })
+      // 保存資料
+      this.saveBookingData(),
+        // 導航到付款頁面
+        this.$router.push({
+          name: "BookingPaymentView",
+          params: { id: this.venueId }
+        })
     },
 
     // 當設備選擇改變時保存
@@ -199,32 +202,42 @@ export default {
         formData: this.formData,
         selectedEquipments: this.selectedEquipments
       }))
-    }
+    },
+
+    // 儲存整個預約表單資料
+    saveBookingData() {
+      const bookingData = {
+        name: this.formData.name,
+        phone: this.formData.phone,
+        department: this.formData.department,
+        content: this.formData.content,
+        venueId: this.venueId,
+        venueName: this.venueData?.venueName,
+        selectedEquipments: this.selectedEquipments
+      }
+      localStorage.setItem('bookingData', JSON.stringify(bookingData))
+    },
   },
 
   watch: {
-    // 監聽設備選擇的變化
-    selectedEquipments: {
-      handler(newVal) {
-        this.updateEquipments()
+    // 合併監聽，任何相關數據變化都保存
+    formData: {
+      handler() {
+        this.saveBookingData()
       },
       deep: true
     },
-
-    // 監聽表單數據的變化
-    formData: {
-      handler(newVal) {
-        this.updateEquipments()
+    selectedEquipments: {
+      handler() {
+        this.saveBookingData()
       },
       deep: true
     }
   },
 
+  // 當組件即將被銷毀時也保存數據
   beforeUnmount() {
-    localStorage.setItem('bookingFormData', JSON.stringify({
-      formData: this.formData,
-      selectedEquipments: this.selectedEquipments
-    }))
+    this.saveBookingData()
   }
 
 }

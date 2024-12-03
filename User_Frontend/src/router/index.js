@@ -134,7 +134,7 @@ const router = createRouter({
       }
     },
      {
-       path: '/bookingPayment',
+       path: '/bookingPayment/:id',
        name: 'BookingPaymentView',
        component: BookingPaymentView,
        meta: {
