@@ -44,13 +44,9 @@ export default {
 .progress-steps {
   display: flex;
   align-items: center;
-  width: calc(100% - 40px);
+  width: 100%;
   max-width: 48rem;
   margin: 20px auto;
-  padding: 0 1rem; 
-  position: relative; 
-  left: 40%; 
-  transform: translateX(-50%); 
 }
 
 .step-container {
@@ -101,5 +97,65 @@ export default {
 
 .step-connector.active {
   background-color: #FCD34D;
+}
+
+/* RWD 響應式設計 */
+@media screen and (max-width: 768px) {
+  .progress-steps {
+    left: 50%;
+    padding: 0 0.5rem;
+  }
+
+  .step-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  .step-label {
+    font-size: 0.875rem;
+  }
+
+  .step-connector {
+    margin: 0 0.25rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .progress-steps {
+    width: calc(100% - 20px);
+    margin: 10px auto;
+  }
+
+  .step-circle {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .step-connector {
+    margin: 0 0.125rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .step-circle {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+
+  .step-label {
+    font-size: 0.675rem;
+  }
+
+  .step-connector {
+    margin: 0;
+  }
 }
 </style>
