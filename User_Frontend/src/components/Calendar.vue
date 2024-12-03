@@ -54,7 +54,7 @@
         </div>
         <div class="legend-item">
           <div class="status-dot selected"></div>
-          <span>已預約</span>
+          <span>您預約的日期</span>
         </div>
       </div>
     </div>
