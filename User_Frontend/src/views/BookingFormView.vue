@@ -3,56 +3,58 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 </script>
 
 <template>
-  <div v-if="venueId">
-    <progress-steps :current-step="2" />
+  <div class="container">
+    <div v-if="venueId">
+      <progress-steps :current-step="2" />
 
-    <div class="form-container">
-      <!-- 左側表單 -->
-      <div class="form-section">
-        <div class="form-group">
-          <label>申請人</label>
-          <input v-model="formData.name" type="text" :placeholder="defaultName || '帶入會員姓名'">
-        </div>
+      <div class="form-container">
+        <!-- 左側表單 -->
+        <div class="form-section">
+          <div class="form-group">
+            <label>申請人</label>
+            <input v-model="formData.name" type="text" :placeholder="defaultName || '帶入會員姓名'">
+          </div>
 
-        <div class="form-group">
-          <label>聯絡電話</label>
-          <input v-model="formData.phone" type="tel" :placeholder="defaultPhone || '帶入會員電話'">
-        </div>
+          <div class="form-group">
+            <label>聯絡電話</label>
+            <input v-model="formData.phone" type="tel" :placeholder="defaultPhone || '帶入會員電話'">
+          </div>
 
-        <div class="form-group">
-          <label>申請單位</label>
-          <input v-model="formData.department" type="text">
-        </div>
+          <div class="form-group">
+            <label>申請單位</label>
+            <input v-model="formData.department" type="text">
+          </div>
 
-        <div class="form-group">
-          <label>活動內容</label>
-          <textarea v-model="formData.content" rows="4"></textarea>
-        </div>
-      </div>
-
-      <!-- 右側設備列表 -->
-      <div class="equipment-section">
-        <h3>租借設備</h3>
-        <div v-if="venueData" class="equipment-list">
-          <div v-for="item in venueData.equipment" :key="item.id" class="equipment-item">
-            <input type="checkbox" :id="'equipment-' + item.id" v-model="selectedEquipments" :value="item.id">
-            <label :for="'equipment-' + item.id">{{ item.equipmentName }}</label>
+          <div class="form-group">
+            <label>活動內容</label>
+            <textarea v-model="formData.content" rows="4"></textarea>
           </div>
         </div>
-        <div v-else class="loading-text">
-          載入設備中...
+
+        <!-- 右側設備列表 -->
+        <div class="equipment-section">
+          <h3>租借設備</h3>
+          <div v-if="venueData" class="equipment-list">
+            <div v-for="item in venueData.equipment" :key="item.id" class="equipment-item">
+              <input type="checkbox" :id="'equipment-' + item.id" v-model="selectedEquipments" :value="item.id">
+              <label :for="'equipment-' + item.id">{{ item.equipmentName }}</label>
+            </div>
+          </div>
+          <div v-else class="loading-text">
+            載入設備中...
+          </div>
         </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-back" @click="goBack">上一步</button>
+        <button class="btn btn-book" @click="goNext">下一步</button>
       </div>
     </div>
 
-    <div class="button-group">
-      <button class="btn btn-back" @click="goBack">上一步</button>
-      <button class="btn btn-book" @click="goNext">下一步</button>
+    <div v-else class="error-message">
+      無法載入場地資訊，請返回上一頁重新選擇場地
     </div>
-
-  </div>
-  <div v-else class="error-message">
-    無法載入場地資訊，請返回上一頁重新選擇場地
   </div>
 </template>
 
@@ -244,20 +246,17 @@ export default {
 </script>
 
 <style scoped>
-.error-message {
-  text-align: center;
-  padding: 2rem;
-  color: #dc2626;
-  background-color: #fee2e2;
-  border-radius: 0.5rem;
-  margin: 2rem;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;  /* 增加左右邊距，避免貼齊螢幕 */
 }
 
 .form-container {
   display: flex;
   width: 100%;
   gap: 2rem;
-  padding: 1rem;
+  padding: 2rem 0;
 }
 
 .form-section {
@@ -319,7 +318,7 @@ h3 {
 .button-group {
   display: flex;
   gap: 15px;
-  padding: 20px;
+  padding: 20px 0;
   justify-content: center;
 }
 
@@ -341,5 +340,14 @@ h3 {
   background: #3498db;
   color: white;
   border: none;
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
 }
 </style>
