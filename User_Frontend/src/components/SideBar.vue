@@ -197,7 +197,7 @@ const handleLogout = () => {
   localStorage.removeItem('accessToken')  // google登入
   localStorage.removeItem('token')  // 一般登入
   localStorage.removeItem('user')
-  router.push('/login')
+  router.push('/')
 }
 
 

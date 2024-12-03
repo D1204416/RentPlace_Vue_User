@@ -60,7 +60,7 @@ import Search from '../components/Search.vue'
 
 <script>
 import axios from 'axios'
-
+import { inject } from 'vue'
 
 export default {
   name: "cardInfoView",
@@ -73,6 +73,13 @@ export default {
       loading: true,
       error: null
     };
+  },
+
+  setup() {
+    const showLoginModal = inject('showLoginModal')
+    return {
+      showLoginModal
+    }
   },
 
   methods: {
@@ -117,11 +124,35 @@ export default {
     },
 
     goToBooking() {
-      this.$router.push({
-        name: "BookingDateView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId }
-      })
-    },
+  // 檢查登入狀態
+  const userStr = localStorage.getItem('user')
+  
+  if (!userStr) {
+    // 未登入狀態
+    console.log('需要登入才能預約')
+    
+    // 儲存預約資訊
+    localStorage.setItem('pendingBooking', JSON.stringify({
+      name: 'BookingDateView',
+      params: { id: this.venueId }
+    }))
+    
+    // 顯示登入提示
+    alert('請先登入後再進行預約')
+    
+    // 顯示登入 modal
+    const loginModal = document.getElementById('loginModal')
+    const modal = new bootstrap.Modal(loginModal)
+    modal.show()
+    return
+  }
+
+  // 已登入狀態，直接前往預約頁面
+  this.$router.push({
+    name: "BookingDateView",
+    params: { id: this.venueId }
+  })
+},
 
     async created() {
       // 從路由參數獲取 id

@@ -45,6 +45,15 @@ import SideBar from './components/SideBar.vue'
 import Breadcrumb from './components/Breadcrumb.vue'
 import Login from './components/Login.vue'
 import Foot from './components/Foot.vue'
+import { provide } from 'vue'
+
+const showLoginModal = () => {
+  const loginModal = document.getElementById('loginModal')
+  const modal = new bootstrap.Modal(loginModal)
+  modal.show()
+}
+// 提供給子組件使用
+provide('showLoginModal', showLoginModal)
 
 const userStore = useUserStore()
 
