@@ -293,16 +293,44 @@ export default {
 
 
 /* 響應式設計 */
-@media (min-width: 640px) {
+
+@media (min-width: 320px) and (max-width: 639px) {
+
+  .search-result {
+    font-size: 17px;
+  }
+
+  .venue-name{
+    font-size: 16px;
+  }
+
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .search-result {
+    font-size: 20px;
+  }
+
+  .venue-name{
+    font-size: 18px;
+  }
+
+}
+
+
+@media (min-width: 640px) and (max-width: 1023px) {
   .room-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+
 }
 
 @media (min-width: 1024px) {
   .room-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
 }
 
 @media (min-width: 1280px) {
