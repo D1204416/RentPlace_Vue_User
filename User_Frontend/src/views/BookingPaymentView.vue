@@ -5,7 +5,7 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 <template>
   <progress-steps :current-step="3" />
 
-  <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+  <!-- <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
     <h2 class="text-xl font-bold mb-6 text-blue-600">申請人資料</h2>
     
     <div class="grid grid-cols-1 gap-4 mb-8">
@@ -68,8 +68,77 @@ import ProgressSteps from '../components/ProgressSteps.vue'
         <label for="atm">ATM/銀行臨櫃 轉帳繳費</label>
       </div>
     </div>
+  </div> -->
+
+  <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+    <h2 class="text-xl font-bold mb-6 text-blue-600">申請人資料</h2>
+
+    <div class="grid grid-cols-1 gap-4 mb-8">
+      <div class="flex">
+        <div class="w-24 font-medium">申請人：</div>
+        <div>林國恩</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">聯絡電話：</div>
+        <div>0966777888</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">申請單位：</div>
+        <div>台中醫院希德代謝科</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">活動內容：</div>
+        <div>糖尿病病友會</div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-6 text-blue-600">租借資訊</h2>
+
+    <div class="grid grid-cols-1 gap-4 mb-8">
+      <div class="flex">
+        <div class="w-24 font-medium">預約日期：</div>
+        <div>2024/11/06</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">租借場地：</div>
+        <div>大雅等芳里整合活動中心</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">租借類型：</div>
+        <div>會議室</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">租借時段：</div>
+        <div>12:00-13:00、13:00-14:00、14:00-15:00</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">租借設備：</div>
+        <div>麥克風、投影機</div>
+      </div>
+      <div class="flex">
+        <div class="w-24 font-medium">租借費用計：</div>
+        <div>1500元</div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-6 text-blue-600">繳費方式</h2>
+
+    <div class="space-y-2">
+      <div class="flex items-center">
+        <input type="radio" id="online" name="payment" class="mr-2">
+        <label for="online">線上繳費</label>
+      </div>
+      <div class="flex items-center">
+        <input type="radio" id="atm" name="payment" class="mr-2">
+        <label for="atm">ATM/銀行臨櫃 轉帳繳費</label>
+      </div>
+    </div>
   </div>
 
+  <div class="button-group">
+    <button class="btn btn-back" @click="goBack">上一步</button>
+    <button class="btn btn-book" @click="goNext">下一步</button>
+  </div>
 </template>
 
 <script>
@@ -134,7 +203,24 @@ export default {
       } catch (error) {
         console.error('Error submitting booking:', error)
       }
-    }
+    },
+
+    goBack() {
+      this.$router.push({
+        name: "BookingFormView",
+        params: { id: this.venueId }
+      })
+    },
+
+    goNext() {
+      // 保存資料
+      this.saveBookingData(),
+        // 導航到付款頁面
+        this.$router.push({
+          name: "BookingFinishView",
+          params: { id: this.venueId }
+        })
+    },
   },
 
   data() {
@@ -156,3 +242,32 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.button-group {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.btn-back {
+  background: white;
+  color: #333;
+}
+
+.btn-book {
+  background: #3498db;
+  color: white;
+  border: none;
+}
+</style>
