@@ -35,7 +35,7 @@ export default {
 
   data() {
     return {
-      qrCodeUrl: '/path-to-qr-code.png' // 實際使用時替換為真實的 QR Code 圖片路徑
+      qrCodeUrl: '/img/qrcode.png' // 實際使用時替換為真實的 QR Code 圖片路徑
     }
   },
 
