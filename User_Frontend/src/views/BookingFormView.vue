@@ -106,27 +106,40 @@ export default {
   },
 
   async created() {
-    // 獲取並解析 memberData
+    // 獲取會員資料
     const memberDataString = localStorage.getItem('user')
     if (memberDataString) {
       try {
         const memberData = JSON.parse(memberDataString)
         this.formData.name = memberData.name
         this.formData.phone = memberData.phone
-
-        console.log('Member data loaded:', {
-          name: this.formData.name,
-          phone: this.formData.phone
-        })
       } catch (error) {
         console.error('Error parsing member data:', error)
       }
     }
 
+    // 恢復已選擇的設備
+    const savedBookingData = localStorage.getItem('bookingFormData')
+    if (savedBookingData) {
+      try {
+        const parsedBookingData = JSON.parse(savedBookingData)
+        this.selectedEquipments = parsedBookingData.selectedEquipments || []
+
+        // 如果有其他表單數據也可以恢復
+        if (parsedBookingData.formData) {
+          this.formData = {
+            ...this.formData,  // 保留會員資料
+            department: parsedBookingData.formData.department || '',
+            content: parsedBookingData.formData.content || ''
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing booking data:', error)
+      }
+    }
+
     await this.loadVenueData()
   },
-
-
 
   methods: {
     getVenueId() {
@@ -179,6 +192,32 @@ export default {
         params: { id: this.venueId }
       })
     },
+
+    // 當設備選擇改變時保存
+    updateEquipments() {
+      localStorage.setItem('bookingFormData', JSON.stringify({
+        formData: this.formData,
+        selectedEquipments: this.selectedEquipments
+      }))
+    }
+  },
+
+  watch: {
+    // 監聽設備選擇的變化
+    selectedEquipments: {
+      handler(newVal) {
+        this.updateEquipments()
+      },
+      deep: true
+    },
+
+    // 監聽表單數據的變化
+    formData: {
+      handler(newVal) {
+        this.updateEquipments()
+      },
+      deep: true
+    }
   },
 
   beforeUnmount() {
