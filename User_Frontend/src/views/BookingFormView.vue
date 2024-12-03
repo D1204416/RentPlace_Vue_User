@@ -11,12 +11,12 @@ import ProgressSteps from '../components/ProgressSteps.vue'
       <div class="form-section">
         <div class="form-group">
           <label>申請人</label>
-          <input v-model="formData.name" type="text" placeholder="帶入會員姓名">
+          <input v-model="formData.name" type="text" :placeholder="defaultName || '帶入會員姓名'">
         </div>
 
         <div class="form-group">
           <label>聯絡電話</label>
-          <input v-model="formData.phone" type="tel" placeholder="帶入會員電話">
+          <input v-model="formData.phone" type="tel" :placeholder="defaultPhone || '帶入會員電話'">
         </div>
 
         <div class="form-group">
@@ -71,14 +71,52 @@ export default {
     }
   },
 
-  async created() {
-    // 從 localStorage 獲取會員資訊
-    const memberInfo = JSON.parse(localStorage.getItem('memberInfo'))
-    if (memberInfo) {
-      this.formData.name = memberInfo.name || ''
-      this.formData.phone = memberInfo.phone || ''
+  computed: {
+    defaultName() {
+      const memberData = localStorage.getItem('memberData')
+      if (memberData) {
+        try {
+          const parsedData = JSON.parse(memberData)
+          return parsedData.username || ''
+        } catch {
+          return ''
+        }
+      }
+      return ''
+    },
+
+    defaultPhone() {
+      const memberData = localStorage.getItem('memberData')
+      if (memberData) {
+        try {
+          const parsedData = JSON.parse(memberData)
+          return parsedData.phone || ''
+        } catch {
+          return ''
+        }
+      }
+      return ''
     }
-    
+  },
+
+  async created() {
+    // 獲取並解析 memberData
+    const memberDataString = localStorage.getItem('user')
+    if (memberDataString) {
+      try {
+        const memberData = JSON.parse(memberDataString)
+        this.formData.name = memberData.name
+        this.formData.phone = memberData.phone
+
+        console.log('Member data loaded:', {
+          name: this.formData.name,
+          phone: this.formData.phone
+        })
+      } catch (error) {
+        console.error('Error parsing member data:', error)
+      }
+    }
+
     await this.loadVenueData()
   },
 
