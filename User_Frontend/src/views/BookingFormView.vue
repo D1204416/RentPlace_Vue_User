@@ -4,9 +4,9 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 
 <template>
   <div class="container">
-    <div v-if="venueId">
-      <progress-steps :current-step="2" />
+    <progress-steps :current-step="2" />
 
+    <div v-if="venueId">
       <div class="form-container">
         <!-- 左側表單 -->
         <div class="form-section">
@@ -45,15 +45,15 @@ import ProgressSteps from '../components/ProgressSteps.vue'
           </div>
         </div>
       </div>
-
-      <div class="button-group">
-        <button class="btn btn-back" @click="goBack">上一步</button>
-        <button class="btn btn-book" @click="goNext">下一步</button>
-      </div>
     </div>
 
     <div v-else class="error-message">
       無法載入場地資訊，請返回上一頁重新選擇場地
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-back" @click="goBack">上一步</button>
+      <button class="btn btn-book" @click="goNext">下一步</button>
     </div>
   </div>
 </template>
@@ -249,7 +249,8 @@ export default {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;  /* 增加左右邊距，避免貼齊螢幕 */
+  padding: 0 20px;
+  /* 增加左右邊距，避免貼齊螢幕 */
 }
 
 .form-container {
