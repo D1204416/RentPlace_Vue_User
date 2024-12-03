@@ -308,9 +308,9 @@ h4 {
 }
 
 .btn {
-  padding: 10px 40px;
+  padding: 10px 20px;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
   text-align: center;
   border: 1px solid #ddd;
