@@ -108,7 +108,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/bookingForm',
+      path: '/bookingForm/:id',
       name: 'BookingFormView',
       component: BookingFormView,
       meta: {

@@ -5,69 +5,63 @@ import ProgressSteps from '../components/ProgressSteps.vue'
 <template>
   <progress-steps :current-step="1" />
 
-  <!-- 加入 border 和 bg 來測試 Tailwind 是否生效 -->
-  <div class="rental-form flex w-full gap-8 border border-gray-200 p-4 bg-white">
+  <div class="form-container">
     <!-- 左側表單 -->
-    <div class="form-section flex-1 border-r border-gray-200 pr-8">
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">申請人</label>
+    <div class="form-section">
+      <div class="form-group">
+        <label>申請人</label>
         <input 
           v-model="formData.name"
           type="text"
-          class="w-full px-3 py-2 border rounded shadow-sm"
           placeholder="帶入會員姓名"
         >
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">聯絡電話</label>
+      <div class="form-group">
+        <label>聯絡電話</label>
         <input 
           v-model="formData.phone"
           type="tel"
-          class="w-full px-3 py-2 border rounded shadow-sm"
           placeholder="帶入會員電話"
         >
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">申請單位</label>
+      <div class="form-group">
+        <label>申請單位</label>
         <input 
           v-model="formData.department"
           type="text"
-          class="w-full px-3 py-2 border rounded shadow-sm"
         >
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">活動內容</label>
+      <div class="form-group">
+        <label>活動內容</label>
         <textarea 
           v-model="formData.content"
-          class="w-full px-3 py-2 border rounded shadow-sm"
           rows="4"
         ></textarea>
       </div>
     </div>
 
     <!-- 右側設備列表 -->
-    <div class="equipment-section w-80 bg-gray-50 p-4 rounded">
-      <h3 class="text-lg font-medium mb-4">租借設備</h3>
-      <div v-if="equipments.length" class="space-y-3">
+    <div class="equipment-section">
+      <h3>租借設備</h3>
+      <div v-if="venueData" class="equipment-list">
         <div 
-          v-for="item in equipments" 
+          v-for="item in venueData.equipment" 
           :key="item.id" 
-          class="flex items-center p-2 hover:bg-gray-100 rounded"
+          class="equipment-item"
         >
           <input
             type="checkbox"
-            :id="item.id"
+            :id="'equipment-' + item.id"
             v-model="selectedEquipments"
             :value="item.id"
-            class="mr-2"
           >
-          <label :for="item.id" class="cursor-pointer">{{ item.name }}</label>
+          <label :for="'equipment-' + item.id">{{ item.equipmentName }}</label>
         </div>
       </div>
-      <div v-else class="text-gray-500 text-center py-4">
+      <div v-else class="loading-text">
         載入設備中...
       </div>
     </div>
@@ -81,6 +75,12 @@ export default {
   },
   name: 'bookingForm',
 
+  props: {
+    venueId: {
+      type: [String, Number],
+      required: true
+    }
+  },
   data() {
     return {
       formData: {
@@ -89,81 +89,83 @@ export default {
         department: '',
         content: ''
       },
-      // 測試用的假資料
-      equipments: [
-        { id: 1, name: '麥克風' },
-        { id: 2, name: '投影機' },
-        { id: 3, name: '音響' },
-        { id: 4, name: '遙控器' },
-        { id: 5, name: '投影筆' }
-      ],
+      venueData: null,
       selectedEquipments: []
     }
   },
-
-  // data() {
-  //   return {
-  //     formData: {
-  //       name: '',
-  //       phone: '',
-  //       department: '',
-  //       content: ''
-  //     },
-  //     equipments: [],
-  //     selectedEquipments: []
-  //   }
-  // },
-
   async created() {
     try {
-      // 從 API 獲取設備列表
-      const response = await fetch('/api/equipments')
+      const response = await fetch(`http://localhost:8080/api/venus/${this.venueId}`)
       const data = await response.json()
-      this.equipments = data
+      this.venueData = data
     } catch (error) {
-      console.error('Error fetching equipment data:', error)
-    }
-  },
-  methods: {
-    async submitForm() {
-      try {
-        const formSubmission = {
-          ...this.formData,
-          equipments: this.selectedEquipments
-        }
-        
-        const response = await fetch('/api/rental', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formSubmission)
-        })
-        
-        if (response.ok) {
-          // 處理成功提交
-          this.$emit('submit-success')
-        }
-      } catch (error) {
-        console.error('Error submitting form:', error)
-      }
+      console.error('Error fetching venue data:', error)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .form-container {
   display: flex;
   width: 100%;
+  gap: 2rem;
+  padding: 1rem;
 }
 
 .form-section {
   flex: 1;
+  padding-right: 2rem;
+  border-right: 1px solid #eee;
 }
 
 .equipment-section {
   width: 320px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+
+.equipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.equipment-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.equipment-item:hover {
+  background-color: #f0f0f0;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 </style>
-
