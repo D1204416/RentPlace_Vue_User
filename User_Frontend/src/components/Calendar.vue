@@ -11,6 +11,8 @@
         <span>&gt;</span>
       </button>
     </div>
+    <hr>
+
 
     <!-- 載入狀態 -->
     <div v-if="loading" class="loading-state">
@@ -23,6 +25,7 @@
       <div class="calendar-grid">
         <div v-for="day in weekDays" :key="day" class="calendar-cell weekday">
           {{ day }}
+
         </div>
 
         <!-- 日期格子 -->
@@ -98,6 +101,11 @@ export default {
     const getDateStatus = (date) => {
       const dateString = formatDate(date)
 
+      // 如果是用戶選中的日期，返回 'selected'
+      if (dateString === selectedDate.value) {
+        return 'selected'
+      }
+
       // 檢查是否為休館日
       const isClosedDate = props.closeDates.some(
         closeDate => closeDate.date === dateString
@@ -114,8 +122,7 @@ export default {
         if (dayReservations.every(res => res.status === '不可預約')) {
           return 'fully-booked'
         }
-        // 檢查是否有任何預約
-        return 'selected'
+
       }
 
       return null
@@ -148,18 +155,23 @@ export default {
       }
 
       // 添加下個月的天數
-      const remainingDays = 42 - days.length // 保持6行
-      for (let i = 1; i <= remainingDays; i++) {
-        const date = new Date(currentYear.value, currentMonth.value + 1, i)
-        days.push({
-          date,
-          currentMonth: false,
-          status: getDateStatus(date)
-        })
+      const remainingDays = 35 - days.length  // 改為 35 (5 x 7)
+      if (remainingDays > 0) {  // 只在需要時添加
+        for (let i = 1; i <= remainingDays; i++) {
+          const date = new Date(currentYear.value, currentMonth.value + 1, i)
+          days.push({
+            date,
+            currentMonth: false,
+            status: getDateStatus(date)
+          })
+        }
       }
 
       return days
     })
+
+    // 新增選中日期的 ref
+    const selectedDate = ref(null)
 
     // 選擇日期
     const selectDate = (day) => {
@@ -169,6 +181,7 @@ export default {
       }
 
       const dateString = formatDate(day.date)
+      selectedDate.value = dateString  // 儲存選中的日期
       emit('date-selected', {
         date: dateString,
         status: day.status
@@ -226,7 +239,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  max-width: 800px;
+  max-width: 407px;
   margin: 0 auto;
 }
 
@@ -244,7 +257,8 @@ export default {
 }
 
 .nav-btn {
-  background: #f5f5f5;
+  background: #ffffff;
+  font-size: 20px;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
@@ -253,7 +267,8 @@ export default {
 }
 
 .nav-btn:hover {
-  background: #e0e0e0;
+  background: #ECF2FF;
+  color: #2F80ED;
 }
 
 .calendar-grid {
@@ -265,9 +280,11 @@ export default {
 
 .calendar-cell {
   text-align: center;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 8px;
+  border-radius: 100%;
   position: relative;
+  width: 40px;
+  height: 40px;
 }
 
 .weekday {
@@ -280,8 +297,9 @@ export default {
   transition: background-color 0.2s;
 }
 
-.day:hover:not(.other-month):not(.fully-booked):not(.closed) {
-  background-color: #f0f0f0;
+.day:hover:not(.other-month):not(.fully-booked):not(.closed):not(.selected) {
+  background: #ECF2FF;
+  color: #2F80ED;
 }
 
 .other-month {
@@ -320,9 +338,9 @@ export default {
 }
 
 .status-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
 }
 
 .status-dot.fully-booked {

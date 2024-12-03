@@ -2,7 +2,7 @@
 <template>
   <progress-steps :current-step="1" />
   <div class="selected-date-container">
-    <h1 class="page-title">選擇預約日期</h1>
+    <h3 class="page-title">{{ placeName }}</h3>
 
     <div class="calendar-wrapper">
       <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
@@ -40,6 +40,7 @@ export default {
     const reservations = ref([])
     const closeDates = ref([])
     const loading = ref(false)
+    const placeName = ref('')
 
     // 獲取認證 token
     const getAuthToken = () => {
@@ -59,6 +60,23 @@ export default {
         message.value = ''
         messageType.value = ''
       }, 3000)
+    }
+
+    // 新增獲取場地名稱的函數
+    const fetchPlaceName = async () => {
+      try {
+        loading.value = true
+        const response = await axios.get(
+          `http://localhost:8080/api/venues/${venueId.value}`,
+          { headers }
+        )
+        placeName.value = response.data.venueName // 假設 API 返回的場地數據中有 name 欄位
+      } catch (error) {
+        console.error('Failed to fetch place name:', error)
+        showMessage('無法載入場地資訊，請稍後再試', 'error')
+      } finally {
+        loading.value = false
+      }
     }
 
     // 獲取預約資料
@@ -125,7 +143,7 @@ export default {
       async (newId) => {
         if (newId) {
           venueId.value = newId
-          await Promise.all([fetchReservations(), fetchCloseDates()])
+          await Promise.all([fetchReservations(), fetchCloseDates(), fetchPlaceName()])
         }
       }
     )
@@ -133,7 +151,7 @@ export default {
     // 組件掛載時獲取資料
     onMounted(async () => {
       if (venueId.value) {
-        await Promise.all([fetchReservations(), fetchCloseDates()])
+        await Promise.all([fetchReservations(), fetchCloseDates(), fetchPlaceName()])
       } else {
         showMessage('找不到場地ID', 'error')
       }
@@ -146,7 +164,8 @@ export default {
       message,
       messageType,
       loading,
-      handleDateSelect
+      handleDateSelect,
+      placeName
     }
   }
 }
