@@ -44,6 +44,12 @@ import ProgressSteps from '../components/ProgressSteps.vue'
         </div>
       </div>
     </div>
+
+    <div class="button-group">
+      <button class="btn btn-back" @click="goBack">上一步</button>
+      <button class="btn btn-book" @click="goToBooking">下一步</button>
+    </div>
+
   </div>
   <div v-else class="error-message">
     無法載入場地資訊，請返回上一頁重新選擇場地
@@ -120,6 +126,8 @@ export default {
     await this.loadVenueData()
   },
 
+
+
   methods: {
     getVenueId() {
       const routeVenueId = this.$route.params.id || this.$route.query.id
@@ -156,7 +164,21 @@ export default {
       } catch (error) {
         console.error('Error fetching venue data:', error)
       }
-    }
+    },
+
+    goBack() {
+      this.$router.push({
+        name: "BookingDateView",  // 修改成實際的預約頁名稱
+        params: { id: this.venueId }
+      })
+    },
+
+    goToBooking() {
+      this.$router.push({
+        name: "BookingPaymentView",  // 修改成實際的預約頁名稱
+        params: { id: this.venueId }
+      })
+    },
   },
 
   beforeUnmount() {
@@ -189,7 +211,7 @@ export default {
 .form-section {
   flex: 1;
   padding-right: 2rem;
-  border-right: 1px solid #eee;
+  /* border-right: 1px solid #eee; */
 }
 
 .equipment-section {
@@ -240,5 +262,32 @@ h3 {
   font-size: 1.125rem;
   font-weight: 500;
   margin-bottom: 1rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.btn-back {
+  background: white;
+  color: #333;
+}
+
+.btn-book {
+  background: #3498db;
+  color: white;
+  border: none;
 }
 </style>
