@@ -1,12 +1,17 @@
 <!-- src/views/BookingDate.vue -->
 <template>
   <progress-steps :current-step="1" />
+  
   <div class="selected-date-container">
-    <h3 class="page-title">{{ placeName }}</h3>
-
+    
     <div class="calendar-wrapper">
       <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
         @date-selected="handleDateSelect" />
+    </div>
+
+    <div class="time-slot-wrapper">
+      <h3 class="page-title">{{ placeName }}</h3>
+      <TimeSlotSelector :date="selectedDate" @selection-change="handleSelectionChange" />
     </div>
 
     <!-- 狀態提示訊息 -->
@@ -25,6 +30,7 @@
 <script>
 import Calendar from '@/components/Calendar.vue'
 import ProgressSteps from '../components/ProgressSteps.vue'
+import TimeSlotSelector from '../components/TimeSlotSelector.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
@@ -33,7 +39,8 @@ export default {
   name: 'bookingDate',
   components: {
     Calendar,
-    ProgressSteps
+    ProgressSteps,
+    TimeSlotSelector
 
   },
 
@@ -47,6 +54,7 @@ export default {
     const closeDates = ref([])
     const loading = ref(false)
     const placeName = ref('')
+    const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
 
     // 獲取認證 token
     const getAuthToken = () => {
@@ -131,17 +139,22 @@ export default {
 
     // 處理日期選擇
     const handleDateSelect = (dateInfo) => {
-      console.log('bookingDate:', dateInfo)
-      // 如果日期已被選擇，導航到時段選擇頁面
-      router.push({
-        name: 'TimeSelection',
-        params: {
-          id: venueId.value,
-          date: dateInfo.date
-        },
-        query: route.query // 保留原有的查詢參數
-      })
-    }
+    // 將日期格式轉換為 "MM月DD日" 的格式
+    const date = new Date(dateInfo.date)
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    selectedDate.value = `${month}月${day}日可租借時段`
+    
+    console.log('bookingDate:', dateInfo)
+    router.push({
+      name: 'TimeSelection',
+      params: {
+        id: venueId.value,
+        date: dateInfo.date
+      },
+      query: route.query
+    })
+  }
 
 
     // 監聽路由參數變化
@@ -172,7 +185,8 @@ export default {
       messageType,
       loading,
       handleDateSelect,
-      placeName
+      placeName,
+      selectedDate
     }
   },
   methods: {
@@ -189,6 +203,11 @@ export default {
         params: { id: this.venueId }
       })
     },
+
+    handleSelectionChange({ totalHours, selectedSlots }) {
+      console.log('總時數:', totalHours)
+      console.log('已選時段:', selectedSlots)
+    }
   }
 }
 
@@ -196,20 +215,31 @@ export default {
 
 <style scoped>
 .selected-date-container {
-  max-width: 800px;
+  max-width: 1200px;
+  /* 調大容器寬度以容納並排 */
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 20px;
+  display: flex;
+  /* 使用 flex 來並排 */
+  gap: 30px;
+  /* 設定間距 */
 }
 
 .page-title {
-  text-align: center;
-  margin-bottom: 30px;
+  text-align: start;
+  margin: 20px 15px;
   color: #333;
   font-size: 24px;
 }
 
 .calendar-wrapper {
-  margin-bottom: 20px;
+  flex: 0 0 407px;
+  /* 固定日曆寬度 */
+}
+
+.time-slot-wrapper {
+  flex: 1;
+  /* 讓時段選擇器填滿剩餘空間 */
 }
 
 .message {
@@ -272,13 +302,26 @@ export default {
 }
 
 /* 響應式設計 */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .selected-date-container {
+    flex-direction: column;
+    /* 改為垂直排列 */
+    align-items: center;
     padding: 10px;
   }
 
   .page-title {
     font-size: 1.5em;
+    text-align: center;
+  }
+
+  .calendar-wrapper {
+    width: 100%;
+    max-width: 407px;
+  }
+
+  .time-slot-wrapper {
+    width: 100%;
   }
 }
 </style>
