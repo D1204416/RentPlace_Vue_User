@@ -1,10 +1,11 @@
 <script setup>
-import ProgressSteps from '../components/ProgressSteps.vue'
+import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 </script>
 
 <template>
+  <progress-steps :current-step="2" />
   <div class="container">
-    <progress-steps :current-step="2" />
+    
 
     <div v-if="venueId">
       <div class="form-container">

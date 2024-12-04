@@ -1,10 +1,11 @@
 <script setup>
-import ProgressSteps from '../components/ProgressSteps.vue'
+import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 </script>
 
 <template>
+  <progress-steps :current-step="3" />
   <div class="container">
-    <progress-steps :current-step="3" />
+
 
     <div class="rental-form">
       <!-- 申請人資料區塊 -->
@@ -152,11 +153,11 @@ export default {
     goNext() {
       // 保存資料
       // this.saveBookingData(),   // 待處理
-        // 導航到付款頁面
-        this.$router.push({
-          name: "BookingFinishView",
-          params: { id: this.venueId }
-        })
+      // 導航到付款頁面
+      this.$router.push({
+        name: "BookingFinishView",
+        params: { id: this.venueId }
+      })
     },
   },
 

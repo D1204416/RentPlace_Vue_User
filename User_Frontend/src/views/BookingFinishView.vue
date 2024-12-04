@@ -1,10 +1,11 @@
 <script setup>
-import ProgressSteps from '../components/ProgressSteps.vue'
+import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 </script>
 
 <template>
-  <div class="container">
     <progress-steps :current-step="4" />
+  <div class="container">
+  
 
     <div class="reservation-complete">
       <div class="card">

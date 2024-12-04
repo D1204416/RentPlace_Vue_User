@@ -29,7 +29,7 @@
 
 <script>
 import Calendar from '@/components/Calendar.vue'
-import ProgressSteps from '../components/ProgressSteps.vue'
+import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 import TimeSlotSelector from '../components/TimeSlotSelector.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
