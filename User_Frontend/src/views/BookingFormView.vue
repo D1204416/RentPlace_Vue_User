@@ -292,6 +292,14 @@ export default {
   border-radius: 0.25rem;
 }
 
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  resize: none;  /* 禁止調整大小 */
+}
+
 .equipment-list {
   display: grid;  
   grid-template-columns: repeat(2, 1fr);  /* 設置兩欄 */
