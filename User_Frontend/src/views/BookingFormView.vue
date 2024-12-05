@@ -6,7 +6,6 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
   <progress-steps :current-step="2" />
   <div class="container">
 
-
     <div v-if="venueId">
       <div class="form-container">
         <!-- 左側表單 -->
@@ -248,7 +247,7 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 20px;
   /* 增加左右邊距，避免貼齊螢幕 */
@@ -268,7 +267,7 @@ export default {
 }
 
 .equipment-section {
-  width: 320px;
+  width: 400px;
   padding: 1rem;
   background-color: #f9f9f9;
   border-radius: 0.5rem;
@@ -294,9 +293,10 @@ export default {
 }
 
 .equipment-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;  
+  grid-template-columns: repeat(2, 1fr);  /* 設置兩欄 */
+  gap: 0.5rem;  /* 保持間距 */
+  padding: 0.5rem;
 }
 
 .equipment-item {
@@ -305,6 +305,13 @@ export default {
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 0.25rem;
+  min-width: 0;  /* 防止內容溢出 */
+}
+
+.equipment-item label {
+  white-space: nowrap;  /* 防止文字換行 */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* 過長時顯示省略號 */
 }
 
 .equipment-item:hover {
@@ -351,5 +358,40 @@ h3 {
   background-color: #fee2e2;
   border-radius: 0.5rem;
   margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column; /* 手機版改為垂直排列 */
+    gap: 1rem;
+  }
+
+  .form-section {
+    padding-right: 0;
+  }
+
+  .equipment-section {
+    width: 100%; /* 設備區塊在手機版占滿寬度 */
+  }
+
+  .equipment-list {
+    grid-template-columns: repeat(2, 1fr); /* 保持兩欄 */
+  }
+}
+
+/* 更小螢幕的處理 */
+@media (max-width: 480px) {
+  .equipment-list {
+    grid-template-columns: 1fr; /* 極小螢幕改為單欄 */
+  }
+
+  .button-group {
+    flex-direction: column; /* 按鈕改為垂直排列 */
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%; /* 按鈕占滿寬度 */
+  }
 }
 </style>
