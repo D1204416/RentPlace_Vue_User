@@ -44,6 +44,11 @@ export default {
 
   },
 
+  created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+  },
+
   setup() {
     const route = useRoute()
     const router = useRouter()
@@ -186,21 +191,24 @@ export default {
       loading,
       handleDateSelect,
       placeName,
-      selectedDate
+      selectedDate,
+      originalQuery: null,
     }
   },
   methods: {
     goBack() {
       this.$router.push({
         name: "cardInfoView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId }
+        params: { id: this.venueId },
+        query: this.originalQuery
       })
     },
 
     goNext() {
       this.$router.push({
         name: "BookingFormView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId }
+        params: { id: this.venueId },
+        query: this.originalQuery
       })
     },
 

@@ -1,6 +1,6 @@
 <script setup>
 import Search from '../components/Search.vue'
-import Pagination from'../components/Pagination.vue';
+import Pagination from '../components/Pagination.vue';
 </script>
 
 <template>
@@ -8,32 +8,38 @@ import Pagination from'../components/Pagination.vue';
   <Search />
 
   <div class="container">
-    <h4 class="search-result">符合您搜尋條件的場地：{{ filteredRooms.length }}筆</h4>
+    <!-- 添加載入中狀態 -->
+    <div v-if="loading" class="loading">載入中...</div>
 
-    <!-- 卡片網格 -->
-    <div class="room-grid">
-      <div v-for="room in paginatedRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
-        <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
-        <div class="card-content">
-          <h5 class="venue-name">{{ room.placeName }}</h5>
-          <div class="venue-info">
-            <p>場地類型：{{ room.venueType }}</p>
-            <p>聯絡電話：{{ room.phoneNumber }}</p>
-            <p>行政區域：{{ room.regionName }}</p>
-            <p>容納人數：{{ room.capacity }}人</p>
+    <template v-else>
+      <h4 class="search-result">符合您搜尋條件的場地：{{ filteredRooms.length }}筆</h4>
+
+      <!-- 如果沒有搜尋結果 -->
+      <div v-if="filteredRooms.length === 0" class="no-results">
+        沒有符合搜尋條件的場地
+      </div>
+
+      <!-- 卡片網格 -->
+      <div class="room-grid">
+        <div v-for="room in paginatedRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
+          <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
+          <div class="card-content">
+            <h5 class="venue-name">{{ room.placeName }}</h5>
+            <div class="venue-info">
+              <p>場地類型：{{ room.venueType }}</p>
+              <p>聯絡電話：{{ room.phoneNumber }}</p>
+              <p>行政區域：{{ room.regionName }}</p>
+              <p>容納人數：{{ room.capacity }}人</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 分頁 -->
-    <div class="pagination" v-if="totalPages > 1">
-      <Pagination 
-        :total-pages="totalPages" 
-        :current-page="currentPage"
-        @update:page="handlePageChange" 
-      />
-    </div>
+      <!-- 分頁 -->
+      <div class="pagination" v-if="totalPages > 1">
+        <Pagination :total-pages="totalPages" :current-page="currentPage" @update:page="handlePageChange" />
+      </div>
+    </template>
   </div>
 
 </template>
@@ -55,7 +61,8 @@ export default {
       filteredRooms: [],
       currentPage: 1,
       itemsPerPage: 12,
-      reservations: {} // 用來存儲每個場地的預約資訊
+      reservations: {}, // 用來存儲每個場地的預約資訊
+      loading: false, // 添加 loading 狀態
     }
   },
 
@@ -63,7 +70,7 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredRooms.length / this.itemsPerPage)
     },
-    
+
     paginatedRooms() {
       const start = (this.currentPage - 1) * this.itemsPerPage
       const end = start + this.itemsPerPage
@@ -92,12 +99,15 @@ export default {
 
     async fetchVenues() {
       try {
+        this.loading = true
         const response = await axios.get('http://localhost:8080/api/venues')
         this.rooms = response.data
         await this.fetchReservations()
         this.applyFilters() // 確保在獲取數據後立即應用過濾
+        this.loading = false
       } catch (error) {
         console.error('Failed to fetch venues:', error)
+        this.loading = false
       }
     },
 
@@ -136,6 +146,12 @@ export default {
     },
 
     applyFilters() {
+      // 確保 this.rooms 有數據
+      if (!this.rooms || this.rooms.length === 0) {
+        console.log('No rooms data available')
+        return
+      }
+
       let filtered = [...this.rooms]
       const query = this.$route.query   // 從 URL 取得參數
 
@@ -151,14 +167,14 @@ export default {
 
       // 處理場地類型
       if (query.venues) {
-      const selectedVenues = query.venues.split(',')
-      filtered = filtered.filter(room =>
-        // 只要場地類型包含任何一個關鍵字就符合條件
-        selectedVenues.some(keyword => 
-          room.venueType.includes(keyword)
+        const selectedVenues = query.venues.split(',')
+        filtered = filtered.filter(room =>
+          // 只要場地類型包含任何一個關鍵字就符合條件
+          selectedVenues.some(keyword =>
+            room.venueType.includes(keyword)
+          )
         )
-      )
-    }
+      }
 
       // 處理容納人數
       if (query.capacity) {
@@ -176,7 +192,7 @@ export default {
 
       // 日期和時段過濾
       if (query.date) {
-        filtered = filtered.filter(room => 
+        filtered = filtered.filter(room =>
           this.isVenueAvailable(room.id, query.date)
         )
       }
@@ -209,17 +225,22 @@ export default {
   },
 
   watch: {
+    // 監聽路由變化
     '$route.query': {
-      handler(newQuery) {
+      handler(newQuery, oldQuery) {
         console.log('Route query changed:', newQuery) // 用於調試
-        this.currentPage = 1 // 當搜尋條件改變時重置到第一頁
-        this.applyFilters()
+        // 只有在查詢參數真正改變時才重置頁碼和重新過濾
+        if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+          this.currentPage = 1
+          this.applyFilters()
+        }
       },
       deep: true,
       immediate: true
     }
   },
 
+  // 確保組件創建時獲取數據
   async created() {
     await this.fetchVenues()
   }
@@ -300,7 +321,7 @@ export default {
     font-size: 17px;
   }
 
-  .venue-name{
+  .venue-name {
     font-size: 16px;
   }
 
@@ -311,7 +332,7 @@ export default {
     font-size: 20px;
   }
 
-  .venue-name{
+  .venue-name {
     font-size: 18px;
   }
 

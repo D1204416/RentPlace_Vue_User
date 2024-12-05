@@ -75,7 +75,8 @@ export default {
       },
       venueData: null,
       selectedEquipments: [],
-      venueId: null
+      venueId: null,
+      originalQuery: null,
     }
   },
 
@@ -143,6 +144,11 @@ export default {
     await this.loadVenueData()
   },
 
+  created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+  },
+
   methods: {
     getVenueId() {
       const routeVenueId = this.$route.params.id || this.$route.query.id
@@ -184,7 +190,8 @@ export default {
     goBack() {
       this.$router.push({
         name: "BookingDateView",
-        params: { id: this.venueId }
+        params: { id: this.venueId },
+        query: this.originalQuery
       })
     },
 
@@ -194,7 +201,8 @@ export default {
         // 導航到付款頁面
         this.$router.push({
           name: "BookingPaymentView",
-          params: { id: this.venueId }
+          params: { id: this.venueId },
+          query: this.originalQuery
         })
     },
 

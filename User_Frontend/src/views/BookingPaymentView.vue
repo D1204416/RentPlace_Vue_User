@@ -88,7 +88,8 @@ export default {
         content: '',
         selectedEquipments: [],
         venueId: '',
-        venueName: ''
+        venueName: '',
+        originalQuery: null,
       },
       paymentMethod: '',
       timeSlots: ['12:00-13:00', '13:00-14:00', '14:00-15:00'],
@@ -111,6 +112,9 @@ export default {
   },
 
   created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+
     try {
       const storedData = localStorage.getItem('bookingData')
       if (storedData) {
@@ -146,7 +150,8 @@ export default {
     goBack() {
       this.$router.push({
         name: "BookingFormView",
-        params: { id: this.venueId }
+        params: { id: this.venueId },
+        query: this.originalQuery
       })
     },
 
@@ -156,7 +161,8 @@ export default {
       // 導航到付款頁面
       this.$router.push({
         name: "BookingFinishView",
-        params: { id: this.venueId }
+        params: { id: this.venueId },
+        query: this.originalQuery
       })
     },
   },

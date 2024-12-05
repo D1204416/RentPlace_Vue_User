@@ -10,13 +10,13 @@ import Search from '../components/Search.vue'
     <div v-if="loading" class="loading">載入中...</div>
     <!-- 添加錯誤提示 -->
     <div v-else-if="error" class="error">{{ error }}</div>
-    
+
     <div v-else>
       <div class="content">
         <div class="left-column">
           <img :src="`/venueImg/${venueId}.svg`" :alt="info['場地名稱：']" class="room-image" />
         </div>
-        
+
         <div class="right-column">
           <div class="info-grid">
             <h4>{{ info['場地名稱：'] }}</h4>
@@ -39,15 +39,9 @@ import Search from '../components/Search.vue'
       <!-- 地圖區塊 -->
       <div class="map-section">
         <h4>地圖資訊</h4>
-        <iframe
-          v-if="info['場地位址：']"
-          width="100%"
-          height="400"
-          style="border:0"
-          loading="lazy"
+        <iframe v-if="info['場地位址：']" width="100%" height="400" style="border:0" loading="lazy"
           :src="`https://maps.google.com/maps?q=${encodeURIComponent(info['場地位址：'])}&t=&z=13&ie=UTF8&iwloc=&output=embed`"
-          allowfullscreen
-        ></iframe>
+          allowfullscreen></iframe>
       </div>
 
       <div class="button-group">
@@ -71,8 +65,20 @@ export default {
       facilities: [],
       info: {},
       loading: true,
-      error: null
+      error: null,
+      originalQuery: null, // 添加此字段來保存原始查詢參數
     };
+  },
+
+  created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+    this.venueId = this.$route.params.id
+    if (this.venueId) {
+      this.fetchVenueDetail()
+    } else {
+      this.error = '找不到場地ID'
+    }
   },
 
   setup() {
@@ -97,7 +103,7 @@ export default {
         const venue = venueResponse.data
 
         // 從設備資料中只提取 equipmentName
-        this.facilities = Array.isArray(equipmentResponse.data) 
+        this.facilities = Array.isArray(equipmentResponse.data)
           ? equipmentResponse.data.map(item => item.equipmentName)
           : [equipmentResponse.data.equipmentName]
 
@@ -120,39 +126,45 @@ export default {
     },
 
     goBack() {
-      this.$router.go(-1);
+      this.$router.push({
+        name: 'cardView',
+        // 保留原有的查詢參數
+        query: this.originalQuery
+      })
     },
 
     goToBooking() {
-  // 檢查登入狀態
-  const userStr = localStorage.getItem('user')
-  
-  if (!userStr) {
-    // 未登入狀態
-    console.log('需要登入才能預約')
-    
-    // 儲存預約資訊
-    localStorage.setItem('pendingBooking', JSON.stringify({
-      name: 'BookingDateView',
-      params: { id: this.venueId }
-    }))
-    
-    // 顯示登入提示
-    alert('請先登入後再進行預約')
-    
-    // 顯示登入 modal
-    const loginModal = document.getElementById('loginModal')
-    const modal = new bootstrap.Modal(loginModal)
-    modal.show()
-    return
-  }
+      // 檢查登入狀態
+      const userStr = localStorage.getItem('user')
 
-  // 已登入狀態，直接前往預約頁面
-  this.$router.push({
-    name: "BookingDateView",
-    params: { id: this.venueId }
-  })
-},
+      if (!userStr) {
+        // 未登入狀態
+        console.log('需要登入才能預約')
+
+        // 儲存預約資訊
+        localStorage.setItem('pendingBooking', JSON.stringify({
+          name: 'BookingDateView',
+          params: { id: this.venueId },
+          query: this.originalQuery // 保存查詢參數
+        }))
+
+        // 顯示登入提示
+        alert('請先登入後再進行預約')
+
+        // 顯示登入 modal
+        const loginModal = document.getElementById('loginModal')
+        const modal = new bootstrap.Modal(loginModal)
+        modal.show()
+        return
+      }
+
+      // 已登入狀態，直接前往預約頁面
+      this.$router.push({
+        name: "BookingDateView",
+        params: { id: this.venueId },
+        query: this.originalQuery   // 傳遞查詢參數
+      })
+    },
 
     async created() {
       // 從路由參數獲取 id
@@ -183,7 +195,6 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   margin: 0;
   padding: 0;
@@ -320,7 +331,7 @@ h4 {
   .content {
     flex-direction: column;
   }
-  
+
   .map-section {
     padding: 0 10px 10px 10px;
     margin-top: 50PX;
