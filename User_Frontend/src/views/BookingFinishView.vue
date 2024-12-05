@@ -3,9 +3,8 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 </script>
 
 <template>
-    <progress-steps :current-step="4" />
+  <progress-steps :current-step="4" />
   <div class="container">
-  
 
     <div class="reservation-complete">
       <div class="card">
@@ -42,6 +41,10 @@ export default {
 
   methods: {
     goNext() {
+      // Clear bookingData from localStorage
+      localStorage.removeItem('bookingData');
+
+      // Navigate to home page
       this.$router.push({
         name: "home",
       })
@@ -55,9 +58,12 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  min-height: 100vh; /* 設定最小高度為視窗高度 */
-  display: flex;      /* 使用 flex 布局 */
-  flex-direction: column; /* 設定垂直方向排列 */
+  min-height: 100vh;
+  /* 設定最小高度為視窗高度 */
+  display: flex;
+  /* 使用 flex 布局 */
+  flex-direction: column;
+  /* 設定垂直方向排列 */
 }
 
 /* 讓中間內容區域自動擴展 */
@@ -102,7 +108,8 @@ h2 {
 
 /* button-group 會自動置底 */
 .button-group {
-  margin-top: auto;  /* 可選：如果想要確保按鈕組一定在底部 */
+  margin-top: auto;
+  /* 可選：如果想要確保按鈕組一定在底部 */
   display: flex;
   gap: 15px;
   padding: 20px 0;

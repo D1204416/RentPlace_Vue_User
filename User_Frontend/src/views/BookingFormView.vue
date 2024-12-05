@@ -5,7 +5,7 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 <template>
   <progress-steps :current-step="2" />
   <div class="container">
-    
+
 
     <div v-if="venueId">
       <div class="form-container">
