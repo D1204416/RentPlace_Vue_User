@@ -45,9 +45,9 @@ export default {
                 {
                     title: '下午',
                     slots: [
-                        { id: 't-1200', time: '12:00 - 13:00', selected: true },
-                        { id: 't-1300', time: '13:00 - 14:00', selected: true },
-                        { id: 't-1400', time: '14:00 - 15:00', selected: true },
+                        { id: 't-1200', time: '12:00 - 13:00', selected: false },
+                        { id: 't-1300', time: '13:00 - 14:00', selected: false },
+                        { id: 't-1400', time: '14:00 - 15:00', selected: false },
                         { id: 't-1500', time: '15:00 - 16:00', selected: false },
                         { id: 't-1600', time: '16:00 - 17:00', selected: false }
                     ]
