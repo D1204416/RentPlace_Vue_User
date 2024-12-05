@@ -80,35 +80,10 @@ export default {
     }
   },
 
-  // computed: {
-  //   defaultName() {
-  //     const memberData = localStorage.getItem('memberData')
-  //     if (memberData) {
-  //       try {
-  //         const parsedData = JSON.parse(memberData)
-  //         return parsedData.username || ''
-  //       } catch {
-  //         return ''
-  //       }
-  //     }
-  //     return ''
-  //   },
-
-  //   defaultPhone() {
-  //     const memberData = localStorage.getItem('memberData')
-  //     if (memberData) {
-  //       try {
-  //         const parsedData = JSON.parse(memberData)
-  //         return parsedData.phone || ''
-  //       } catch {
-  //         return ''
-  //       }
-  //     }
-  //     return ''
-  //   }
-  // },
-
   async created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+
     // 獲取會員資料
     const memberDataString = localStorage.getItem('user')
     if (memberDataString) {
@@ -144,26 +119,13 @@ export default {
     await this.loadVenueData()
   },
 
-  created() {
-    // 保存進入頁面時的查詢參數
-    this.originalQuery = { ...this.$route.query }
-  },
-
   methods: {
     getVenueId() {
       const routeVenueId = this.$route.params.id || this.$route.query.id
       if (routeVenueId) {
         this.venueId = routeVenueId
-        localStorage.setItem('venueId', routeVenueId)
         return routeVenueId
       }
-
-      const storedVenueId = localStorage.getItem('venueId')
-      if (storedVenueId) {
-        this.venueId = storedVenueId
-        return storedVenueId
-      }
-
       return null
     },
 
@@ -207,12 +169,12 @@ export default {
     },
 
     // 當設備選擇改變時保存
-    updateEquipments() {
-      localStorage.setItem('bookingFormData', JSON.stringify({
-        formData: this.formData,
-        selectedEquipments: this.selectedEquipments
-      }))
-    },
+    // updateEquipments() {
+    //   localStorage.setItem('bookingFormData', JSON.stringify({
+    //     formData: this.formData,
+    //     selectedEquipments: this.selectedEquipments
+    //   }))
+    // },
 
     // 儲存整個預約表單資料
     saveBookingData() {

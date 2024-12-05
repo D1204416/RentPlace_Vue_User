@@ -164,6 +164,7 @@ export default {
         params: { id: this.venueId },
         query: this.originalQuery   // 傳遞查詢參數
       })
+      
     },
 
     async created() {
