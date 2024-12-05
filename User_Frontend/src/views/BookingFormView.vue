@@ -247,7 +247,7 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
   /* 增加左右邊距，避免貼齊螢幕 */

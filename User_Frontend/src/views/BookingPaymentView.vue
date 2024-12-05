@@ -173,7 +173,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -295,5 +295,149 @@ export default {
   background: #3498db;
   color: white;
   border: none;
+}
+</style> -->
+
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.rental-form {
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+/* 左右兩個區塊的共同樣式 */
+.form-section {
+  margin-bottom: 32px;
+}
+
+/* 申請人資料和租借資訊區塊 */
+.form-section:nth-child(1),
+.form-section:nth-child(2) {
+  flex: 0 0 calc(50% - 12px); /* 減去gap的一半 */
+  max-width: calc(50% - 12px);
+}
+
+/* 繳費方式區塊 */
+.form-section:nth-child(3) {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.section-title {
+  font-size: 16px;
+  color: #2563eb;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.section-content {
+  padding-left: 12px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.info-row span {
+  white-space: nowrap;
+}
+
+.info-item {
+  margin-bottom: 8px;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #1f2937;
+  margin-left: 4px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.radio-label:last-child {
+  margin-bottom: 0;
+}
+
+.radio-label input[type="radio"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.radio-text {
+  color: #374151;
+}
+
+.radio-label:hover .radio-text {
+  color: #2563eb;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.btn-back {
+  background: white;
+  color: #333;
+}
+
+.btn-book {
+  background: #3498db;
+  color: white;
+  border: none;
+}
+
+/* 響應式設計 */
+@media screen and (max-width: 768px) {
+  .rental-form {
+    flex-direction: column;
+  }
+
+  .form-section:nth-child(1),
+  .form-section:nth-child(2) {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .info-row {
+    gap: 8px;
+  }
+
+  .section-content {
+    padding-left: 8px;
+  }
 }
 </style>
