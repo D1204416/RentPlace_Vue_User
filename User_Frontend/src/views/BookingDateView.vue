@@ -105,8 +105,8 @@ export default {
         reservations.value = response.data.map(reservation => ({
           date: reservation.reservationDate,
           timePeriodId: reservation.timePeriodId,
-          status: reservation.statusInfo.status,
-          statusId: reservation.statusInfo.statusId
+          status: reservation.timePeriod_statusInfo.status,
+          statusId: reservation.timePeriod_statusInfo.statusId
         }))
       } catch (error) {
         console.error('Failed to fetch reservations:', error)
