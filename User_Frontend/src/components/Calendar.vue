@@ -3,7 +3,8 @@
   <div class="calendar-container">
     <!-- 日曆標題和月份導航 -->
     <div class="calendar-header">
-      <button @click="previousMonth" class="nav-btn">
+      <button @click="previousMonth" class="nav-btn" :disabled="isPreviousMonthDisabled"
+        :class="{ 'nav-btn-disabled': isPreviousMonthDisabled }">
         <span>&lt;</span>
       </button>
       <h2 class="month-title">{{ currentYear }}年 {{ currentMonth + 1 }}月</h2>
@@ -32,7 +33,7 @@
         <div v-for="(day, index) in calendarDays" :key="index" :class="[
           'calendar-cell',
           'day',
-          { 'other-month': !day.currentMonth },
+          { 'other-month': !day.currentMonth || day.isPast },
           { 'fully-booked': day.status === 'fully-booked' },
           { 'closed': day.status === 'closed' },
           { 'selected': day.status === 'selected' }
@@ -89,6 +90,14 @@ export default {
     const weekDays = ref(['日', '一', '二', '三', '四', '五', '六'])
     const loading = ref(false)
 
+    // 新增: 檢查是否禁用上個月按鈕
+    const isPreviousMonthDisabled = computed(() => {
+      const today = new Date()
+      const currentNavigationDate = new Date(currentYear.value, currentMonth.value - 1)
+      const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      return currentNavigationDate < firstDayOfCurrentMonth
+    })
+
     // 新增: 格式化日期函數
     const formatDate = (date) => {
       const year = date.getFullYear()
@@ -132,6 +141,8 @@ export default {
       const days = []
       const firstDay = new Date(currentYear.value, currentMonth.value, 1)
       const lastDay = new Date(currentYear.value, currentMonth.value + 1, 0)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
       // 添加上個月的天數
       const firstDayOfWeek = firstDay.getDay()
@@ -140,7 +151,8 @@ export default {
         days.push({
           date,
           currentMonth: false,
-          status: getDateStatus(date)
+          status: getDateStatus(date),
+          isPast: date < today // 過去日期標記
         })
       }
 
@@ -150,7 +162,8 @@ export default {
         days.push({
           date,
           currentMonth: true,
-          status: getDateStatus(date)
+          status: getDateStatus(date),
+          isPast: date < today
         })
       }
 
@@ -162,7 +175,8 @@ export default {
           days.push({
             date,
             currentMonth: false,
-            status: getDateStatus(date)
+            status: getDateStatus(date),
+            isPast: date < today
           })
         }
       }
@@ -175,13 +189,18 @@ export default {
 
     // 選擇日期
     const selectDate = (day) => {
-      // 不允許選擇非當月、已滿或休館日
-      if (!day.currentMonth || day.status === 'fully-booked' || day.status === 'closed') {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      // 檢查是否為過去日期或非當月日期
+      if (day.isPast || !day.currentMonth ||
+        day.status === 'fully-booked' ||
+        day.status === 'closed') {
         return
       }
 
       const dateString = formatDate(day.date)
-      selectedDate.value = dateString  // 儲存選中的日期
+      selectedDate.value = dateString
       emit('date-selected', {
         date: dateString,
         status: day.status
@@ -190,6 +209,16 @@ export default {
 
     // 上個月
     const previousMonth = () => {
+      // 獲取當前日期的年月
+      const today = new Date()
+      const currentNavigationDate = new Date(currentYear.value, currentMonth.value - 1)
+      const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+
+      // 如果上個月會早於當前月份，則不允許切換
+      if (currentNavigationDate < firstDayOfCurrentMonth) {
+        return
+      }
+
       if (currentMonth.value === 0) {
         currentMonth.value = 11
         currentYear.value--
@@ -213,8 +242,16 @@ export default {
       loading.value = false
     })
 
+    const initializeCalendar = () => {
+      const today = new Date()
+      currentDate.value = today
+      currentMonth.value = today.getMonth()
+      currentYear.value = today.getFullYear()
+    }
+
     // 組件掛載
     onMounted(() => {
+      initializeCalendar()
       loading.value = true
     })
 
@@ -227,7 +264,8 @@ export default {
       loading,
       selectDate,
       previousMonth,
-      nextMonth
+      nextMonth,
+      isPreviousMonthDisabled
     }
   }
 }
@@ -269,6 +307,18 @@ export default {
 .nav-btn:hover {
   background: #ECF2FF;
   color: #2F80ED;
+}
+
+.nav-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #ccc;
+}
+
+.nav-btn-disabled:hover {
+  background: #ffffff;
+  color: #ccc;
+  cursor: not-allowed;
 }
 
 .calendar-grid {
