@@ -47,11 +47,6 @@ import Pagination from '../components/Pagination.vue';
 <script>
 import axios from 'axios'
 
-// const onPageChange = (page) => {
-//   console.log('Current page:', page)
-//   // 處理頁碼變化
-// }
-
 export default {
   name: 'Card',
 
@@ -127,6 +122,49 @@ export default {
       }
     },
 
+    // 解析營業時間範圍並獲取可用的時段ID
+    getAvailableTimePeriods(availableTime) {
+      // 時段對照表 (依照您系統的時段設定)
+      const TIME_PERIODS = {
+        "07:00-08:00": 1,
+        "08:00-09:00": 2,
+        "09:00-10:00": 3,
+        "10:00-11:00": 4,
+        "11:00-12:00": 5,
+        "12:00-13:00": 6,
+        "13:00-14:00": 7,
+        "14:00-15:00": 8,
+        "15:00-16:00": 9,
+        "16:00-17:00": 10,
+        "17:00-18:00": 11,
+        "18:00-19:00": 12,
+        "19:00-20:00": 13,
+        "20:00-21:00": 14,
+        "21:00-22:00": 15
+      }
+
+      // 解析營業時間
+      const [startTime, endTime] = availableTime.split('-')
+
+      // 將所有時段轉換為數字以便比較
+      const convertTimeToNumber = (time) => {
+        const [hours] = time.split(':')
+        return parseInt(hours)
+      }
+
+      const startHour = convertTimeToNumber(startTime)
+      const endHour = convertTimeToNumber(endTime)
+
+      // 找出在營業時間內的時段ID
+      return Object.entries(TIME_PERIODS)
+        .filter(([period]) => {
+          const [periodStart] = period.split('-')
+          const periodHour = convertTimeToNumber(periodStart)
+          return periodHour >= startHour && periodHour < endHour
+        })
+        .map(([, id]) => id)
+    },
+
     isVenueAvailable(venueId, selectedDate, selectedTimePeriod) {
       // 如果沒有選擇日期，返回true
       if (!selectedDate) return true
@@ -134,15 +172,54 @@ export default {
       // 獲取該場地的所有預約
       const venueReservations = this.reservations[venueId] || []
 
-      // 檢查是否有任何預約在選定的日期和時段是"不可預約"狀態
-      return !venueReservations.some(reservation => {
-        const isSelectedDate = reservation.reservationDate === selectedDate
-        const isSelectedTimePeriod = selectedTimePeriod ?
-          reservation.timePeriodId === parseInt(selectedTimePeriod) : true
-        const isUnavailable = reservation.timePeriod_statusInfo.status === "不可預約"
+      // 找到對應場地的任一預約記錄，用於獲取場地資訊
+      const venueInfo = venueReservations.find(r => r.venue)
+      if (!venueInfo) return true
 
-        return isSelectedDate && isSelectedTimePeriod && isUnavailable
-      })
+      // 1. 檢查是否為休館日
+      const isCloseDate = venueInfo.venue.closeDates?.some(
+        closeDate => closeDate.closeDate === selectedDate
+      )
+      if (isCloseDate) return false
+
+      // 2. 獲取場地營業時間內的可用時段
+      const availableTimePeriods = this.getAvailableTimePeriods(venueInfo.venue.availableTime)
+
+      // 3. 獲取該日期的所有預約記錄
+      const dateReservations = venueReservations.filter(
+        reservation => reservation.reservationDate === selectedDate
+      )
+
+      // 4. 檢查營業時間內的時段是否都已預約
+      const unavailablePeriods = new Set(
+        dateReservations
+          .filter(r => r.statusText === "不可預約")
+          .map(r => r.timePeriodId)
+      )
+
+      // 如果營業時間內的所有時段都不可預約，表示當天已滿
+      const allPeriodsBooked = availableTimePeriods.every(
+        periodId => unavailablePeriods.has(periodId)
+      )
+
+      if (allPeriodsBooked) return false
+
+      // 5. 如果指定了時段，檢查該時段是否在營業時間內且可預約
+      if (selectedTimePeriod) {
+        const timePeriodId = parseInt(selectedTimePeriod)
+        // 檢查是否在營業時間內
+        if (!availableTimePeriods.includes(timePeriodId)) {
+          return false
+        }
+        // 檢查是否可預約
+        const timePeriodReservation = dateReservations.find(
+          r => r.timePeriodId === timePeriodId
+        )
+        return !timePeriodReservation || timePeriodReservation.statusText !== "不可預約"
+      }
+
+      // 6. 至少有一個營業時間內的時段可以預約
+      return true
     },
 
     applyFilters() {
