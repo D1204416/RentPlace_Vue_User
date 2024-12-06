@@ -176,10 +176,10 @@ export default {
       today.setHours(0, 0, 0, 0)
       // const prevMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1)
       // return prevMonth.getMonth() === today.getMonth() && prevMonth.getFullYear() === today.getFullYear()
-       
+
       // 計算當前顯示月份的第一天
-       const firstDayOfCurrentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1)
-      
+      const firstDayOfCurrentMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1)
+
       // 如果當前顯示月份的第一天早於今天，則不能再往前
       return firstDayOfCurrentMonth > today
     },
@@ -287,8 +287,8 @@ export default {
         Object.entries(searchQuery).filter(([_, value]) => value != null)
       );
 
-       // 使用 Vue Router 導航
-       this.$router.push({
+      // 使用 Vue Router 導航
+      this.$router.push({
         name: 'cardView',
         query: cleanQuery
       }).catch(err => {
@@ -355,7 +355,6 @@ export default {
   padding: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  /* 添加這行 */
 }
 
 /* 搜尋欄位樣式 */
@@ -368,7 +367,6 @@ export default {
   position: relative;
   align-items: center;
   height: 100%;
-  /*讓高度填滿 */
 }
 
 /* 讓 hover 區域跟 search-bar 一致 */
@@ -451,9 +449,9 @@ export default {
 /* 下拉選單樣式 */
 .dropdown {
   position: absolute;
-  top: 105%;
-  /* 改為相對於 search-field 底部 */
-  left: 0%;
+  top: 105%;   /* 改為相對於 search-field 底部 */
+  /* left: 50%;
+  transform: translateX(-50%); */
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -478,10 +476,12 @@ export default {
 
 /* 各下拉選單寬度 */
 #district-dropdown {
-  width: 500px;
+  width: 415%;   /* 設置為100%以配合search-bar寬度 */
+  max-width: calc(500% + 20px);   /* 確保不會超出container */
+  left: 0;   /* 重置left位置 */
+  transform: none;   /* 移除transform */
   height: 380px;
   padding: 20px;
-  /* 增加內部空間 */
 }
 
 #venue-dropdown {
@@ -675,16 +675,20 @@ export default {
 @media (max-width: 750px) {
   .search-container {
     padding: 0 10px;
-    overflow: visible;     /* 允許 dropdown 顯示 */
+    overflow: visible;
+    /* 允許 dropdown 顯示 */
   }
 
   .search-bar {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;     /* 三欄等寬 */
+    grid-template-columns: 1fr 1fr 1fr;
+    /* 三欄等寬 */
     padding: 15px;
     gap: 3px;
-    position: relative;     /* 添加相對定位 */
-    overflow: visible;     /* 允許 dropdown 顯示 */
+    position: relative;
+    /* 添加相對定位 */
+    overflow: visible;
+    /* 允許 dropdown 顯示 */
   }
 
   /* 當有 dropdown active 時，調整 search-bar 的布局 */
@@ -730,8 +734,10 @@ export default {
     grid-column: 2;
     text-align: left;
     font-size: 14px;
-    padding: 8px 0 8px 12px;     /* 增加左側padding */
-    border-left: 1px solid #ddd;     /* 添加左側分隔線 */
+    padding: 8px 0 8px 12px;
+    /* 增加左側padding */
+    border-left: 1px solid #ddd;
+    /* 添加左側分隔線 */
     position: relative;
   }
 
@@ -739,8 +745,10 @@ export default {
     content: '';
     position: absolute;
     left: 0;
-    top: 20%;     /* 開始位置 */
-    height: 60%;     /* 線的長度 */
+    top: 20%;
+    /* 開始位置 */
+    height: 60%;
+    /* 線的長度 */
     width: 1px;
     background-color: #eee;
   }
@@ -759,7 +767,8 @@ export default {
     margin: 0;
     padding: 8px;
     font-size: 14px;
-    white-space: nowrap;     /* 確保文字不換行 */
+    white-space: nowrap;
+    /* 確保文字不換行 */
   }
 
   /* 右欄 inputs */
@@ -772,10 +781,14 @@ export default {
 
   /* 搜尋按鈕置中 */
   .search-button {
-    position: absolute;     /* 絕對定位 */
-    right: 20px;     /* 距離右側 15px */
-    top: 50%;     /* 上方 50% */
-    transform: translateY(-50%);     /* 往上移動自身高度的 50% 以達到垂直置中 */
+    position: absolute;
+    /* 絕對定位 */
+    right: 20px;
+    /* 距離右側 15px */
+    top: 50%;
+    /* 上方 50% */
+    transform: translateY(-50%);
+    /* 往上移動自身高度的 50% 以達到垂直置中 */
     width: 50px;
     height: 50px;
     background: #FFC107;
@@ -784,24 +797,32 @@ export default {
   /* 當有 dropdown active 時的調整 */
   .search-field.active {
     display: block;
-    grid-column: 1 / -1;     /* 橫跨所有列 */
+    grid-column: 1 / -1;
+    /* 橫跨所有列 */
   }
 
   .search-field.active+.search-field {
-    margin-top: 200px;     /* 為 dropdown 預留空間 */
+    margin-top: 200px;
+    /* 為 dropdown 預留空間 */
   }
 
   /* dropdown 樣式調整 */
   .dropdown {
-    position: absolute;     /* width: 106% !important; */
-    max-height: 320px;     /* 限制最大高度 */
-    overflow-y: auto;     /* 內容過多時可滾動 */
+    position: absolute;
+    /* width: 106% !important; */
+    max-height: 320px;
+    /* 限制最大高度 */
+    overflow-y: auto;
+    /* 內容過多時可滾動 */
     left: -10px;
-    width: calc(103.5% + 20px) !important; /* 寬度設為容器寬度 + 左右間距 */
+    width: calc(103.5% + 20px) !important;
+    /* 寬度設為容器寬度 + 左右間距 */
     margin-top: 8px;
     z-index: 1000;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    transform: none;
   }
 
   #date-dropdown {
@@ -812,33 +833,46 @@ export default {
   .calendar-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;     /* 減少間距 */
-    padding: 0 5px;     /* 減少側邊padding */
+    gap: 4px;
+    /* 減少間距 */
+    padding: 0 5px;
+    /* 減少側邊padding */
   }
 
   .calendar-header>div {
-    width: auto;     /* 移除固定寬度 */
-    height: 30px;     /* 減少高度 */
+    width: auto;
+    /* 移除固定寬度 */
+    height: 30px;
+    /* 減少高度 */
     font-size: 13px;
   }
 
   .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;     /* 減少間距 */
+    gap: 4px;
+    /* 減少間距 */
     padding: 5px;
   }
 
   .calendar-day {
-    width: auto;     /* 移除固定寬度 */
-    height: 30px;     /* 減少高度 */
+    width: auto;
+    /* 移除固定寬度 */
+    height: 30px;
+    /* 減少高度 */
     font-size: 13px;
   }
-
+  
+  #capacity-dropdown,
+  #district-dropdown {
+    width: calc(100% + 30px) !important; /* 30px = search-bar的左右padding (15px * 2) */
+    left: -10px; /* 對應 search-bar 的 padding-left */
+  }
 
   /* 調整 checkbox-group 在 dropdown 中的排列 */
   #district-dropdown .checkbox-group {
-    grid-template-columns: repeat(2, 1fr);     /* 改為兩列 */
+    grid-template-columns: repeat(2, 1fr);
+    /* 改為兩列 */
     padding: 10px;
   }
 }
