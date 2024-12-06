@@ -129,7 +129,7 @@ export default {
         const isSelectedDate = reservation.reservationDate === selectedDate
         const isSelectedTimePeriod = selectedTimePeriod ?
           reservation.timePeriodId === parseInt(selectedTimePeriod) : true
-        const isUnavailable = reservation.statusInfo.status === "不可預約"
+        const isUnavailable = reservation.timePeriod_statusInfo.status === "不可預約"
 
         return isSelectedDate && isSelectedTimePeriod && isUnavailable
       })
