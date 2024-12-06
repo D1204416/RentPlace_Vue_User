@@ -5,7 +5,7 @@
   <div class="selected-date-container">
 
     <div class="calendar-wrapper">
-      <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
+      <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates" :initial-date="$route.query.date"
         @date-selected="handleDateSelect" />
     </div>
 
@@ -45,6 +45,11 @@ export default {
   },
 
   created() {
+
+    console.log('Route object:', this.$route)
+    console.log('Route params:', this.$route.params)
+    console.log('Route query:', this.$route.query)
+
     // 保存進入頁面時的查詢參數
     this.originalQuery = { ...this.$route.query }
   },

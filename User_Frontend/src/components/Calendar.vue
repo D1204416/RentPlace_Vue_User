@@ -81,6 +81,10 @@ export default {
     closeDates: {
       type: Array,
       default: () => []
+    },
+    initialDate: {
+      type: String,
+      default: null
     }
   },
 
@@ -90,6 +94,7 @@ export default {
     const currentYear = ref(currentDate.value.getFullYear())
     const weekDays = ref(['日', '一', '二', '三', '四', '五', '六'])
     const loading = ref(false)
+    const selectedDate = ref(null) // 新增選中日期的 ref
 
     // 新增: 檢查是否禁用上個月按鈕
     const isPreviousMonthDisabled = computed(() => {
@@ -120,19 +125,14 @@ export default {
       const isClosedDate = props.closeDates.some(
         closeDate => closeDate.date === dateString
       )
-      if (isClosedDate) return 'closed'
+      if (isClosedDate) { return 'closed' }
 
-      // 檢查預約狀態
-      const dayReservations = props.reservations.filter(
-        reservation => reservation.date === dateString
+      // 檢查是否為不可預約日期
+      const reservation = props.reservations.find(
+        res => res.date === dateString
       )
-
-      if (dayReservations.length > 0) {
-        // 檢查是否所有時段都不可預約
-        if (dayReservations.every(res => res.status === '不可預約')) {
-          return 'fully-booked'
-        }
-
+      if (reservation && reservation.status === '不可預約') {
+        return 'fully-booked'
       }
 
       return null
@@ -187,8 +187,7 @@ export default {
       return days
     })
 
-    // 新增選中日期的 ref
-    const selectedDate = ref(null)
+
 
     // 選擇日期
     const selectDate = (day) => {
@@ -247,10 +246,30 @@ export default {
 
     const initializeCalendar = () => {
       const today = new Date()
-      currentDate.value = today
-      currentMonth.value = today.getMonth()
-      currentYear.value = today.getFullYear()
+
+      if (props.initialDate) {
+        // 如果有初始日期，解析並設置
+        const initialDate = new Date(props.initialDate)
+        currentDate.value = initialDate
+        currentMonth.value = initialDate.getMonth()
+        currentYear.value = initialDate.getFullYear()
+        selectedDate.value = formatDate(initialDate)  // 設置選中日期
+      } else {
+        currentDate.value = today
+        currentMonth.value = today.getMonth()
+        currentYear.value = today.getFullYear()
+      }
     }
+
+    watch(
+    () => props.initialDate,
+    (newDate) => {
+      if (newDate) {
+        selectedDate.value = newDate
+      }
+    },
+    { immediate: true }
+  )
 
     // 組件掛載
     onMounted(() => {
@@ -268,7 +287,8 @@ export default {
       selectDate,
       previousMonth,
       nextMonth,
-      isPreviousMonthDisabled
+      isPreviousMonthDisabled,
+      selectedDate
     }
   }
 }
@@ -356,12 +376,14 @@ export default {
 }
 
 .past-day {
-  color: #ccc;  /* 過去日期用灰色 */
+  color: #ccc;
+  /* 過去日期用灰色 */
   cursor: default;
 }
 
 .next-month {
-  color: #fff;  /* 下個月日期用白色 */
+  color: #fff;
+  /* 下個月日期用白色 */
   cursor: default;
 }
 
