@@ -507,6 +507,10 @@ export default {
 
 #district-dropdown .checkbox-group {
   grid-template-columns: repeat(5, 1fr);
+
+  padding: 0 20px; /* 增加左右內距 */
+  width: 90%; /* 設置寬度比例 */
+  margin: 0 auto; /* 水平置中 */
 }
 
 #venue-dropdown .checkbox-group {
@@ -518,6 +522,8 @@ export default {
   align-items: center;
   gap: 8px;
   white-space: nowrap;
+
+  justify-content: flex-start; /* 確保內容左對齊 */
 }
 
 .checkbox-item input[type="checkbox"] {
