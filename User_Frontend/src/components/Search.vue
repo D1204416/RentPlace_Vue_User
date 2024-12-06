@@ -522,7 +522,7 @@ export default {
   align-items: center;
   gap: 8px;
   white-space: nowrap;
-
+  padding: 0 20px;
   justify-content: flex-start; /* 確保內容左對齊 */
 }
 
