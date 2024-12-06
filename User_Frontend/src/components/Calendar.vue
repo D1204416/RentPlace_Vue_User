@@ -33,7 +33,8 @@
         <div v-for="(day, index) in calendarDays" :key="index" :class="[
           'calendar-cell',
           'day',
-          { 'other-month': !day.currentMonth || day.isPast },
+          { 'past-day': day.isPast },  // 過去日期class
+          { 'next-month': !day.currentMonth && !day.isPast },  // 下個月的日期class
           { 'fully-booked': day.status === 'fully-booked' },
           { 'closed': day.status === 'closed' },
           { 'selected': day.status === 'selected' }
@@ -166,6 +167,8 @@ export default {
           isPast: date < today
         })
       }
+
+
 
       // 添加下個月的天數
       const remainingDays = 35 - days.length  // 改為 35 (5 x 7)
@@ -347,13 +350,18 @@ export default {
   transition: background-color 0.2s;
 }
 
-.day:hover:not(.other-month):not(.fully-booked):not(.closed):not(.selected) {
+.day:hover:not(.past-day):not(.next-month):not(.fully-booked):not(.closed):not(.selected) {
   background: #ECF2FF;
   color: #2F80ED;
 }
 
-.other-month {
-  color: #ccc;
+.past-day {
+  color: #ccc;  /* 過去日期用灰色 */
+  cursor: default;
+}
+
+.next-month {
+  color: #fff;  /* 下個月日期用白色 */
   cursor: default;
 }
 
