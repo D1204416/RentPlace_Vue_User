@@ -112,8 +112,28 @@ export default {
           throw new Error('Invalid response data format')
         }
 
+        // 依日期分組預約資料
+        const reservationsByDate = response.data.reduce((acc, reservation) => {
+          const date = reservation.reservationDate
+          if (!acc[date]) {
+            acc[date] = {
+              isCountBased: false, // 預設為非計次預約
+              timeSlots: []
+            }
+          }
+
+          // 檢查是否為計次預約
+          if (reservation.timePeriod.timePeriodId === 16) {
+            acc[date].isCountBased = true
+          } else {
+            acc[date].timeSlots.push(reservation.timePeriod.timePeriod)
+          }
+
+          return acc
+        }, {})
+
         // 從第一筆資料中取得場地可預約時段
-        const availableTime = response.data[0]?.venue?.availableTime // "09:00-18:00"
+        const availableTime = response.data[0]?.venue?.availableTime
         if (!availableTime) {
           throw new Error('Missing venue available time')
         }
@@ -131,28 +151,28 @@ export default {
           )
         }
 
-        // 依日期分組預約資料
-        const reservationsByDate = response.data.reduce((acc, reservation) => {
-          const date = reservation.reservationDate
-          if (!acc[date]) {
-            acc[date] = []
-          }
-          acc[date].push(reservation.timePeriod.timePeriod)
-          return acc
-        }, {})
-
         // 整理最終資料
-        reservations.value = Object.entries(reservationsByDate).map(([date, bookedTimeSlots]) => {
-          // 判斷該日期是否所有可預約時段都被預約
+        reservations.value = Object.entries(reservationsByDate).map(([date, dateInfo]) => {
+          // 如果是計次預約，直接標記為不可預約
+          if (dateInfo.isCountBased) {
+            return {
+              date: date,
+              timePeriodId: 16,
+              status: '不可預約',
+              statusId: 4
+            }
+          }
+
+          // 非計次預約則檢查時段
           const isFullyBooked = availableTimeSlots.every(timeSlot =>
-            bookedTimeSlots.includes(timeSlot)
+            dateInfo.timeSlots.includes(timeSlot)
           )
 
           return {
             date: date,
-            timePeriodId: null, // 如果需要可以保留
+            timePeriodId: null,
             status: isFullyBooked ? '不可預約' : '可預約',
-            statusId: isFullyBooked ? 4 : 1 // 假設 4 是不可預約, 1 是可預約
+            statusId: isFullyBooked ? 4 : 1
           }
         })
 
