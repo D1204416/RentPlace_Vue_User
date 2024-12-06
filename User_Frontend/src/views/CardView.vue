@@ -24,7 +24,7 @@ import Pagination from '../components/Pagination.vue';
         <div v-for="room in paginatedRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
           <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
           <div class="card-content">
-            <h5 class="venue-name">{{ room.placeName }}</h5>
+            <h5 class="venue-name">{{ room.venueName }}</h5>
             <div class="venue-info">
               <p>場地類型：{{ room.venueType }}</p>
               <p>聯絡電話：{{ room.phoneNumber }}</p>
@@ -140,7 +140,8 @@ export default {
         "18:00-19:00": 12,
         "19:00-20:00": 13,
         "20:00-21:00": 14,
-        "21:00-22:00": 15
+        "21:00-22:00": 15,
+        "07:00-22:00": 16  // 整天預約時段
       }
 
       // 解析營業時間
@@ -156,23 +157,22 @@ export default {
       const endHour = convertTimeToNumber(endTime)
 
       // 找出在營業時間內的時段ID
-      return Object.entries(TIME_PERIODS)
+      const availablePeriods = Object.entries(TIME_PERIODS)
         .filter(([period]) => {
+          if (period === "07:00-22:00") return true  // 總是包含整天時段
           const [periodStart] = period.split('-')
           const periodHour = convertTimeToNumber(periodStart)
           return periodHour >= startHour && periodHour < endHour
         })
         .map(([, id]) => id)
+
+      return availablePeriods
     },
 
     isVenueAvailable(venueId, selectedDate, selectedTimePeriod) {
-      // 如果沒有選擇日期，返回true
       if (!selectedDate) return true
 
-      // 獲取該場地的所有預約
       const venueReservations = this.reservations[venueId] || []
-
-      // 找到對應場地的任一預約記錄，用於獲取場地資訊
       const venueInfo = venueReservations.find(r => r.venue)
       if (!venueInfo) return true
 
@@ -190,21 +190,29 @@ export default {
         reservation => reservation.reservationDate === selectedDate
       )
 
-      // 4. 檢查營業時間內的時段是否都已預約
+      // 4. 檢查是否有整天預約
+      const hasFullDayBooking = dateReservations.some(
+        r => r.timePeriodId === 16 && r.statusText === "不可預約"
+      )
+      if (hasFullDayBooking) return false
+
+      // 5. 如果選擇了整天預約時段
+      if (selectedTimePeriod && parseInt(selectedTimePeriod) === 16) {
+        // 檢查所有時段是否都可預約
+        const hasAnyBooking = dateReservations.some(
+          r => r.statusText === "不可預約"
+        )
+        return !hasAnyBooking
+      }
+
+      // 6. 檢查一般時段的預約狀態
       const unavailablePeriods = new Set(
         dateReservations
           .filter(r => r.statusText === "不可預約")
           .map(r => r.timePeriodId)
       )
 
-      // 如果營業時間內的所有時段都不可預約，表示當天已滿
-      const allPeriodsBooked = availableTimePeriods.every(
-        periodId => unavailablePeriods.has(periodId)
-      )
-
-      if (allPeriodsBooked) return false
-
-      // 5. 如果指定了時段，檢查該時段是否在營業時間內且可預約
+      // 如果指定了時段
       if (selectedTimePeriod) {
         const timePeriodId = parseInt(selectedTimePeriod)
         // 檢查是否在營業時間內
@@ -212,14 +220,15 @@ export default {
           return false
         }
         // 檢查是否可預約
-        const timePeriodReservation = dateReservations.find(
-          r => r.timePeriodId === timePeriodId
-        )
-        return !timePeriodReservation || timePeriodReservation.statusText !== "不可預約"
+        return !unavailablePeriods.has(timePeriodId)
       }
 
-      // 6. 至少有一個營業時間內的時段可以預約
-      return true
+      // 7. 檢查是否還有可用時段
+      const allPeriodsBooked = availableTimePeriods
+        .filter(id => id !== 16)  // 排除整天時段的檢查
+        .every(periodId => unavailablePeriods.has(periodId))
+
+      return !allPeriodsBooked
     },
 
     applyFilters() {
