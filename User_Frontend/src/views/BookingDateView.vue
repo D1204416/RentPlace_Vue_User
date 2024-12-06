@@ -1,9 +1,9 @@
 <!-- src/views/BookingDate.vue -->
 <template>
   <progress-steps :current-step="1" />
-  
+
   <div class="selected-date-container">
-    
+
     <div class="calendar-wrapper">
       <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
         @date-selected="handleDateSelect" />
@@ -106,13 +106,56 @@ export default {
           `http://localhost:8080/api/reservations/venue/${venueId.value}`,
           { headers }
         )
-        // 轉換資料格式
-        reservations.value = response.data.map(reservation => ({
-          date: reservation.reservationDate,
-          timePeriodId: reservation.timePeriodId,
-          status: reservation.timePeriod_statusInfo.status,
-          statusId: reservation.timePeriod_statusInfo.statusId
-        }))
+
+        // 檢查回傳資料
+        if (!response.data || !Array.isArray(response.data)) {
+          throw new Error('Invalid response data format')
+        }
+
+        // 從第一筆資料中取得場地可預約時段
+        const availableTime = response.data[0]?.venue?.availableTime // "09:00-18:00"
+        if (!availableTime) {
+          throw new Error('Missing venue available time')
+        }
+
+        // 解析可預約時段
+        const [startTime, endTime] = availableTime.split('-')
+        const startHour = parseInt(startTime.split(':')[0])
+        const endHour = parseInt(endTime.split(':')[0])
+
+        // 產生所有可預約的時段
+        const availableTimeSlots = []
+        for (let hour = startHour; hour < endHour; hour++) {
+          availableTimeSlots.push(
+            `${String(hour).padStart(2, '0')}:00-${String(hour + 1).padStart(2, '0')}:00`
+          )
+        }
+
+        // 依日期分組預約資料
+        const reservationsByDate = response.data.reduce((acc, reservation) => {
+          const date = reservation.reservationDate
+          if (!acc[date]) {
+            acc[date] = []
+          }
+          acc[date].push(reservation.timePeriod.timePeriod)
+          return acc
+        }, {})
+
+        // 整理最終資料
+        reservations.value = Object.entries(reservationsByDate).map(([date, bookedTimeSlots]) => {
+          // 判斷該日期是否所有可預約時段都被預約
+          const isFullyBooked = availableTimeSlots.every(timeSlot =>
+            bookedTimeSlots.includes(timeSlot)
+          )
+
+          return {
+            date: date,
+            timePeriodId: null, // 如果需要可以保留
+            status: isFullyBooked ? '不可預約' : '可預約',
+            statusId: isFullyBooked ? 4 : 1 // 假設 4 是不可預約, 1 是可預約
+          }
+        })
+
       } catch (error) {
         console.error('Failed to fetch reservations:', error)
         showMessage('無法載入預約資料，請稍後再試', 'error')
@@ -144,22 +187,22 @@ export default {
 
     // 處理日期選擇
     const handleDateSelect = (dateInfo) => {
-    // 將日期格式轉換為 "MM月DD日" 的格式
-    const date = new Date(dateInfo.date)
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    selectedDate.value = `${month}月${day}日可租借時段`
-    
-    console.log('bookingDate:', dateInfo)
-    router.push({
-      name: 'TimeSelection',
-      params: {
-        id: venueId.value,
-        date: dateInfo.date
-      },
-      query: route.query
-    })
-  }
+      // 將日期格式轉換為 "MM月DD日" 的格式
+      const date = new Date(dateInfo.date)
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      selectedDate.value = `${month}月${day}日可租借時段`
+
+      console.log('bookingDate:', dateInfo)
+      router.push({
+        name: 'TimeSelection',
+        params: {
+          id: venueId.value,
+          date: dateInfo.date
+        },
+        query: route.query
+      })
+    }
 
 
     // 監聽路由參數變化
