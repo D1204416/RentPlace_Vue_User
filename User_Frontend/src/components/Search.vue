@@ -449,10 +449,9 @@ export default {
 /* 下拉選單樣式 */
 .dropdown {
   position: absolute;
-  top: 105%;
-  /* 改為相對於 search-field 底部 */
-  left: 50%;
-  transform: translateX(-50%);
+  top: 105%;   /* 改為相對於 search-field 底部 */
+  /* left: 50%;
+  transform: translateX(-50%); */
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -477,14 +476,10 @@ export default {
 
 /* 各下拉選單寬度 */
 #district-dropdown {
-  width: 410%;
-  /* 設置為100%以配合search-bar寬度 */
-  max-width: calc(500% + 20px);
-  /* 確保不會超出container */
-  left: 0;
-  /* 重置left位置 */
-  transform: none;
-  /* 移除transform */
+  width: 415%;   /* 設置為100%以配合search-bar寬度 */
+  max-width: calc(500% + 20px);   /* 確保不會超出container */
+  left: 0;   /* 重置left位置 */
+  transform: none;   /* 移除transform */
   height: 380px;
   padding: 20px;
 }
@@ -867,10 +862,11 @@ export default {
     /* 減少高度 */
     font-size: 13px;
   }
-
+  
+  #capacity-dropdown,
   #district-dropdown {
-    width: calc(100% + 20px) !important;
-    max-width: none;
+    width: calc(100% + 30px) !important; /* 30px = search-bar的左右padding (15px * 2) */
+    left: -10px; /* 對應 search-bar 的 padding-left */
   }
 
   /* 調整 checkbox-group 在 dropdown 中的排列 */
