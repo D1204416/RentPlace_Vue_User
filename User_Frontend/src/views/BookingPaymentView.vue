@@ -49,11 +49,11 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
         <h2 class="section-title">繳費方式</h2>
         <div class="section-content">
           <label class="radio-label">
-            <input type="radio" name="payment" v-model="paymentMethod" value="online">
+            <input type="radio" name="payment" v-model="paymentMethod" value="ONLINE_PAYMENT">
             <span class="radio-text">線上繳費</span>
           </label>
           <label class="radio-label">
-            <input type="radio" name="payment" v-model="paymentMethod" value="atm">
+            <input type="radio" name="payment" v-model="paymentMethod" value="BANK_TRANSFER">
             <span class="radio-text">ATM/銀行臨櫃 轉帳繳費</span>
           </label>
         </div>
