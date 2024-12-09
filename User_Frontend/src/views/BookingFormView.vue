@@ -179,13 +179,13 @@ export default {
     // 儲存整個預約表單資料
     saveBookingData() {
       const bookingData = {
-        name: this.formData.name,
+        userId: this.formData.name,
         phone: this.formData.phone,
-        department: this.formData.department,
+        applyApartment: this.formData.department,
         content: this.formData.content,
         venueId: this.venueId,
         venueName: this.venueData?.venueName,
-        selectedEquipments: this.selectedEquipments
+        equipmentIds: this.selectedEquipments
       }
       localStorage.setItem('bookingData', JSON.stringify(bookingData))
     },

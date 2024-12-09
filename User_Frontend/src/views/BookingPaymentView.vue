@@ -13,9 +13,9 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
         <h2 class="section-title">申請人資料</h2>
         <div class="section-content">
           <div class="info-row">
-            <span>申請人：<span class="info-value">{{ bookingData.name }}</span></span>
+            <span>申請人：<span class="info-value">{{ bookingData.userId }}</span></span>
             <span>聯絡電話：<span class="info-value">{{ bookingData.phone }}</span></span>
-            <span>申請單位：<span class="info-value">{{ bookingData.department }}</span></span>
+            <span>申請單位：<span class="info-value">{{ bookingData.applyApartment }}</span></span>
           </div>
           <div class="info-item">
             <span>活動內容：<span class="info-value">{{ bookingData.content }}</span></span>
