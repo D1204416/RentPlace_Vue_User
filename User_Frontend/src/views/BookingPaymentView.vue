@@ -82,11 +82,11 @@ export default {
   data() {
     return {
       bookingData: {
-        name: '',
+        userId: '',
         phone: '',
-        department: '',
+        applyApartment: '',
         content: '',
-        selectedEquipments: [],
+        equipmentIds: [],
         venueId: '',
         venueName: '',
         originalQuery: null,
@@ -105,7 +105,7 @@ export default {
       return this.timeSlots.join('、')
     },
     formatEquipments() {
-      return this.bookingData.selectedEquipments
+      return this.bookingData.equipmentIds
         .map(id => EQUIPMENT_MAP[id])
         .join('、')
     }
