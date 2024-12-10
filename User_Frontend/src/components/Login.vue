@@ -243,7 +243,7 @@ const handleLogin = async () => {
 
       // 儲存用戶資料到 localStorage
       const userData = {
-        id: response.data.id,
+        userId: response.data.userId,
         name: response.data.username,
         phone: response.data.phone,
         email: response.data.email,
@@ -253,7 +253,7 @@ const handleLogin = async () => {
 
       // 更新 user store
       userStore.setUser({
-        id: response.data.id,  // 確保後端返回 id
+        userId: response.data.userId,  // 確保後端返回 id
         username: response.data.username,
         email: response.data.email,  // 確保從回應中獲取 email
         phone: response.data.phone
