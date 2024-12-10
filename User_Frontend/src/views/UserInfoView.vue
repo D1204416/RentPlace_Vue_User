@@ -23,7 +23,7 @@
         <!-- 會員ID -->
         <div class="form-group">
           <label>會員 ID</label>
-          <input type="text" v-model="user.userId" disabled class="input disabled">
+          <input type="text" v-model="user.id" disabled class="input disabled">
         </div>
 
         <!-- 姓名 -->
@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       user: {
-        userId: '',
+        id: '',
         name: '',
         password: '',
         phone: '',
@@ -118,60 +118,96 @@ export default {
   methods: {
     async fetchUserData() {
       try {
-        const userId = localStorage.getItem('user')
-        if (!userId) {
-          throw new Error('找不到使用者 ID')
+        this.loading = true
+        this.error = ''
+
+        // 從 localStorage 獲取用戶 ID
+        const userData = JSON.parse(localStorage.getItem('user'))
+        if (!userData || !userData.userId) {
+          throw new Error('未找到用戶信息')
         }
 
-        const data = await axios.get(`/user/${userId}`)
+        const response = await axiosInstance.get(`/api/user/${userData.userId}`)
+        const { data } = response
+
+        // 更新用戶資料
         this.user = {
-          userId: data.userId || '',
-          name: data.name || '',
-          password: data.password || '',
-          phone: data.phone || '',
-          email: data.email || '',
-          gender: data.gender || '',
-          birthday: data.birthday || ''
+          id: data.userId,
+          name: data.username,
+          phone: data.phone,
+          email: data.email,
+          gender: data.gender,
+          birthday: data.birthday
         }
-      } catch (error) {
-        this.error = error.message || '無法取得會員資料'
-        console.error('Error fetching user data:', error)
+        // 不載入密碼欄位
+        this.user.password = ''
+      } catch (err) {
+        this.error = err.response?.data?.message || err.message || '載入用戶資料失敗'
       } finally {
         this.loading = false
       }
     },
 
     async handleSubmit() {
-      this.loading = true
-      this.error = ''
-      this.success = ''
-
       try {
-        const data = await axios.put(`/user/${this.user.id}`, this.user)
-        this.user = { ...this.user, ...data }
-        this.success = '資料更新成功！'
-      } catch (error) {
-        this.error = error.message || '更新失敗'
-        console.error('Error updating user data:', error)
+        this.loading = true
+        this.error = ''
+        this.success = ''
+
+        const userData = JSON.parse(localStorage.getItem('user'))
+        if (!userData || !userData.userId) {
+          throw new Error('未找到用戶信息')
+        }
+
+        // 準備更新的數據
+        const updateData = {
+          name: this.user.name,
+          phone: this.user.phone,
+          email: this.user.email,
+          gender: this.user.gender,
+          birthday: this.user.birthday
+        }
+
+        // 如果有輸入新密碼，則加入密碼欄位
+        if (this.user.password) {
+          updateData.password = this.user.password
+        }
+
+        await axiosInstance.put(`/api/user/${userData.userId}`, updateData)
+        this.success = '資料更新成功'
+
+        // 清空密碼欄位
+        this.user.password = ''
+      } catch (err) {
+        this.error = err.response?.data?.message || err.message || '更新用戶資料失敗'
       } finally {
         this.loading = false
       }
     },
 
     async handleDelete() {
-      if (!confirm('確定要刪除帳號嗎？此動作無法復原。')) {
+      if (!confirm('確定要刪除帳號嗎？此操作無法復原。')) {
         return
       }
 
-      this.loading = true
       try {
-        await axios.delete(`/user/${this.user.id}`)
+        this.loading = true
+        this.error = ''
+
+        const userData = JSON.parse(localStorage.getItem('user'))
+        if (!userData || !userData.userId) {
+          throw new Error('未找到用戶信息')
+        }
+
+        await axiosInstance.delete(`/api/user/${userData.userId}`)
+
+        // 清除本地存儲的用戶信息
         localStorage.removeItem('user')
-        this.$router.push('/') // 導回首頁
-      } catch (error) {
-        this.error = error.message || '刪除失敗'
-        console.error('Error deleting user:', error)
-      } finally {
+
+        // 導向登入頁面
+        this.$router.push('/login')
+      } catch (err) {
+        this.error = err.response?.data?.message || err.message || '刪除帳號失敗'
         this.loading = false
       }
     }
