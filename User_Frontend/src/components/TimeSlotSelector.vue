@@ -1,6 +1,6 @@
 <template>
     <div class="time-slot-selector">
-        <h1>{{ date }}</h1>
+        <h1>{{ formattedDate }}</h1>
 
         <div class="time-slots">
             <div v-for="section in sections" :key="section.title" class="time-section">
@@ -26,6 +26,10 @@ export default {
         date: {
             type: String,
             default: '11月26日'
+        },
+        initialDate: {
+            type: String,
+            default: null
         }
     },
 
@@ -91,7 +95,18 @@ export default {
                     }))
             );
         }
-    }
+    },
+    computed: {
+        formattedDate() {
+            if (this.initialDate) {
+                const date = new Date(this.initialDate)
+                const month = date.getMonth() + 1
+                const day = date.getDate()
+                return `${month}月${day}日可租借時段`
+            }
+            return this.date
+        }
+    },
 }
 </script>
 
@@ -116,11 +131,12 @@ h1 {
 }
 
 .time-slots {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-  width: 100%; /* 確保寬度撐滿 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+    width: 100%;
+    /* 確保寬度撐滿 */
 }
 
 .time-section {
