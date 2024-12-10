@@ -42,7 +42,7 @@
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" href="#">會員資訊</a></li>
-              <li><a class="dropdown-item" href="#">租借紀錄</a></li>
+              <li><RouterLink to="/userOrder" class="dropdown-item" href="#">租借紀錄</RouterLink></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -184,7 +184,7 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const { user } = storeToRefs(userStore)

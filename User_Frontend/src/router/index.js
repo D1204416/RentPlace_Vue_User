@@ -10,6 +10,8 @@ import BookingPaymentView from '../views/BookingPaymentView.vue'
 import BookingFinishView from '../views/BookingFinishView.vue'
 import DecodeQRCodeView from "@/views/DecodeQRCodeView.vue"; // 修正命名，首字母大寫
 
+import UserOrderView from '../views/UserOrderView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -198,6 +200,11 @@ const router = createRouter({
           }
         ]
       }
+    },
+    {
+      path: '/userOrder',
+      name: 'userOrderView',
+      component: UserOrderView,
     }
   ]
 })
