@@ -41,7 +41,7 @@
 
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" href="#">會員資訊</a></li>
+              <li><RouterLink to="/userInfo" class="dropdown-item" href="#">會員資訊</RouterLink></li>
               <li><RouterLink to="/userOrder" class="dropdown-item" href="#">租借紀錄</RouterLink></li>
               <li>
                 <hr class="dropdown-divider">

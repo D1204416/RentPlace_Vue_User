@@ -456,10 +456,18 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="date"],
-input[type="tel"],
-select {
+input[type="tel"]{
   width: 100%;
   padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
