@@ -4,9 +4,16 @@
     <p>以下是您的 QR Code：</p>
     <div v-if="qrCodeUrl">
       <img :src="qrCodeUrl" alt="QR Code" />
+      <div v-if="latestOrder">
+        <p>訂單 ID: <strong>{{ latestOrder.orderId }}</strong></p>
+
+      </div>
       <p>下一次更新倒數：<strong>{{ countdown }}</strong> 秒</p>
       <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
     </div>
+    <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
+      無法加载最新的 QR Code 或订单信息，请稍后重试。
+    </p>
     <p v-else>正在載入 QR Code...</p>
   </div>
 </template>
@@ -18,50 +25,54 @@ export default {
   name: "BookingFinishView",
   data() {
     return {
-      qrCodeUrl: null, // 存储 QR Code 的 Blob URL
-      intervalId: null, // 定时器 ID
-      countdown: 10, // 倒数计时秒数
+      qrCodeUrl: null,
+      latestOrder: null,
+      intervalId: null,
+      countdown: 10,
+      refreshInterval: 10000,
     };
   },
   mounted() {
     this.startAutoUpdateQRCode();
   },
   beforeDestroy() {
-    this.stopAutoUpdateQRCode(); // 组件销毁时停止定时器
+    this.stopAutoUpdateQRCode();
   },
   methods: {
     async loadLatestQRCode() {
       try {
-        const response = await axios.get(
-            `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`, // 加时间戳防止缓存
-            {responseType: "arraybuffer"} // 确保返回二进制数据
+        const qrCodeResponse = await axios.get(
+            `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`,
+            {responseType: "arraybuffer"}
         );
 
-        // 将二进制数据转换为 Blob URL
-        const blob = new Blob([response.data], {type: "image/png"});
+        const blob = new Blob([qrCodeResponse.data], {type: "image/png"});
         const blobUrl = URL.createObjectURL(blob);
 
-        // 清除旧的 Blob URL 以避免内存泄漏
         if (this.qrCodeUrl) {
           URL.revokeObjectURL(this.qrCodeUrl);
         }
 
         this.qrCodeUrl = blobUrl;
 
-        console.log("QR Code Blob URL updated:", this.qrCodeUrl); // 调试用日志
+        const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
+        this.latestOrder = orderResponse.data;
+
+        console.log("QR Code and Order updated:", this.latestOrder);
       } catch (error) {
-        console.error("无法加载 QR Code", error);
+        console.error("无法加载 QR Code 或订单信息", error);
         this.qrCodeUrl = null;
+        this.latestOrder = null;
       }
     },
     startAutoUpdateQRCode() {
-      this.loadLatestQRCode(); // 初次加载
-      this.startCountdown(); // 开始倒计时
+      this.loadLatestQRCode();
+      this.startCountdown();
 
-      // 每 10 秒刷新一次
       this.intervalId = setInterval(() => {
         this.loadLatestQRCode();
-      }, 10000);
+        this.startCountdown();
+      }, this.refreshInterval);
     },
     stopAutoUpdateQRCode() {
       if (this.intervalId) {
@@ -70,19 +81,19 @@ export default {
       }
     },
     manualUpdateQRCode() {
-      this.stopAutoUpdateQRCode(); // 停止自动刷新
-      this.loadLatestQRCode(); // 手动刷新
-      this.startAutoUpdateQRCode(); // 重启自动刷新
+      this.stopAutoUpdateQRCode();
+      this.loadLatestQRCode();
+      this.startAutoUpdateQRCode();
     },
     startCountdown() {
-      this.countdown = 10; // 倒计时从 10 开始
+      this.countdown = this.refreshInterval / 1000;
       const countdownInterval = setInterval(() => {
         if (this.countdown > 0) {
           this.countdown--;
         } else {
-          clearInterval(countdownInterval); // 倒计时结束时清除计时器
+          clearInterval(countdownInterval);
         }
-      }, 1000); // 每秒更新一次倒计时
+      }, 1000);
     },
   },
 };
@@ -119,5 +130,11 @@ export default {
 .booking-finish-view p {
   font-size: 18px;
   margin-top: 10px;
+}
+
+.error {
+  color: red;
+  font-size: 16px;
+  margin-top: 20px;
 }
 </style>
