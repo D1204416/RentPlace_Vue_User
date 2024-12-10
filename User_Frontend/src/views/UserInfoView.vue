@@ -137,7 +137,7 @@ export default {
           phone: data.phone,
           email: data.email,
           gender: data.gender,
-          birthday: data.birthday
+          birthday: data.birth
         }
         // 不載入密碼欄位
         this.user.password = ''
@@ -161,11 +161,11 @@ export default {
 
         // 準備更新的數據
         const updateData = {
-          name: this.user.name,
+          name: this.user.username,
           phone: this.user.phone,
           email: this.user.email,
           gender: this.user.gender,
-          birthday: this.user.birthday
+          birthday: this.user.birth
         }
 
         // 如果有輸入新密碼，則加入密碼欄位
