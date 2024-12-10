@@ -29,7 +29,7 @@
         <!-- 姓名 -->
         <div class="form-group">
           <label>姓名</label>
-          <input type="text" v-model="user.name" required class="input">
+          <input type="text" v-model="user.username" required class="input">
         </div>
 
         <!-- 密碼 -->
@@ -98,7 +98,7 @@ export default {
     return {
       user: {
         id: '',
-        name: '',
+        username: '',
         password: '',
         phone: '',
         email: '',
@@ -133,7 +133,7 @@ export default {
         // 更新用戶資料
         this.user = {
           id: data.userId,
-          name: data.username,
+          username: data.username,
           phone: data.phone,
           email: data.email,
           gender: data.gender,
@@ -161,7 +161,7 @@ export default {
 
         // 準備更新的數據
         const updateData = {
-          name: this.user.username,
+          username: this.user.username,
           phone: this.user.phone,
           email: this.user.email,
           gender: this.user.gender,
