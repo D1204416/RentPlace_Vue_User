@@ -141,7 +141,7 @@ export default {
         const { data } = response
 
         console.log('API birthday:', data.birth)
-console.log('Formatted birthday:', this.formatDate(data.birth))
+        console.log('Formatted birthday:', this.formatDate(data.birth))
 
         // 更新用戶資料
         this.user = {
