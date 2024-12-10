@@ -43,6 +43,7 @@ export default {
     goNext() {
       // Clear bookingData from localStorage
       localStorage.removeItem('bookingData');
+      localStorage.removeItem('paymentMethod');
 
       // Navigate to home page
       this.$router.push({
