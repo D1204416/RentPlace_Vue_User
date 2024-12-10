@@ -64,7 +64,7 @@
         <!-- 生日 -->
         <div class="form-group">
           <label>生日</label>
-          <input type="date" v-model="user.birthday" class="input">
+          <input type="date" v-model="user.birth" class="input">
         </div>
 
         <!-- 按鈕區 -->
@@ -103,7 +103,7 @@ export default {
         phone: '',
         email: '',
         gender: '',
-        birthday: ''
+        birth: ''
       },
       loading: true,
       error: '',
@@ -116,6 +116,16 @@ export default {
   },
 
   methods: {
+    formatDate(dateString) {
+      if (!dateString) return ''
+
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) return '' // 如果日期無效則返回空字串
+
+      // 格式化為 YYYY-MM-DD
+      return date.toISOString().split('T')[0]
+    },
+
     async fetchUserData() {
       try {
         this.loading = true
@@ -130,6 +140,9 @@ export default {
         const response = await axiosInstance.get(`/api/user/${userData.userId}`)
         const { data } = response
 
+        console.log('API birthday:', data.birth)
+console.log('Formatted birthday:', this.formatDate(data.birth))
+
         // 更新用戶資料
         this.user = {
           id: data.userId,
@@ -137,7 +150,7 @@ export default {
           phone: data.phone,
           email: data.email,
           gender: data.gender,
-          birthday: data.birth
+          birth: this.formatDate(data.birth)
         }
         // 不載入密碼欄位
         this.user.password = ''
@@ -165,7 +178,7 @@ export default {
           phone: this.user.phone,
           email: this.user.email,
           gender: this.user.gender,
-          birthday: this.user.birth
+          birth: this.user.birth
         }
 
         // 如果有輸入新密碼，則加入密碼欄位
