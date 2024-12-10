@@ -4,11 +4,13 @@
 
   <div class="selected-date-container">
 
+    <!-- 日曆 -->
     <div class="calendar-wrapper">
       <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates" :initial-date="$route.query.date"
         @date-selected="handleDateSelect" />
     </div>
 
+    <!-- 時段選擇 -->
     <div class="time-slot-wrapper">
       <h3 class="page-title">{{ placeName }}</h3>
       <TimeSlotSelector :date="selectedDate" @selection-change="handleSelectionChange" />
@@ -20,12 +22,14 @@
     </div>
   </div>
 
+  <!-- 按鈕組 -->
   <div class="button-group">
     <button class="btn btn-back" @click="goBack">上一步</button>
     <button class="btn btn-book" @click="goNext">下一步</button>
   </div>
 
 </template>
+
 
 <script>
 import Calendar from '@/components/Calendar.vue'
