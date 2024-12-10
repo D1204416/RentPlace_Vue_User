@@ -8,13 +8,14 @@ import BookingDateView from '@/views/BookingDateView.vue'
 import BookingFormView from '../views/BookingFormView.vue'
 import BookingPaymentView from '../views/BookingPaymentView.vue'
 import BookingFinishView from '../views/BookingFinishView.vue'
+import DecodeQRCodeView from "@/views/DecodeQRCodeView.vue"; // 修正命名，首字母大寫
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',   //該頁面網址
-      name: 'home',  // 呼叫該頁面的名稱
+      path: '/', // 該頁面網址
+      name: 'home', // 呼叫該頁面的名稱
       component: HomeView,
       meta: {
         breadcrumb: [
@@ -63,7 +64,7 @@ const router = createRouter({
       path: '/cardInfo/:id',
       name: 'cardInfoView',
       component: CardInfoView,
-      props: true,  // 啟用 props 傳遞路由參數
+      props: true,
       meta: {
         breadcrumb: [
           {
@@ -81,7 +82,6 @@ const router = createRouter({
         ]
       }
     },
-    // 在路由配置中
     {
       path: '/bookingDate/:id',
       name: 'BookingDateView',
@@ -129,36 +129,34 @@ const router = createRouter({
             text: '預約流程',
             path: '/bookingForm'
           }
-
         ]
       }
     },
-     {
-       path: '/bookingPayment/:id',
-       name: 'BookingPaymentView',
-       component: BookingPaymentView,
-       meta: {
-         breadcrumb: [
+    {
+      path: '/bookingPayment/:id',
+      name: 'BookingPaymentView',
+      component: BookingPaymentView,
+      meta: {
+        breadcrumb: [
           {
             text: '場地租借',
             path: '/'
           },
           {
             text: '場地資訊',
-             path: '/card'
+            path: '/card'
           },
-           {
-             text: '詳細資訊',
-             path: '/cardInfo'
-           },
           {
-             text: '預約流程',
-             path: '/bookingPayment'
-           }
-
-         ]
+            text: '詳細資訊',
+            path: '/cardInfo'
+          },
+          {
+            text: '預約流程',
+            path: '/bookingPayment'
+          }
+        ]
       }
-     },
+    },
     {
       path: '/bookingFinish/:id',
       name: 'BookingFinishView',
@@ -181,11 +179,26 @@ const router = createRouter({
             text: '預約流程',
             path: '/bookingFinish'
           }
-
+        ]
+      }
+    },
+    {
+      path: '/decodeQRCode', // 單獨配置 decodeQRCodeView 的路由
+      name: 'DecodeQRCodeView',
+      component: DecodeQRCodeView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '場地租借',
+            path: '/'
+          },
+          {
+            text: '解碼 QR Code',
+            path: '/decodeQRCode'
+          }
         ]
       }
     }
-
   ]
 })
 

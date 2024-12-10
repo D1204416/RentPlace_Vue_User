@@ -1,139 +1,125 @@
-<script setup>
-import ProgressSteps from '../components/ProgressSteps_Jo.vue'
-</script>
-
 <template>
-  <progress-steps :current-step="4" />
-  <div class="container">
-
-    <div class="reservation-complete">
-      <div class="card">
-        <h2>預約完成</h2>
-
-        <div class="qr-container">
-          <img :src="qrCodeUrl" alt="QR Code" class="qr-code" />
-        </div>
-
-        <p class="message">
-          恭喜您預約完成，您可依 QR Code 條碼進場。
-        </p>
-      </div>
+  <div class="booking-finish-view">
+    <h1>完成預訂</h1>
+    <p>以下是您的 QR Code：</p>
+    <div v-if="qrCodeUrl">
+      <img :src="qrCodeUrl" alt="QR Code" />
+      <p>下一次更新倒數：<strong>{{ countdown }}</strong> 秒</p>
+      <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
     </div>
-
-    <div class="button-group">
-      <button class="btn btn-book" @click="goNext">返回場地租借</button>
-    </div>
+    <p v-else>正在載入 QR Code...</p>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'BookingFinish',
-  components: {
-    ProgressSteps
-  },
+import axios from "axios";
 
+export default {
+  name: "BookingFinishView",
   data() {
     return {
-      qrCodeUrl: '/img/qrcode.png' // 實際使用時替換為真實的 QR Code 圖片路徑
-    }
+      qrCodeUrl: null, // 存儲 QR Code 的 Blob URL
+      intervalId: null, // 用於存儲定時器 ID
+      countdown: 10, // 倒數計時的秒數
+    };
   },
-
+  mounted() {
+    this.startAutoUpdateQRCode();
+  },
+  beforeDestroy() {
+    this.stopAutoUpdateQRCode(); // 組件銷毀時停止定時器
+  },
   methods: {
-    goNext() {
-      // Clear bookingData from localStorage
-      localStorage.removeItem('bookingData');
-      localStorage.removeItem('paymentMethod');
+    async loadLatestQRCode() {
+      try {
+        const response = await axios.get("http://localhost:8080/api/orders/latest-qrcode", {
+          responseType: "arraybuffer", // 確保返回二進制數據
+        });
 
-      // Navigate to home page
-      this.$router.push({
-        name: "home",
-      })
+        // 將二進制數據轉換為 Blob URL
+        const blob = new Blob([response.data], { type: "image/png" });
+        const blobUrl = URL.createObjectURL(blob);
+
+        // 清除舊的 Blob URL 以避免內存洩漏
+        if (this.qrCodeUrl) {
+          URL.revokeObjectURL(this.qrCodeUrl);
+        }
+
+        this.qrCodeUrl = blobUrl; // 不加時間戳，Blob URL 本身已唯一
+
+        console.log("QR Code Blob URL updated:", this.qrCodeUrl); // 打印 Blob URL 用於調試
+      } catch (error) {
+        console.error("無法載入 QR Code", error);
+        this.qrCodeUrl = null;
+      }
     },
-  }
-}
+    startAutoUpdateQRCode() {
+      this.loadLatestQRCode(); // 立即加載一次
+      this.startCountdown(); // 開始倒數計時
+
+      // 每 10 秒自動刷新一次
+      this.intervalId = setInterval(() => {
+        this.loadLatestQRCode();
+      }, 10000); // 10,000 毫秒 = 10 秒
+    },
+    stopAutoUpdateQRCode() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+    },
+    manualUpdateQRCode() {
+      this.stopAutoUpdateQRCode(); // 停止自動刷新
+      this.loadLatestQRCode(); // 手動刷新
+      this.startAutoUpdateQRCode(); // 重啟自動刷新
+    },
+    startCountdown() {
+      this.countdown = 10; // 倒數從 10 開始
+      const countdownInterval = setInterval(() => {
+        if (this.countdown > 0) {
+          this.countdown--;
+        } else {
+          clearInterval(countdownInterval); // 倒數結束時清除計時器
+        }
+      }, 1000); // 每秒更新一次倒數
+    },
+    resetCountdown() {
+      this.countdown = 10; // 重置倒數時間
+    },
+  },
+};
 </script>
 
 <style scoped>
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  min-height: 100vh;
-  /* 設定最小高度為視窗高度 */
-  display: flex;
-  /* 使用 flex 布局 */
-  flex-direction: column;
-  /* 設定垂直方向排列 */
-}
-
-/* 讓中間內容區域自動擴展 */
-.reservation-complete {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.card {
-  /* background-color: white; */
-  border-radius: 8px;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
-  padding: 24px;
+.booking-finish-view {
   text-align: center;
-  max-width: 400px;
-  width: 100%;
 }
 
-h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.qr-container {
-  margin-bottom: 24px;
-}
-
-.qr-code {
-  max-width: 200px;
+.booking-finish-view img {
+  max-width: 100%;
   height: auto;
+  margin: 20px 0;
+  border: 2px solid #ccc;
+  border-radius: 10px;
 }
 
-.message {
-  color: #666;
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* button-group 會自動置底 */
-.button-group {
-  margin-top: auto;
-  /* 可選：如果想要確保按鈕組一定在底部 */
-  display: flex;
-  gap: 15px;
-  padding: 20px 0;
-  justify-content: center;
-}
-
-.btn {
+.update-button {
+  margin-top: 10px;
   padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 18px;
-  cursor: pointer;
-  text-align: center;
-  border: 1px solid #ddd;
-}
-
-.btn-back {
-  background: white;
-  color: #333;
-}
-
-.btn-book {
-  background: #3498db;
+  font-size: 16px;
+  background-color: #4CAF50;
   color: white;
   border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.update-button:hover {
+  background-color: #45a049;
+}
+
+.booking-finish-view p {
+  font-size: 18px;
+  margin-top: 10px;
 }
 </style>
