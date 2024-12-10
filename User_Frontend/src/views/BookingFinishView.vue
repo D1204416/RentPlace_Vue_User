@@ -18,49 +18,50 @@ export default {
   name: "BookingFinishView",
   data() {
     return {
-      qrCodeUrl: null, // 存儲 QR Code 的 Blob URL
-      intervalId: null, // 用於存儲定時器 ID
-      countdown: 10, // 倒數計時的秒數
+      qrCodeUrl: null, // 存储 QR Code 的 Blob URL
+      intervalId: null, // 定时器 ID
+      countdown: 10, // 倒数计时秒数
     };
   },
   mounted() {
     this.startAutoUpdateQRCode();
   },
   beforeDestroy() {
-    this.stopAutoUpdateQRCode(); // 組件銷毀時停止定時器
+    this.stopAutoUpdateQRCode(); // 组件销毁时停止定时器
   },
   methods: {
     async loadLatestQRCode() {
       try {
-        const response = await axios.get("http://localhost:8080/api/orders/latest-qrcode", {
-          responseType: "arraybuffer", // 確保返回二進制數據
-        });
+        const response = await axios.get(
+            `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`, // 加时间戳防止缓存
+            {responseType: "arraybuffer"} // 确保返回二进制数据
+        );
 
-        // 將二進制數據轉換為 Blob URL
-        const blob = new Blob([response.data], { type: "image/png" });
+        // 将二进制数据转换为 Blob URL
+        const blob = new Blob([response.data], {type: "image/png"});
         const blobUrl = URL.createObjectURL(blob);
 
-        // 清除舊的 Blob URL 以避免內存洩漏
+        // 清除旧的 Blob URL 以避免内存泄漏
         if (this.qrCodeUrl) {
           URL.revokeObjectURL(this.qrCodeUrl);
         }
 
-        this.qrCodeUrl = blobUrl; // 不加時間戳，Blob URL 本身已唯一
+        this.qrCodeUrl = blobUrl;
 
-        console.log("QR Code Blob URL updated:", this.qrCodeUrl); // 打印 Blob URL 用於調試
+        console.log("QR Code Blob URL updated:", this.qrCodeUrl); // 调试用日志
       } catch (error) {
-        console.error("無法載入 QR Code", error);
+        console.error("无法加载 QR Code", error);
         this.qrCodeUrl = null;
       }
     },
     startAutoUpdateQRCode() {
-      this.loadLatestQRCode(); // 立即加載一次
-      this.startCountdown(); // 開始倒數計時
+      this.loadLatestQRCode(); // 初次加载
+      this.startCountdown(); // 开始倒计时
 
-      // 每 10 秒自動刷新一次
+      // 每 10 秒刷新一次
       this.intervalId = setInterval(() => {
         this.loadLatestQRCode();
-      }, 10000); // 10,000 毫秒 = 10 秒
+      }, 10000);
     },
     stopAutoUpdateQRCode() {
       if (this.intervalId) {
@@ -69,22 +70,19 @@ export default {
       }
     },
     manualUpdateQRCode() {
-      this.stopAutoUpdateQRCode(); // 停止自動刷新
-      this.loadLatestQRCode(); // 手動刷新
-      this.startAutoUpdateQRCode(); // 重啟自動刷新
+      this.stopAutoUpdateQRCode(); // 停止自动刷新
+      this.loadLatestQRCode(); // 手动刷新
+      this.startAutoUpdateQRCode(); // 重启自动刷新
     },
     startCountdown() {
-      this.countdown = 10; // 倒數從 10 開始
+      this.countdown = 10; // 倒计时从 10 开始
       const countdownInterval = setInterval(() => {
         if (this.countdown > 0) {
           this.countdown--;
         } else {
-          clearInterval(countdownInterval); // 倒數結束時清除計時器
+          clearInterval(countdownInterval); // 倒计时结束时清除计时器
         }
-      }, 1000); // 每秒更新一次倒數
-    },
-    resetCountdown() {
-      this.countdown = 10; // 重置倒數時間
+      }, 1000); // 每秒更新一次倒计时
     },
   },
 };
