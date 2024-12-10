@@ -82,7 +82,7 @@
   
   <script>
   export default {
-    name: 'OrderHistory',
+    name: 'userOrder',
     
     data() {
       return {
