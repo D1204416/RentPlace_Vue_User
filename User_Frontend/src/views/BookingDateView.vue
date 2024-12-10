@@ -13,7 +13,7 @@
     <!-- 時段選擇 -->
     <div class="time-slot-wrapper">
       <h3 class="page-title">{{ placeName }}</h3>
-      <TimeSlotSelector :date="selectedDate" @selection-change="handleSelectionChange" />
+      <TimeSlotSelector :date="selectedDate" :initial-date="$route.query.date" @selection-change="handleSelectionChange" />
     </div>
 
     <!-- 狀態提示訊息 -->
