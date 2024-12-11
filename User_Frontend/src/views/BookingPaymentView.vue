@@ -164,9 +164,6 @@ export default {
         if (response.ok) {
           const result = await response.json()
 
-          // 儲存 reservationId 到 localStorage
-          localStorage.setItem('currentReservationId', result.reservationId)
-
           // 可以同時儲存更多相關資訊
           const reservationInfo = {
             reservationId: result.reservationId,
