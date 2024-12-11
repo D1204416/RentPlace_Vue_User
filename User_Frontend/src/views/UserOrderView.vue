@@ -1,6 +1,6 @@
 <template>
   <div class="order-history">
-    <h2 class="title">訂單歷史</h2>
+    <h2 class="title">預約記錄</h2>
     
     <!-- 篩選區域 -->
     <div class="filters">
@@ -242,7 +242,7 @@ input[type="date"] {
 }
 
 .search-btn {
-  background-color: #1976d2;
+  background-color: #3498db;
   color: white;
   padding: 8px 24px;
   border: none;
