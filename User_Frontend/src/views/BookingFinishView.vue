@@ -1,7 +1,8 @@
 <template>
   <div class="booking-finish-view">
     <h1>完成預訂</h1>
-    <p>以下是您的 QR Code：</p>
+    <p>以下是您的訂單 QR Code，您可以使用 QR code 進場：</p>
+    
     <div v-if="qrCodeUrl">
       <img :src="qrCodeUrl" alt="QR Code" />
       <div v-if="latestOrder">
@@ -9,12 +10,18 @@
 
       </div>
       <p>下一次更新倒數：<strong>{{ countdown }}</strong> 秒</p>
-      <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+      
     </div>
     <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
       無法載入最新的 QR Code 或訂單資訊，請稍後再試。
     </p>
-    <p v-else>正在載入 QR Code...</p>
+    <!-- <p v-else>正在載入 QR Code...</p> -->
+
+    <div class="button-group">
+      <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+      <button class="btn btn-book" @click="goNext">返回場地租借</button>
+    </div>
+
   </div>
 </template>
 
@@ -28,7 +35,7 @@ export default {
       qrCodeUrl: null,
       latestOrder: null,
       intervalId: null,
-      countdown: 10,
+      countdown: 15,
       refreshInterval: 10000,
     };
   },
@@ -58,7 +65,7 @@ export default {
         const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
         this.latestOrder = orderResponse.data;
 
-        console.log("QR Code and Order updated:", this.latestOrder);
+        // console.log("QR Code and Order updated:", this.latestOrder);
       } catch (error) {
         console.error("無法載入 QR Code 或訂單消息", error);
         this.qrCodeUrl = null;
@@ -95,6 +102,15 @@ export default {
         }
       }, 1000);
     },
+
+    goNext() {
+      // 導航到場地租借頁面
+      this.$router.push({
+        name: "home",
+      })
+
+      localStorage.removeItem('reservationInfo')
+    },
   },
 };
 </script>
@@ -113,9 +129,8 @@ export default {
 }
 
 .update-button {
-  margin-top: 10px;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 18px;
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -136,5 +151,38 @@ export default {
   color: red;
   font-size: 16px;
   margin-top: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.btn-back {
+  
+  background: white;
+  color: #333;
+}
+
+.btn-book {
+  padding: 10px 40px;
+  background: #3498db;
+  color: white;
+  border: none;
+}
+
+.btn-book:hover {
+  background-color: #2a94db;
 }
 </style>
