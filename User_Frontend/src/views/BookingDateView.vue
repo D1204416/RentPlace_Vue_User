@@ -101,7 +101,7 @@ export default {
         placeName.value = response.data.venueName // 假設 API 返回的場地數據中有 name 欄位
       } catch (error) {
         console.error('Failed to fetch place name:', error)
-        showMessage('無法載入場地資訊，請稍後再試', 'error')
+        // showMessage('無法載入場地資訊，請稍後再試', 'error')
       } finally {
         loading.value = false
       }
@@ -187,7 +187,7 @@ export default {
 
       } catch (error) {
         console.error('Failed to fetch reservations:', error)
-        showMessage('無法載入預約資料，請稍後再試', 'error')
+        // showMessage('無法載入預約資料，請稍後再試', 'error')
       } finally {
         loading.value = false
       }
@@ -208,7 +208,7 @@ export default {
         }))
       } catch (error) {
         console.error('Failed to fetch close dates:', error)
-        showMessage('無法載入休館日資料，請稍後再試', 'error')
+        // showMessage('無法載入休館日資料，請稍後再試', 'error')
       } finally {
         loading.value = false
       }
