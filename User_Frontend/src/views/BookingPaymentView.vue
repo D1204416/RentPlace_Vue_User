@@ -139,6 +139,8 @@ export default {
         if (response.ok) {
           // 成功後清除暫存資料
           localStorage.removeItem('bookingData')
+          localStorage.removeItem('paymentMethod')
+
           // 導航到成功頁面
           this.$router.push('/booking/success')
         }
