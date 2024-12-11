@@ -91,6 +91,7 @@ export default {
         venueName: '',
         originalQuery: null,
       },
+      userId: '',
       paymentMethod: '',
       timeSlots: ['12:00-13:00', '13:00-14:00', '14:00-15:00'],
       rentalFee: 1500
@@ -116,6 +117,12 @@ export default {
     this.originalQuery = { ...this.$route.query }
 
     try {
+      // 載入使用者資料
+      const userData = localStorage.getItem('user')
+      if (userData) {
+        this.userId = JSON.parse(userData).userId
+      }
+
       // 載入預約資料
       const storedData = localStorage.getItem('bookingData')
       if (storedData) {
@@ -135,24 +142,51 @@ export default {
   methods: {
     async submitBooking() {
       try {
-        const response = await fetch('http://localhost:8080/api/bookings', {
+        // 準備要發送的資料格式
+        const reservationData = {
+          venueId: parseInt(this.bookingData.venueId),
+          userId: this.userId,
+          timePeriodId: 1, // 需要從上一步驟取得正確的 timePeriodId
+          reservationDate: "2024-11-06", // 需要從上一步驟取得正確的日期，並轉換格式
+          remark: "",
+          applyApartment: this.bookingData.applyApartment,
+          content: this.bookingData.content
+        }
+
+        const response = await fetch('http://localhost:8080/api/reservations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(this.bookingData)
+          body: JSON.stringify(reservationData)
         })
 
         if (response.ok) {
-          // 成功後清除暫存資料
+          const result = await response.json()
+
+          // 儲存 reservationId 到 localStorage
+          localStorage.setItem('currentReservationId', result.reservationId)
+
+          // 可以同時儲存更多相關資訊
+          const reservationInfo = {
+            reservationId: result.reservationId,
+            message: result.message,
+            // 可以加入其他需要的資訊
+          }
+          localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo))
+
+          // 清除之前的暫存資料
           localStorage.removeItem('bookingData')
           localStorage.removeItem('paymentMethod')
 
           // 導航到成功頁面
-          this.$router.push('/booking/success')
+          // this.$router.push('/bookingFinish/:id')
+        } else {
+          throw new Error('預訂失敗')
         }
       } catch (error) {
         console.error('Error submitting booking:', error)
+        // 這裡可以加入錯誤處理，例如顯示錯誤訊息給用戶
       }
     },
 
