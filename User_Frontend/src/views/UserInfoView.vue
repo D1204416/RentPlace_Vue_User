@@ -140,9 +140,6 @@ export default {
         const response = await axiosInstance.get(`/api/user/${userData.userId}`)
         const { data } = response
 
-        console.log('API birthday:', data.birth)
-        console.log('Formatted birthday:', this.formatDate(data.birth))
-
         // 更新用戶資料
         this.user = {
           id: data.userId,
