@@ -1,7 +1,7 @@
 <template>
   <div class="order-history">
-    <h2 class="title">預約記錄</h2>
-    
+    <h2 class="title">歷史訂單紀錄</h2>
+
     <!-- 篩選區域 -->
     <div class="filters">
       <!-- 場地篩選 -->
@@ -9,49 +9,43 @@
         <label>場地</label>
         <select v-model="filters.venue">
           <option value="">全部場地</option>
-          <option 
-            v-for="venue in venues" 
-            :key="venue.venue?.id" 
-            :value="venue.venue?.id"
-          >
+          <option v-for="venue in venues" :key="venue.venue?.id" :value="venue.venue?.id">
             {{ venue.venue?.venueName }}
           </option>
         </select>
       </div>
-      
+
       <!-- 日期範圍篩選 -->
       <div class="filter-item">
         <label>預約日期</label>
         <div class="date-range">
-          <input 
-            type="date" 
-            v-model="filters.startDate"
-          >
+          <input type="date" v-model="filters.startDate">
           <span>至</span>
-          <input 
-            type="date" 
-            v-model="filters.endDate"
-          >
+          <input type="date" v-model="filters.endDate">
         </div>
       </div>
-      
+
       <!-- 搜尋按鈕 -->
-      <button 
-        @click="searchOrders"
-        class="search-btn"
-        :disabled="!userId"
-      >
-        搜尋
+      <button @click="searchOrders" class="search-btn" :disabled="!userId">
+        {{ isLoading ? '載入中...' : '搜尋' }}
       </button>
+    </div>
+
+    <!-- 載入中提示 -->
+    <div v-if="isLoading" class="loading-message">
+      資料載入中，請稍候...
     </div>
 
     <!-- 錯誤訊息 -->
     <div v-if="error" class="error-message">
-      {{ error }}
+      <p>{{ error }}</p>
+      <button @click="retryFetch" class="retry-btn">
+        重試
+      </button>
     </div>
 
     <!-- 訂單表格 -->
-    <div class="table-container">
+    <div v-if="!isLoading && !error" class="table-container">
       <table>
         <thead>
           <tr>
@@ -65,18 +59,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr 
-            v-for="order in filteredOrders" 
-            :key="order.orderId"
-          >
+          <tr v-for="order in filteredOrders" :key="order.orderId">
             <td>{{ order.orderId }}</td>
-            <td>{{ order.reservation.venue.venueName }}</td>
-            <td>{{ formatDate(order.reservation.reservationDate) }}</td>
-            <td>{{ order.reservation.timePeriodText }}</td>
-            <td>{{ order.payment.paymentMethodDisplay }}</td>
-            <td>{{ order.status.status }}</td>
+            <td>{{ order.reservation?.venue?.venueName || '無資料' }}</td>
+            <td>{{ formatDate(order.reservation?.reservationDate) || '無資料' }}</td>
+            <td>{{ order.reservation?.timePeriodText || '無資料' }}</td>
+            <td>{{ order.payment?.paymentMethodDisplay || '無資料' }}</td>
+            <td>{{ order.status?.status || '無資料' }}</td>
             <td class="amount">
-              NT$ {{ formatPrice(order.reservation.venue.unitPrice) }}
+              {{ order.reservation?.venue?.unitPrice ? `NT$ ${formatPrice(order.reservation.venue.unitPrice)}` : '無資料' }}
             </td>
           </tr>
           <tr v-if="filteredOrders.length === 0">
@@ -91,40 +82,59 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'OrderHistory',
-  
+
   data() {
     return {
       orders: [],
-      venues: new Set(), // 用來儲存不重複的場地
+      venues: new Set(),
       filters: {
         venue: '',
         startDate: '',
         endDate: ''
       },
       userId: null,
-      error: null
+      error: null,
+      isLoading: false,
+      retryCount: 0,
+      maxRetries: 3,
+
+      // 創建 axios 實例
+      axiosInstance: axios.create({
+        baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // 從環境變數獲取 API URL
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
     }
   },
 
   computed: {
     filteredOrders() {
       return this.orders.filter(order => {
-        if (this.filters.venue && order.reservation.venue.id !== this.filters.venue) {
+        // 安全地訪問 venue id
+        const venueId = order?.reservation?.venue?.id
+        if (this.filters.venue && venueId !== this.filters.venue) {
           return false
         }
-        
-        if (this.filters.startDate && this.filters.endDate) {
-          const orderDate = new Date(order.reservation.reservationDate)
+
+        // 安全地訪問預約日期
+        const reservationDate = order?.reservation?.reservationDate
+        if (this.filters.startDate && this.filters.endDate && reservationDate) {
+          const orderDate = new Date(reservationDate)
           const startDate = new Date(this.filters.startDate)
           const endDate = new Date(this.filters.endDate)
-          
+
           if (orderDate < startDate || orderDate > endDate) {
             return false
           }
         }
-        
+
         return true
       })
     }
@@ -133,15 +143,22 @@ export default {
   methods: {
     getUserId() {
       try {
-        // 從 localStorage 中的 user key 獲取 name
+        // 從 localStorage 中獲取user資料
         const userString = localStorage.getItem('user')
         if (!userString) {
           this.error = '請先登入系統'
           return null
         }
 
-        // 直接返回用戶名稱作為 userId
-        return userString
+        // 解析 user 字串為物件
+        const user = JSON.parse(userString)
+
+        if (!user || !user.userId) {
+          this.error = '無法取得用戶資訊'
+          return null
+        }
+
+        return user.userId
       } catch (error) {
         console.error('Failed to get user from localStorage:', error)
         this.error = '無法取得用戶資訊'
@@ -151,24 +168,102 @@ export default {
 
     async fetchOrders() {
       this.error = null
+      this.isLoading = true
       const userId = this.getUserId()
-      
+
       if (!userId) {
+        this.isLoading = false
         return
       }
 
       try {
-        const response = await this.axios.get(`http://localhost:8080/api/orders/user/${userId}`)
-        this.orders = response.data
-        // 從訂單中提取不重複的場地資訊
-        this.venues = Array.from(new Set(this.orders.map(order => order.reservation.venue)))
+        const response = await this.axiosInstance.get(`/api/orders/user/${userId}`)
+        console.log('API response type:', typeof response.data)
+        console.log('API response:', response.data)
+
+        if (typeof response.data === 'string' && response.data.includes('<!DOCTYPE html>')) {
+          throw new Error('API 回傳格式錯誤，請確認 API 路徑是否正確')
+        }
+
+        // 確保 response.data 是陣列
+        if (!response.data) {
+          throw new Error('回傳資料格式錯誤')
+        }
+
+        // 確保數據是陣列並且過濾掉不完整的資料
+        const ordersArray = Array.isArray(response.data) ? response.data : [response.data]
+        this.orders = ordersArray.filter(order => {
+          // 檢查必要的屬性是否存在
+          return order &&
+            order.orderId &&
+            order.reservation &&
+            order.reservation.venue &&
+            order.reservation.reservationDate
+        })
+
+        // 安全地提取場地資訊
+        const validVenues = new Set()
+        this.orders.forEach(order => {
+          if (order?.reservation?.venue) {
+            validVenues.add(order.reservation.venue)
+          }
+        })
+        this.venues = Array.from(validVenues)
+
+        this.retryCount = 0
+
+        // 如果過濾後沒有訂單，顯示提示
+        if (this.orders.length === 0) {
+          this.error = '沒有找到有效的訂單資料'
+        }
       } catch (error) {
-        console.error('Failed to fetch orders:', error)
-        this.error = '無法取得訂單資料，請稍後再試'
+        console.error('API Error:', error)
+        console.error('Error response:', error.response)
+
+        let errorMessage = '無法取得訂單資料，'
+
+        if (error.code === 'ECONNABORTED') {
+          errorMessage += '請求超時，請檢查網路連線'
+        } else if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              errorMessage += '請重新登入'
+              break
+            case 403:
+              errorMessage += '無權限存取'
+              break
+            case 404:
+              errorMessage += '找不到訂單資料'
+              break
+            case 500:
+              errorMessage += '伺服器錯誤，請稍後再試'
+              break
+            default:
+              errorMessage += `請稍後再試 (${error.response.status})`
+          }
+        } else if (error.request) {
+          errorMessage += '無法連接到伺服器'
+        } else {
+          errorMessage += error.message || '請稍後再試'
+        }
+
+        this.error = errorMessage
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    async retryFetch() {
+      if (this.retryCount < this.maxRetries) {
+        this.retryCount++
+        await this.fetchOrders()
+      } else {
+        this.error = '多次嘗試失敗，請稍後再試或聯繫客服'
       }
     },
 
     searchOrders() {
+      this.retryCount = 0 // 重設重試次數
       this.fetchOrders()
     },
 
@@ -195,7 +290,43 @@ export default {
 </script>
 
 <style scoped>
-/* 原有的 CSS 樣式保持不變 */
+.loading-message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.retry-btn {
+  background-color: #d32f2f;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.retry-btn:hover {
+  background-color: #b71c1c;
+}
+
+.search-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .order-history {
   padding: 20px;
   max-width: 1200px;
@@ -279,7 +410,8 @@ table {
   font-size: 14px;
 }
 
-th, td {
+th,
+td {
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -314,16 +446,16 @@ tr:hover td {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .filter-item {
     width: 100%;
   }
-  
+
   select,
   input[type="date"] {
     width: 100%;
   }
-  
+
   .search-btn {
     width: 100%;
   }
