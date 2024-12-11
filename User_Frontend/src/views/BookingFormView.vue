@@ -22,7 +22,7 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 
           <div class="form-group">
             <label>申請單位</label>
-            <input v-model="formData.department" type="text">
+            <input v-model="formData.applyApartment" type="text">
           </div>
 
           <div class="form-group">
@@ -36,7 +36,7 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
           <h3>租借設備</h3>
           <div v-if="venueData" class="equipment-list">
             <div v-for="item in venueData.equipment" :key="item.id" class="equipment-item">
-              <input type="checkbox" :id="'equipment-' + item.id" v-model="selectedEquipments" :value="item.id">
+              <input type="checkbox" :id="'equipment-' + item.id" v-model="equipmentIds" :value="item.id">
               <label :for="'equipment-' + item.id">{{ item.equipmentName }}</label>
             </div>
           </div>
@@ -70,11 +70,11 @@ export default {
       formData: {
         name: '',
         phone: '',
-        department: '',
+        applyApartment: '',
         content: ''
       },
       venueData: null,
-      selectedEquipments: [],
+      equipmentIds: [],
       venueId: null,
       originalQuery: null,
     }
@@ -97,19 +97,16 @@ export default {
     }
 
     // 恢復已選擇的設備
-    const savedBookingData = localStorage.getItem('bookingFormData')
+    const savedBookingData = localStorage.getItem('bookingData')
     if (savedBookingData) {
       try {
         const parsedBookingData = JSON.parse(savedBookingData)
-        this.selectedEquipments = parsedBookingData.selectedEquipments || []
+        this.equipmentIds = parsedBookingData.equipmentIds || []
 
-        // 如果有其他表單數據也可以恢復
-        if (parsedBookingData.formData) {
-          this.formData = {
-            ...this.formData,  // 保留會員資料
-            department: parsedBookingData.formData.department || '',
-            content: parsedBookingData.formData.content || ''
-          }
+        this.formData = {
+          ...this.formData,  // 保留會員資料
+          applyApartment: parsedBookingData.applyApartment || '',
+          content: parsedBookingData.content || ''
         }
       } catch (error) {
         console.error('Error parsing booking data:', error)
@@ -179,13 +176,13 @@ export default {
     // 儲存整個預約表單資料
     saveBookingData() {
       const bookingData = {
-        userId: this.formData.name,
+        name: this.formData.name,
         phone: this.formData.phone,
-        applyApartment: this.formData.department,
+        applyApartment: this.formData.applyApartment,
         content: this.formData.content,
         venueId: this.venueId,
-        venueName: this.venueData?.venueName,
-        equipmentIds: this.selectedEquipments
+        venueName: this.venueData.venueName,
+        equipmentIds: this.equipmentIds
       }
       localStorage.setItem('bookingData', JSON.stringify(bookingData))
     },
@@ -199,7 +196,7 @@ export default {
       },
       deep: true
     },
-    selectedEquipments: {
+    equipmentIds: {
       handler() {
         this.saveBookingData()
       },
@@ -267,13 +264,16 @@ export default {
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 0.25rem;
-  resize: none;  /* 禁止調整大小 */
+  resize: none;
+  /* 禁止調整大小 */
 }
 
 .equipment-list {
-  display: grid;  
-  grid-template-columns: repeat(2, 1fr);  /* 設置兩欄 */
-  gap: 0.5rem;  /* 保持間距 */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 設置兩欄 */
+  gap: 0.5rem;
+  /* 保持間距 */
   padding: 0.5rem;
 }
 
@@ -283,13 +283,16 @@ export default {
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 0.25rem;
-  min-width: 0;  /* 防止內容溢出 */
+  min-width: 0;
+  /* 防止內容溢出 */
 }
 
 .equipment-item label {
-  white-space: nowrap;  /* 防止文字換行 */
+  white-space: nowrap;
+  /* 防止文字換行 */
   overflow: hidden;
-  text-overflow: ellipsis;  /* 過長時顯示省略號 */
+  text-overflow: ellipsis;
+  /* 過長時顯示省略號 */
 }
 
 .equipment-item:hover {
@@ -340,7 +343,8 @@ h3 {
 
 @media (max-width: 768px) {
   .form-container {
-    flex-direction: column; /* 手機版改為垂直排列 */
+    flex-direction: column;
+    /* 手機版改為垂直排列 */
     gap: 1rem;
   }
 
@@ -349,27 +353,32 @@ h3 {
   }
 
   .equipment-section {
-    width: 100%; /* 設備區塊在手機版占滿寬度 */
+    width: 100%;
+    /* 設備區塊在手機版占滿寬度 */
   }
 
   .equipment-list {
-    grid-template-columns: repeat(2, 1fr); /* 保持兩欄 */
+    grid-template-columns: repeat(2, 1fr);
+    /* 保持兩欄 */
   }
 }
 
 /* 更小螢幕的處理 */
 @media (max-width: 480px) {
   .equipment-list {
-    grid-template-columns: 1fr; /* 極小螢幕改為單欄 */
+    grid-template-columns: 1fr;
+    /* 極小螢幕改為單欄 */
   }
 
   .button-group {
-    flex-direction: column; /* 按鈕改為垂直排列 */
+    flex-direction: column;
+    /* 按鈕改為垂直排列 */
     width: 100%;
   }
 
   .btn {
-    width: 100%; /* 按鈕占滿寬度 */
+    width: 100%;
+    /* 按鈕占滿寬度 */
   }
 }
 </style>
