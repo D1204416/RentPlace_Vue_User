@@ -101,7 +101,7 @@ export default {
       }, 1000);
     },
 
-    oNext() {
+    goNext() {
       // 導航到場地租借頁面
       this.$router.push({
         name: "home",
