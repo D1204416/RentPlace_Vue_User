@@ -29,5 +29,5 @@ npm run build
 ```
 
 ###
-
+npm install axios
 npm install crypto-js
