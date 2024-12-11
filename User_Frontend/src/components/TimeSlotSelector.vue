@@ -71,6 +71,21 @@ export default {
         }
     },
 
+    watch: {
+        date: {
+            immediate: true,
+            handler(newDate) {
+                // 當 date 改變時，更新顯示
+                if (newDate !== '尚未選擇租借日期') {
+                    // 如果有選擇日期，優先使用新的日期
+                    this.formattedDate = newDate
+                    // 重置時段選擇
+                    this.resetTimeSlots()
+                }
+            }
+        }
+    },
+
     methods: {
         updateTotalHours() {
             this.totalHours = this.sections.reduce((total, section) => {
@@ -94,10 +109,30 @@ export default {
                         section: section.title
                     }))
             );
+        },
+        resetTimeSlots() {
+            // 重置所有時段的選擇狀態
+            this.sections.forEach(section => {
+                section.slots.forEach(slot => {
+                    slot.selected = false
+                })
+            })
+            this.totalHours = 0
+
+            // 發出重置事件
+            this.$emit('selection-change', {
+                totalHours: 0,
+                selectedSlots: []
+            })
         }
     },
     computed: {
         formattedDate() {
+            // 如果有新選擇的日期，優先使用
+            if (this.date !== '尚未選擇租借日期') {
+                return this.date
+            }
+            // 否則使用初始日期
             if (this.initialDate) {
                 const date = new Date(this.initialDate)
                 const month = date.getMonth() + 1
