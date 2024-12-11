@@ -63,7 +63,7 @@ export default {
         const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
         this.latestOrder = orderResponse.data;
 
-        console.log("QR Code and Order updated:", this.latestOrder);
+        // console.log("QR Code and Order updated:", this.latestOrder);
       } catch (error) {
         console.error("無法載入 QR Code 或訂單消息", error);
         this.qrCodeUrl = null;
