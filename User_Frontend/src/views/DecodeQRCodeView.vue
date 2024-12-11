@@ -34,6 +34,7 @@ export default {
       secretKey: "1234567890123456", // AES 解密密鑰，需與加密密鑰一致
     };
   },
+  
   methods: {
     async onFileChange(event) {
       this.decodedContent = null;
@@ -63,6 +64,7 @@ export default {
         this.errorMessage = error.response?.data || "無法解碼 QR Code，請確保上傳的文件有效。";
       }
     },
+
     decryptContent() {
       if (!this.decodedContent) {
         this.errorMessage = "沒有可解密的內容，請先解碼 QR Code。";
