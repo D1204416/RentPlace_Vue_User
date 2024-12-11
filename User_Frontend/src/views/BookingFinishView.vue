@@ -12,7 +12,7 @@
       <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
     </div>
     <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
-      無法加载最新的 QR Code 或订单信息，请稍后重试。
+      無法載入最新的 QR Code 或訂單資訊，請稍後再試。
     </p>
     <p v-else>正在載入 QR Code...</p>
   </div>
@@ -60,7 +60,7 @@ export default {
 
         console.log("QR Code and Order updated:", this.latestOrder);
       } catch (error) {
-        console.error("无法加载 QR Code 或订单信息", error);
+        console.error("無法載入 QR Code 或訂單消息", error);
         this.qrCodeUrl = null;
         this.latestOrder = null;
       }
