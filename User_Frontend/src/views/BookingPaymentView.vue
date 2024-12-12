@@ -150,7 +150,8 @@ export default {
           reservationDate: "2024-11-06", // 需要從上一步驟取得正確的日期，並轉換格式
           remark: "",
           applyApartment: this.bookingData.applyApartment,
-          content: this.bookingData.content
+          content: this.bookingData.content,
+          paymentMethod: this.paymentMethod
         }
 
         const response = await fetch('http://localhost:8080/api/reservations', {
