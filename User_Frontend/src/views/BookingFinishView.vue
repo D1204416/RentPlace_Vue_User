@@ -24,11 +24,11 @@
           </div>
           <div class="info-item">
             <label>預約場地：</label>
-            <span>{{ latestOrder.venueName }}</span>
+            <span>{{ bookingData.venueName }}</span>
           </div>
           <div class="info-item">
             <label>預約場地日期：</label>
-            <span>{{ latestOrder.reservationDate }}</span>
+            <span>{{ bookingData.reservationDate }}</span>
           </div>
         </div>
 
@@ -36,7 +36,7 @@
           <h2>付款資訊</h2>
           <div class="info-item">
             <label>付款方式：</label>
-            <span>{{ latestOrder.paymentMethod }}</span>
+            <span>{{ paymentMethod }}</span>
           </div>
           <div class="info-item">
             <label>銷帳編號：</label>
@@ -72,6 +72,17 @@ export default {
       intervalId: null,
       countdown: 10,
       refreshInterval: 10000,
+      bookingData: {
+        name: '',
+        phone: '',
+        applyApartment: '',
+        content: '',
+        equipmentIds: [],
+        venueId: '',
+        venueName: '',
+        originalQuery: null,
+      },
+      paymentMethod: '',
     };
   },
   mounted() {
@@ -80,6 +91,34 @@ export default {
   beforeDestroy() {
     this.stopAutoUpdateQRCode();
   },
+
+  created() {
+    // 保存進入頁面時的查詢參數
+    this.originalQuery = { ...this.$route.query }
+
+    try {
+      // 載入使用者資料
+      const userData = localStorage.getItem('user')
+      if (userData) {
+        this.userId = JSON.parse(userData).userId
+      }
+
+      // 載入預約資料
+      const storedData = localStorage.getItem('bookingData')
+      if (storedData) {
+        this.bookingData = JSON.parse(storedData)
+      }
+
+      // 載入付款方式
+      const storedPaymentMethod = localStorage.getItem('paymentMethod')
+      if (storedPaymentMethod) {
+        this.paymentMethod = storedPaymentMethod
+      }
+    } catch (error) {
+      console.error('Error loading booking data:', error)
+    }
+  },
+
   methods: {
     async loadLatestQRCode() {
       try {
