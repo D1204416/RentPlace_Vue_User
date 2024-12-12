@@ -1,23 +1,60 @@
 <template>
   <div class="booking-finish-view">
     <h1>完成預訂</h1>
+    <h4>謝謝惠顧，您的預約已完成，如欲查看更詳細的資訊可至歷史訂單查看</h4>
 
-    <div v-if="qrCodeUrl && latestOrder">
-      <p>謝謝惠顧，您的預約已完成，如欲查看更詳細的資訊可至歷史訂單查看</p>
-      <p>您的訂單編號: <strong>{{ latestOrder.orderId }}</strong></p>
-      <p>建議您可以使用 QR code 進場</p>
+    <div v-if="qrCodeUrl && latestOrder" class="content-container">
+      <!-- 左側 QR Code 區域 -->
+      <div class="qr-code-section">
+        <div class="qr-code-container">
+          <p>建議您可以使用 QR code 進場</p>
+          <img :src="qrCodeUrl" alt="QR Code" />
+          <p>QR code有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
+          <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+        </div>
+      </div>
 
-      <img :src="qrCodeUrl" alt="QR Code" />
-      <p>QR code有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
+      <!-- 右側訂單資訊區域 -->
+      <div class="order-info-section">
+        <div class="info-card">
+          <h2>訂單資訊</h2>
+          <div class="info-item">
+            <label>訂單編號：</label>
+            <span>{{ latestOrder.orderId }}</span>
+          </div>
+          <div class="info-item">
+            <label>預約場地：</label>
+            <span>{{ latestOrder.venueName }}</span>
+          </div>
+          <div class="info-item">
+            <label>預約場地日期：</label>
+            <span>{{ latestOrder.reservationDate }}</span>
+          </div>
+        </div>
 
+        <div class="info-card">
+          <h2>付款資訊</h2>
+          <div class="info-item">
+            <label>付款方式：</label>
+            <span>{{ latestOrder.paymentMethod }}</span>
+          </div>
+          <div class="info-item">
+            <label>銷帳編號：</label>
+            <span>{{ latestOrder.accountingNumber || '- -' }}</span>
+          </div>
+          <div class="info-item">
+            <label>繳款期限：</label>
+            <span>{{ latestOrder.paymentDueDate || '- -' }}</span>
+          </div>
+        </div>
+      </div>
     </div>
+
     <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
       無法載入最新的 QR Code 或訂單資訊，請稍後再試。
     </p>
-    <!-- <p v-else>正在載入 QR Code...</p> -->
 
     <div class="button-group">
-      <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
       <button class="btn btn-book" @click="goNext">返回場地租借</button>
     </div>
   </div>
@@ -107,6 +144,9 @@ export default {
         name: "home",
       })
 
+      // 清除之前的暫存資料
+      localStorage.removeItem('bookingData')
+      localStorage.removeItem('paymentMethod')
       localStorage.removeItem('reservationInfo')
     },
   },
@@ -115,70 +155,123 @@ export default {
 
 <style scoped>
 .booking-finish-view {
-  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.booking-finish-view img {
-  max-width: 100%;
+h1,
+h4 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.content-container {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+/* 左側 QR Code 區域 */
+.qr-code-section {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.qr-code-container img {
+  max-width: 250px;
   height: auto;
   margin: 20px 0;
   border: 2px solid #ccc;
   border-radius: 10px;
 }
 
-h1 {
-  margin-top: 20px;
+/* 右側訂單資訊區域 */
+.order-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.info-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.info-card h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.2em;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.info-item label {
+  min-width: 100px;
+  color: #666;
+}
+
+.info-item span {
+  color: #2c3e50;
+  font-weight: 500;
 }
 
 .update-button {
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 14px;
   background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .update-button:hover {
   background-color: #45a049;
 }
 
-.booking-finish-view p {
-  font-size: 18px;
-  margin-top: 10px;
-}
-
 .error {
   color: red;
   font-size: 16px;
-  margin-top: 20px;
+  text-align: center;
+  margin: 20px 0;
 }
 
 .button-group {
   display: flex;
-  gap: 15px;
-  padding: 20px 0;
   justify-content: center;
+  margin-top: 30px;
 }
 
 .btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   text-align: center;
-  border: 1px solid #ddd;
-}
-
-.btn-back {
-
-  background: white;
-  color: #333;
 }
 
 .btn-book {
-  padding: 10px 40px;
   background: #3498db;
   color: white;
   border: none;
@@ -186,5 +279,20 @@ h1 {
 
 .btn-book:hover {
   background-color: #2a94db;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .content-container {
+    flex-direction: column;
+  }
+
+  .info-item {
+    flex-direction: column;
+  }
+
+  .info-item label {
+    margin-bottom: 5px;
+  }
 }
 </style>
