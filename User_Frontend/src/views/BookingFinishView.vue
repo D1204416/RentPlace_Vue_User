@@ -9,8 +9,10 @@
         <div class="qr-code-container">
           <p>建議您可以使用 QR code 進場</p>
           <img :src="qrCodeUrl" alt="QR Code" />
-          <p>QR code有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
-          <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+          <div class="qr-code-footer">
+            <p>有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
+            <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+          </div>
         </div>
       </div>
 
@@ -36,7 +38,7 @@
           <h2>付款資訊</h2>
           <div class="info-item">
             <label>付款方式：</label>
-            <span>{{ paymentMethod }}</span>
+            <span>{{ displayPaymentMethod }}</span>
           </div>
           <div class="info-item">
             <label>銷帳編號：</label>
@@ -85,6 +87,7 @@ export default {
       paymentMethod: '',
     };
   },
+
   mounted() {
     this.startAutoUpdateQRCode();
   },
@@ -116,6 +119,16 @@ export default {
       }
     } catch (error) {
       console.error('Error loading booking data:', error)
+    }
+  },
+
+  computed: {
+    displayPaymentMethod() {
+      const paymentMethods = {
+        'ONLINE_PAYMENT': '線上繳費',
+        'BANK_TRANSFER': 'ATM/銀行臨櫃 轉帳繳費'
+      };
+      return paymentMethods[this.paymentMethod] || this.paymentMethod;
     }
   },
 
@@ -237,6 +250,33 @@ h4 {
   border-radius: 10px;
 }
 
+.qr-code-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.qr-code-footer p {
+  margin: 0;
+}
+
+.update-button {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.update-button:hover {
+  background-color: #45a049;
+}
+
 /* 右側訂單資訊區域 */
 .order-info-section {
   flex: 1;
@@ -274,7 +314,7 @@ h4 {
   font-weight: 500;
 }
 
-.update-button {
+/* .update-button {
   padding: 10px 20px;
   font-size: 14px;
   background-color: #4CAF50;
@@ -287,7 +327,7 @@ h4 {
 
 .update-button:hover {
   background-color: #45a049;
-}
+} */
 
 .error {
   color: red;
