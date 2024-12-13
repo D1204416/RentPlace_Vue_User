@@ -70,7 +70,7 @@ export default {
     const loading = ref(false)
     const placeName = ref('')
     const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
-    const selectedDateReservations = ref([])
+    const selectedDateReservations = ref([])  // 初始為空陣列
 
     // 獲取認證 token
     const getAuthToken = () => {
