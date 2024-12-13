@@ -6,14 +6,15 @@
 
     <!-- 日曆 -->
     <div class="calendar-wrapper">
-      <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates" :initial-date="$route.query.date"
-        @date-selected="handleDateSelect" />
+      <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
+        :initial-date="$route.query.date" @date-selected="handleDateSelect" />
     </div>
 
     <!-- 時段選擇 -->
     <div class="time-slot-wrapper">
       <h3 class="page-title">{{ placeName }}</h3>
-      <TimeSlotSelector :date="selectedDate" :initial-date="$route.query.date" @selection-change="handleSelectionChange" />
+      <TimeSlotSelector :date="selectedDate" :initial-date="$route.query.date"
+        :reserved-time-slots="selectedDateReservations" @selection-change="handleSelectionChange" />
     </div>
 
     <!-- 狀態提示訊息 -->
@@ -69,6 +70,7 @@ export default {
     const loading = ref(false)
     const placeName = ref('')
     const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
+    const selectedDateReservations = ref([])
 
     // 獲取認證 token
     const getAuthToken = () => {
@@ -116,78 +118,23 @@ export default {
           { headers }
         )
 
-        // 檢查回傳資料
-        if (!response.data || !Array.isArray(response.data)) {
-          throw new Error('Invalid response data format')
-        }
-
-        // 依日期分組預約資料
+        // 整理預約資料，按日期分組並儲存時段
         const reservationsByDate = response.data.reduce((acc, reservation) => {
           const date = reservation.reservationDate
           if (!acc[date]) {
-            acc[date] = {
-              isCountBased: false, // 預設為非計次預約
-              timeSlots: []
-            }
+            acc[date] = []
           }
-
-          // 檢查是否為計次預約
-          if (reservation.timePeriod.timePeriodId === 16) {
-            acc[date].isCountBased = true
-          } else {
-            acc[date].timeSlots.push(reservation.timePeriod.timePeriod)
-          }
-
+          acc[date].push(reservation.timePeriodText)
           return acc
         }, {})
 
-        // 從第一筆資料中取得場地可預約時段
-        const availableTime = response.data[0]?.venue?.availableTime
-        if (!availableTime) {
-          throw new Error('Missing venue available time')
-        }
-
-        // 解析可預約時段
-        const [startTime, endTime] = availableTime.split('-')
-        const startHour = parseInt(startTime.split(':')[0])
-        const endHour = parseInt(endTime.split(':')[0])
-
-        // 產生所有可預約的時段
-        const availableTimeSlots = []
-        for (let hour = startHour; hour < endHour; hour++) {
-          availableTimeSlots.push(
-            `${String(hour).padStart(2, '0')}:00-${String(hour + 1).padStart(2, '0')}:00`
-          )
-        }
-
-        // 整理最終資料
-        reservations.value = Object.entries(reservationsByDate).map(([date, dateInfo]) => {
-          // 如果是計次預約，直接標記為不可預約
-          if (dateInfo.isCountBased) {
-            return {
-              date: date,
-              timePeriodId: 16,
-              status: '不可預約',
-              statusId: 4
-            }
-          }
-
-          // 非計次預約則檢查時段
-          const isFullyBooked = availableTimeSlots.every(timeSlot =>
-            dateInfo.timeSlots.includes(timeSlot)
-          )
-
-          return {
-            date: date,
-            timePeriodId: null,
-            status: isFullyBooked ? '不可預約' : '可預約',
-            statusId: isFullyBooked ? 4 : 1
-          }
-        })
+        reservations.value = Object.keys(reservationsByDate).map(date => ({
+          date: date,
+          timeSlots: reservationsByDate[date]
+        }))
 
       } catch (error) {
         console.error('Failed to fetch reservations:', error)
-        // showMessage('無法載入預約資料，請稍後再試', 'error')
       } finally {
         loading.value = false
       }
@@ -222,15 +169,13 @@ export default {
       const day = date.getDate()
       selectedDate.value = `${month}月${day}日可租借時段`
 
+      const dateReservations = reservations.value.find(r => r.date === dateInfo.date)
+      const reservedTimeSlots = dateReservations ? dateReservations.timeSlots : []
+
+      console.log('Selected date reserved slots:', reservedTimeSlots)
       console.log('bookingDate:', dateInfo)
-      router.push({
-        name: 'TimeSelection',
-        params: {
-          id: venueId.value,
-          date: dateInfo.date
-        },
-        query: route.query
-      })
+
+      selectedDateReservations.value = reservedTimeSlots
     }
 
 
@@ -265,6 +210,7 @@ export default {
       placeName,
       selectedDate,
       originalQuery: null,
+      selectedDateReservations,
     }
   },
   methods: {
