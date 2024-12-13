@@ -71,6 +71,9 @@ export default {
     const placeName = ref('')
     const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
     const selectedDateReservations = ref([])  // 初始為空陣列
+    const selectedTimeData = ref(null)
+    const selectedDateValue = ref('') // 儲存原始日期格式 YYYY-MM-DD
+    const originalQuery = ref({ ...route.query })
 
     // 獲取認證 token
     const getAuthToken = () => {
@@ -168,6 +171,7 @@ export default {
       const month = date.getMonth() + 1
       const day = date.getDate()
       selectedDate.value = `${month}月${day}日可租借時段`
+      selectedDateValue.value = dateInfo.date // 儲存原始日期
 
       const dateReservations = reservations.value.find(r => r.date === dateInfo.date)
       const reservedTimeSlots = dateReservations ? dateReservations.timeSlots : []
@@ -178,6 +182,67 @@ export default {
       selectedDateReservations.value = reservedTimeSlots
     }
 
+    // 處理時段選擇的函數
+    const handleSelectionChange = (data) => {
+      console.log('Time slots changed:', data)
+      console.log('總時數:', data.totalHours)
+      console.log('已選時段:', data.selectedSlots)
+      selectedTimeData.value = data
+    }
+
+    // 返回上一頁
+    const goBack = () => {
+      router.push({
+        name: "cardInfoView",
+        params: { id: venueId.value },
+        query: originalQuery.value
+      })
+    }
+
+    // 前往下一頁
+    const goNext = () => {
+      console.log('Checking conditions:', {
+        selectedDate: selectedDate.value,
+        selectedTimeData: selectedTimeData.value,
+        selectedSlots: selectedTimeData.value?.selectedSlots
+      })
+
+      // 檢查是否有選擇日期和時段
+      if (selectedDate.value === '尚未選擇租借日期') {
+        showMessage('請選擇預約日期', 'error')
+        return
+      }
+
+      // 從 TimeSlotSelector 傳來的時段資料
+      const selectedTimeSlots = selectedTimeData.value?.selectedSlots || []
+      if (selectedTimeSlots.length === 0) {
+        showMessage('請選擇預約時段', 'error')
+        return
+      }
+
+      // 準備要儲存的預約資料
+      const bookingData = {
+        venueId: venueId.value,
+        reservationDate: selectedDateValue.value, // 原始日期值 (YYYY-MM-DD)
+        timeSlots: selectedTimeSlots,
+        totalHours: selectedTimeData.value?.totalHours || 0
+      }
+
+      // 儲存到 localStorage
+      try {
+        localStorage.setItem('bookingDate', JSON.stringify(bookingData))
+
+        // 導航到指定頁
+        router.push({
+          name: "BookingFormView",
+          params: { id: venueId.value },
+          query: originalQuery.value
+        })
+      } catch (error) {
+        console.error('Failed to save booking data:', error)
+        showMessage('儲存預約資料失敗', 'error')
+      }
+    }
 
     // 監聽路由參數變化
     watch(
@@ -205,36 +270,83 @@ export default {
       closeDates,
       message,
       messageType,
+      showMessage,
       loading,
       handleDateSelect,
       placeName,
       selectedDate,
-      originalQuery: null,
+      originalQuery,
       selectedDateReservations,
+      selectedDateValue,
+      selectedTimeData,
+      handleSelectionChange,
+      goBack,
+      goNext,
     }
   },
-  methods: {
-    goBack() {
-      this.$router.push({
-        name: "cardInfoView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId },
-        query: this.originalQuery
-      })
-    },
 
-    goNext() {
-      this.$router.push({
-        name: "BookingFormView",  // 修改成實際的預約頁名稱
-        params: { id: this.venueId },
-        query: this.originalQuery
-      })
-    },
+  // methods: {
+  //   goBack() {
+  //     this.$router.push({
+  //       name: "cardInfoView",  // 修改成實際的預約頁名稱
+  //       params: { id: this.venueId },
+  //       query: this.originalQuery
+  //     })
+  //   },
 
-    handleSelectionChange({ totalHours, selectedSlots }) {
-      console.log('總時數:', totalHours)
-      console.log('已選時段:', selectedSlots)
-    }
-  }
+  //   goNext() {
+  //     console.log('Current selectedTimeData:', selectedTimeData.value)
+  //   console.log('Selected slots:', selectedTimeData.value?.selectedSlots)
+
+  //     // 檢查是否有選擇日期和時段
+  //     if (this.selectedDate === '尚未選擇租借日期') {
+  //       this.showMessage('請選擇預約日期', 'error')
+  //       return
+  //     }
+
+  //     // 從 TimeSlotSelector 傳來的時段資料
+  //     const selectedTimeSlots = this.selectedTimeData?.selectedSlots || []
+  //     if (selectedTimeSlots.length === 0) {
+  //       this.showMessage('請選擇預約時段', 'error')
+  //       return
+  //     }
+
+  //     // 準備要儲存的預約資料
+  //     const bookingData = {
+  //       venueId: this.venueId,
+  //       reservationDate: this.selectedDateValue, // 原始日期值 (YYYY-MM-DD)
+  //       timeSlots: selectedTimeSlots,
+  //       totalHours: this.selectedTimeData?.totalHours || 0
+  //     }
+
+  //     // 儲存到 localStorage
+  //     try {
+  //       localStorage.setItem('bookingDate', JSON.stringify(bookingData))
+
+  //       // 導航到指定頁
+  //       this.$router.push({
+  //         name: "BookingFormView",
+  //         params: { id: this.venueId },
+  //         query: this.originalQuery
+  //       })
+  //     } catch (error) {
+  //       console.error('Failed to save booking data:', error)
+  //       this.showMessage('儲存預約資料失敗', 'error')
+  //     }
+  //   },
+
+  //   // 處理從 TimeSlotSelector 傳來的時段選擇資料
+  //   // handleSelectionChange(data) {
+  //   //   this.selectedTimeData = data
+  //   // }
+  //   handleSelectionChange({ totalHours, selectedSlots }) {
+  //     console.log('總時數:', totalHours)
+  //     console.log('已選時段:', selectedSlots)
+
+  //   },
+
+
+  // }
 }
 
 </script>
@@ -268,12 +380,21 @@ export default {
   /* 讓時段選擇器填滿剩餘空間 */
 }
 
-.message {
+/* .message {
   padding: 12px;
   border-radius: 4px;
   text-align: center;
   margin-top: 20px;
   animation: fadeIn 0.3s ease-in-out;
+} */
+.message {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 4px;
+  z-index: 1000;
 }
 
 .message.success {

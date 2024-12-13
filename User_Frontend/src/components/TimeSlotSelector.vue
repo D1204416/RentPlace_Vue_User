@@ -128,6 +128,22 @@ export default {
         return total + section.slots.filter(slot => slot.selected).length
       }, 0)
 
+      // 檢查一下選中的時段資料
+      const selectedSlots = this.sections.flatMap(section =>
+        section.slots
+          .filter(slot => slot.selected)
+          .map(slot => ({
+            time: slot.time,
+            section: section.title
+          }))
+      )
+
+      console.log('Emitting selection change:', {
+        totalHours: this.totalHours,
+        selectedSlots
+      })
+
+      // 發送選擇變更事件
       this.$emit('selection-change', {
         totalHours: this.totalHours,
         selectedSlots: this.getSelectedSlots()
