@@ -221,7 +221,7 @@ export default {
       }
 
       // 準備要儲存的預約資料
-      const bookingData = {
+      const dateTimeData = {
         venueId: venueId.value,
         reservationDate: selectedDateValue.value, // 原始日期值 (YYYY-MM-DD)
         timeSlots: selectedTimeSlots,
@@ -230,7 +230,18 @@ export default {
 
       // 儲存到 localStorage
       try {
-        localStorage.setItem('bookingDate', JSON.stringify(bookingData))
+        // 讀取現有的預約資料（如果有的話）
+        const existingData = localStorage.getItem('bookingData')
+        const bookingData = existingData ? JSON.parse(existingData) : {}
+
+        // 合併新的日期和時段資料
+        const updatedBookingData = {
+          ...bookingData,           // 保留其他可能已存在的資料
+          ...dateTimeData,          // 更新日期和時段資料
+          lastUpdated: new Date()   // 可選：記錄最後更新時間
+        }
+
+        localStorage.setItem('bookingDate', JSON.stringify(updatedBookingData))
 
         // 導航到指定頁
         router.push({
