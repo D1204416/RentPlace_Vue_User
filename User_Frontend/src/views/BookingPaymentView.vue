@@ -173,9 +173,7 @@ export default {
           }
           localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo))
 
-          // 清除之前的暫存資料
-          localStorage.removeItem('bookingData')
-          localStorage.removeItem('paymentMethod')
+          
 
           // 導航到成功頁面
           // this.$router.push('/bookingFinish/:id')
