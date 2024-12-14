@@ -4,19 +4,7 @@
     <h4>謝謝惠顧，您的預約已完成，如欲查看更詳細的資訊可至歷史訂單查看</h4>
 
     <div v-if="qrCodeUrl && latestOrder" class="content-container">
-      <!-- 左側 QR Code 區域 -->
-      <div class="qr-code-section">
-        <div class="qr-code-container">
-          <p>建議您可以使用 QR code 進場</p>
-          <img :src="qrCodeUrl" alt="QR Code" />
-          <div class="qr-code-footer">
-            <p>有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
-            <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 右側訂單資訊區域 -->
+      <!-- 左側訂單資訊區域 -->
       <div class="order-info-section">
         <div class="info-card">
           <h2>訂單資訊</h2>
@@ -50,6 +38,19 @@
           </div>
         </div>
       </div>
+
+      <!-- 右側 QR Code 區域 -->
+      <div class="qr-code-section">
+        <div class="qr-code-container">
+          <p>建議您可以使用 QR code 進場</p>
+          <img :src="qrCodeUrl" alt="QR Code" />
+          <div class="qr-code-footer">
+            <p>有效期限倒數：<strong>{{ countdown }}</strong> 秒</p>
+            <button @click="manualUpdateQRCode" class="update-button">立即更新 QR Code</button>
+          </div>
+        </div>
+      </div>
+      
     </div>
 
     <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
