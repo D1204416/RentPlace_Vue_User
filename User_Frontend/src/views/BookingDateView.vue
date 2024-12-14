@@ -13,8 +13,13 @@
     <!-- 時段選擇 -->
     <div class="time-slot-wrapper">
       <h3 class="page-title">{{ placeName }}</h3>
-      <TimeSlotSelector :date="selectedDate" :initial-date="$route.query.date"
-        :reserved-time-slots="selectedDateReservations" @selection-change="handleSelectionChange" />
+      <TimeSlotSelector 
+  :date="selectedDate"
+  :initial-date="$route.query.date"
+  :reserved-time-slots="selectedDateReservations"
+  :initial-selected-slots="selectedTimeData?.selectedSlots || []"
+  @selection-change="handleSelectionChange"
+/>
     </div>
 
     <!-- 狀態提示訊息 -->
@@ -257,34 +262,76 @@ export default {
       }
     }
 
-    // 監聽路由參數變化
-    watch(
-      () => route.params.id,
-      async (newId) => {
-        if (newId) {
-          venueId.value = newId
-          await Promise.all([fetchReservations(), fetchCloseDates(), fetchPlaceName()])
-        }
-      }
-    )
+    // 從 localStorage 恢復預約數據的函數
+    const restoreBookingData = () => {
+      try {
+        const savedData = localStorage.getItem('bookingData')
+        if (savedData) {
+          const parsedData = JSON.parse(savedData)
+          console.log('Restored data:', parsedData)
 
-    // 組件掛載時獲取資料
+          // 如果有保存的日期，恢復日期顯示
+          if (parsedData.reservationDate) {
+            const date = new Date(parsedData.reservationDate)
+            const month = date.getMonth() + 1
+            const day = date.getDate()
+            selectedDate.value = `${month}月${day}日可租借時段`
+            selectedDateValue.value = parsedData.reservationDate
+
+            // 恢復時段選擇
+            if (parsedData.timeSlots && Array.isArray(parsedData.timeSlots)) {
+              selectedTimeData.value = {
+                selectedSlots: parsedData.timeSlots,
+                totalHours: parsedData.totalHours || parsedData.timeSlots.length
+              }
+            }
+
+            // 觸發日期選擇的處理函數來加載該日期的預約情況
+            handleDateSelect({
+              date: parsedData.reservationDate
+            })
+          }
+
+          // 恢復場地名稱等其他數據
+          if (parsedData.venueName) {
+            placeName.value = parsedData.venueName
+          }
+          if (parsedData.venueType) {
+            venueType.value = parsedData.venueType
+          }
+        }
+      } catch (error) {
+        console.error('Failed to restore booking data:', error)
+      }
+    }
+
+    // 監聽已選擇日期的預約數據
+    watch(selectedDateValue, async (newDate) => {
+      if (newDate) {
+        const dateReservations = reservations.value.find(r => r.date === newDate)
+        selectedDateReservations.value = dateReservations ? dateReservations.timeSlots : []
+      }
+    })
+
+
+    // 組件掛載時獲取數據
     onMounted(async () => {
       if (venueId.value) {
         await Promise.all([fetchReservations(), fetchCloseDates(), fetchPlaceName()])
+
+        // 先嘗試從 localStorage 恢復數據
+        restoreBookingData()
+
+        // 如果 URL 有日期參數且沒有 localStorage 數據，則使用 URL 日期
+        if (route.query.date && !selectedDateValue.value) {
+          const date = new Date(route.query.date)
+          const month = date.getMonth() + 1
+          const day = date.getDate()
+          selectedDate.value = `${month}月${day}日可租借時段`
+          selectedDateValue.value = route.query.date
+        }
       } else {
         showMessage('找不到場地ID', 'error')
-      }
-
-      // 檢查是否有從 query 傳來的日期
-      if (route.query.date) {
-        const date = new Date(route.query.date)
-        const month = date.getMonth() + 1
-        const day = date.getDate()
-
-        // 更新兩個日期相關的 ref
-        selectedDate.value = `${month}月${day}日可租借時段`
-        selectedDateValue.value = route.query.date
       }
     })
 
@@ -306,6 +353,7 @@ export default {
       handleSelectionChange,
       goBack,
       goNext,
+      restoreBookingData,
     }
   },
 

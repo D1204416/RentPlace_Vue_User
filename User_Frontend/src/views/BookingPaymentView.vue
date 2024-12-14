@@ -27,9 +27,9 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
         <h2 class="section-title">租借資訊</h2>
         <div class="section-content">
           <div class="info-row">
-            <span>預約日期：<span class="info-value">{{ formatDate }}</span></span>
+            <span>預約日期：<span class="info-value">{{ bookingData.reservationDate }}</span></span>
             <span>租借場地：<span class="info-value">{{ bookingData.venueName }}</span></span>
-            <span>租借類型：<span class="info-value">會議室</span></span>
+            <span>租借類型：<span class="info-value">{{ bookingData.venueType }}</span></span>
           </div>
           <div class="info-item">
             <span>租借時段：<span class="info-value">{{ formatTimeSlots }}</span></span>
@@ -88,12 +88,13 @@ export default {
         equipmentIds: [],
         venueId: '',
         venueName: '',
+        venueType: '',
         paymentMethod: '',
-        originalQuery: null,
+        timeSlots: [],
+        reservationDate: ''
       },
+      originalQuery: null,
       userId: '',
-      paymentMethod: '',
-      timeSlots: ['12:00-13:00', '13:00-14:00', '14:00-15:00'],
       rentalFee: 1500
     }
   },
@@ -103,7 +104,7 @@ export default {
       return '2024/11/06' // 這裡可以加入日期處理邏輯
     },
     formatTimeSlots() {
-      return this.timeSlots.join('、')
+      return this.bookingData.timeSlots.join('、')
     },
     formatEquipments() {
       return this.bookingData.equipmentIds
@@ -126,10 +127,9 @@ export default {
       // 載入預約資料
       const storedData = localStorage.getItem('bookingData')
       if (storedData) {
-        this.bookingData = JSON.parse(storedData)
-        // 如果 bookingData 中有 paymentMethod，則載入到 component 的 paymentMethod
-        if (this.bookingData.paymentMethod) {
-          this.paymentMethod = this.bookingData.paymentMethod
+        this.bookingData = {
+          ...this.bookingData,
+          ...JSON.parse(storedData)
         }
       }
     } catch (error) {
@@ -145,11 +145,11 @@ export default {
           venueId: this.bookingData.venueId,
           userId: this.userId,
           timePeriodId: 1, // 需要從上一步驟取得正確的 timePeriodId
-          reservationDate: "2024-11-06", // 需要從上一步驟取得正確的日期，並轉換格式
+          reservationDate: this.bookingData.reservationDate,
           remark: "",
           applyApartment: this.bookingData.applyApartment,
           content: this.bookingData.content,
-          paymentMethod: this.paymentMethod
+          paymentMethod: this.bookingData.paymentMethod
         }
 
         const response = await fetch('http://localhost:8080/api/reservations', {
@@ -204,14 +204,13 @@ export default {
   },
 
   watch: {
-    paymentMethod(newValue) {
-      try {
-        // 更新 bookingData 中的 paymentMethod
-        this.bookingData.paymentMethod = newValue
-        // 儲存更新後的 bookingData 到 localStorage
-        localStorage.setItem('bookingData', JSON.stringify(this.bookingData))
-      } catch (error) {
-        console.error('Error saving payment method:', error)
+    'bookingData.paymentMethod': {
+      handler(newValue) {
+        try {
+          localStorage.setItem('bookingData', JSON.stringify(this.bookingData))
+        } catch (error) {
+          console.error('Error saving booking data:', error)
+        }
       }
     }
   }

@@ -43,8 +43,11 @@ export default {
       type: String,
       default: null
     },
-    // 新增已預約時段的 prop
     reservedTimeSlots: {
+      type: Array,
+      default: () => []
+    },
+    initialSelectedSlots: {
       type: Array,
       default: () => []
     }
@@ -93,12 +96,35 @@ export default {
       immediate: true,
       handler(newDate) {
         // 當 date 改變時，更新顯示
-        if (newDate !== '尚未選擇租借日期') {
-          // 如果有選擇日期，優先使用新的日期
-          this.formattedDate = newDate
-          // 重置時段選擇
-          this.resetTimeSlots()
+        if (newDate && newDate !== '尚未選擇租借日期') {
+          this.initializeTimeSlots()
         }
+      }
+    },
+
+    // 監聽預約時段變化
+    reservedTimeSlots: {
+      immediate: true,
+      handler() {
+        this.initializeTimeSlots()
+      }
+    },
+
+    initialSelectedSlots: {
+      immediate: true,
+      deep: true,
+      handler(newValue) {
+        console.log('Initial slots changed:', newValue)
+        if (newValue && newValue.length > 0) {
+          this.initializeTimeSlots()
+        }
+      }
+    },
+
+    // 監聽日期變化
+    date(newDate) {
+      if (newDate !== '尚未選擇租借日期') {
+        this.resetTimeSlots()
       }
     }
   },
@@ -109,18 +135,26 @@ export default {
       return this.reservedTimeSlots.includes(slotTime)
     },
 
-    // 初始化時段狀態
+    // 初始化時段狀態，包括恢復已選擇的時段
     initializeTimeSlots() {
-      // console.log('Reserved slots:', this.reservedTimeSlots) // 調試用
+      console.log('Initializing time slots with:', {
+        initialSelectedSlots: this.initialSelectedSlots,
+        date: this.date
+      })
+
       this.sections.forEach(section => {
         section.slots.forEach(slot => {
-          // 檢查該時段是否被預約
+          // 檢查是否被預約
           slot.disabled = this.isSlotReserved(slot.time)
-          if (slot.disabled) {
-            slot.selected = false
+          // 檢查是否在初始選中的時段中
+          if (this.initialSelectedSlots && this.initialSelectedSlots.length > 0) {
+            slot.selected = !slot.disabled && this.initialSelectedSlots.some(
+              selectedSlot => selectedSlot.time === slot.time
+            )
           }
         })
       })
+      this.updateTotalHours()
     },
 
     updateTotalHours() {
@@ -128,25 +162,10 @@ export default {
         return total + section.slots.filter(slot => slot.selected).length
       }, 0)
 
-      // 檢查一下選中的時段資料
-      const selectedSlots = this.sections.flatMap(section =>
-        section.slots
-          .filter(slot => slot.selected)
-          .map(slot => ({
-            time: slot.time,
-            section: section.title
-          }))
-      )
-
-      // console.log('Emitting selection change:', {
-      //   totalHours: this.totalHours,
-      //   selectedSlots
-      // })
-
-      // 發送選擇變更事件
+      const selectedSlots = this.getSelectedSlots()
       this.$emit('selection-change', {
         totalHours: this.totalHours,
-        selectedSlots: this.getSelectedSlots()
+        selectedSlots: selectedSlots
       })
     },
 
@@ -162,35 +181,21 @@ export default {
       )
     },
 
+    // 重置時段選擇，但保留初始選擇
     resetTimeSlots() {
+      // 確保 initialSelectedSlots 是數組
+      const selectedSlots = Array.isArray(this.initialSelectedSlots) ? this.initialSelectedSlots : []
+
       this.sections.forEach(section => {
         section.slots.forEach(slot => {
-          slot.selected = false
           slot.disabled = this.isSlotReserved(slot.time)
+          // 在重置時也檢查初始選中狀態
+          slot.selected = !slot.disabled && selectedSlots.some(
+            selectedSlot => selectedSlot.time === slot.time
+          )
         })
       })
-      this.totalHours = 0
-      this.$emit('selection-change', {
-        totalHours: 0,
-        selectedSlots: []
-      })
-    }
-  },
-
-  watch: {
-    // 監聽預約時段變化
-    reservedTimeSlots: {
-      immediate: true,
-      handler() {
-        this.initializeTimeSlots()
-      }
-    },
-
-    // 監聽日期變化
-    date(newDate) {
-      if (newDate !== '尚未選擇租借日期') {
-        this.resetTimeSlots()
-      }
+      this.updateTotalHours()
     }
   },
 
@@ -207,6 +212,16 @@ export default {
       }
       return this.date
     }
+  },
+
+  created() {
+    // 組件創建時初始化時段
+    this.initializeTimeSlots()
+  },
+
+  mounted() {
+    // 組件掛載時也初始化一次
+    this.initializeTimeSlots()
   }
 
 }
