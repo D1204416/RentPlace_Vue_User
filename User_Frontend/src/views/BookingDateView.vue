@@ -68,6 +68,7 @@ export default {
     const closeDates = ref([])
     const loading = ref(false)
     const placeName = ref('')
+    const venueType = ref('')
     const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
     const selectedDateReservations = ref([])  // 初始為空陣列
     const selectedDateValue = ref('') // 儲存原始日期格式 YYYY-MM-DD
@@ -103,6 +104,7 @@ export default {
           { headers }
         )
         placeName.value = response.data.venueName // 假設 API 返回的場地數據中有 name 欄位
+        venueType.value = response.data.venueType
       } catch (error) {
         console.error('Failed to fetch place name:', error)
         // showMessage('無法載入場地資訊，請稍後再試', 'error')
@@ -222,6 +224,7 @@ export default {
       // 準備要儲存的預約資料
       const dateTimeData = {
         venueId: venueId.value,
+        venueType: venueType.value,
         reservationDate: selectedDateValue.value, // 原始日期值 (YYYY-MM-DD)
         timeSlots: selectedTimeSlots,
         totalHours: selectedTimeData.value?.totalHours || 0

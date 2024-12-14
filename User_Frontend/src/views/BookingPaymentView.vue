@@ -6,7 +6,6 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
   <progress-steps :current-step="3" />
   <div class="container">
 
-
     <div class="rental-form">
       <!-- 申請人資料區塊 -->
       <div class="form-section">
@@ -74,7 +73,7 @@ const EQUIPMENT_MAP = {
 };
 
 export default {
-  name: 'BookingPaymentView',
+  name: 'bookingPayment',
   components: {
     ProgressSteps
   },
@@ -89,6 +88,7 @@ export default {
         equipmentIds: [],
         venueId: '',
         venueName: '',
+        paymentMethod: '',
         originalQuery: null,
       },
       userId: '',
@@ -127,12 +127,10 @@ export default {
       const storedData = localStorage.getItem('bookingData')
       if (storedData) {
         this.bookingData = JSON.parse(storedData)
-      }
-
-      // 載入付款方式
-      const storedPaymentMethod = localStorage.getItem('paymentMethod')
-      if (storedPaymentMethod) {
-        this.paymentMethod = storedPaymentMethod
+        // 如果 bookingData 中有 paymentMethod，則載入到 component 的 paymentMethod
+        if (this.bookingData.paymentMethod) {
+          this.paymentMethod = this.bookingData.paymentMethod
+        }
       }
     } catch (error) {
       console.error('Error loading booking data:', error)
@@ -144,7 +142,7 @@ export default {
       try {
         // 準備要發送的資料格式
         const reservationData = {
-          venueId: parseInt(this.bookingData.venueId),
+          venueId: this.bookingData.venueId,
           userId: this.userId,
           timePeriodId: 1, // 需要從上一步驟取得正確的 timePeriodId
           reservationDate: "2024-11-06", // 需要從上一步驟取得正確的日期，並轉換格式
@@ -173,9 +171,7 @@ export default {
           }
           localStorage.setItem('reservationInfo', JSON.stringify(reservationInfo))
 
-          
-
-          // 導航到成功頁面
+          // 導航到指定頁面
           // this.$router.push('/bookingFinish/:id')
         } else {
           throw new Error('預訂失敗')
@@ -198,19 +194,22 @@ export default {
       // 送出資料
       this.submitBooking(),
 
-      // 導航到付款頁面
-      this.$router.push({
-        name: "BookingFinishView",
-        params: { id: this.venueId },
-        query: this.originalQuery
-      })
+        // 導航到付款頁面
+        this.$router.push({
+          name: "BookingFinishView",
+          params: { id: this.venueId },
+          query: this.originalQuery
+        })
     },
   },
 
   watch: {
     paymentMethod(newValue) {
       try {
-        localStorage.setItem('paymentMethod', newValue)
+        // 更新 bookingData 中的 paymentMethod
+        this.bookingData.paymentMethod = newValue
+        // 儲存更新後的 bookingData 到 localStorage
+        localStorage.setItem('bookingData', JSON.stringify(this.bookingData))
       } catch (error) {
         console.error('Error saving payment method:', error)
       }
