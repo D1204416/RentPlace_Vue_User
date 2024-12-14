@@ -178,6 +178,15 @@ export default {
 
     // 儲存整個預約表單資料
     saveBookingData() {
+      // 獲取選中設備的完整資訊
+      const selectedEquipments = this.equipmentIds.map(id => {
+        const equipment = this.venueData.equipment.find(e => e.id === id);
+        return {
+          id: id,
+          equipmentName: equipment ? equipment.equipmentName : ''
+        };
+      });
+
       // 準備要儲存的表格資料
       const formData = {
         name: this.formData.name,
@@ -186,7 +195,8 @@ export default {
         content: this.formData.content,
         venueId: this.venueId,
         venueName: this.venueData?.venueName,
-        equipmentIds: this.equipmentIds
+        equipmentIds: this.equipmentIds,
+        selectedEquipments: selectedEquipments
       }
 
       try {
