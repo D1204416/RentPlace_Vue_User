@@ -38,7 +38,7 @@
           <h2>付款資訊</h2>
           <div class="info-item">
             <label>付款方式：</label>
-            <span>{{ displayPaymentMethod }}</span>
+            <span>{{ bookingData.paymentMethod }}</span>
           </div>
           <div class="info-item">
             <label>銷帳編號：</label>

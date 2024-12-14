@@ -59,31 +59,31 @@ export default {
         {
           title: '早上',
           slots: [
-            { id: 't-0700', time: '07:00-08:00', selected: false, disabled: false },
-            { id: 't-0800', time: '08:00-09:00', selected: false, disabled: false },
-            { id: 't-0900', time: '09:00-10:00', selected: false, disabled: false },
-            { id: 't-1000', time: '10:00-11:00', selected: false, disabled: false },
-            { id: 't-1100', time: '11:00-12:00', selected: false, disabled: false }
+            { id: '1', time: '07:00-08:00', selected: false, disabled: false },
+            { id: '2', time: '08:00-09:00', selected: false, disabled: false },
+            { id: '3', time: '09:00-10:00', selected: false, disabled: false },
+            { id: '4', time: '10:00-11:00', selected: false, disabled: false },
+            { id: '5', time: '11:00-12:00', selected: false, disabled: false }
           ]
         },
         {
           title: '下午',
           slots: [
-            { id: 't-1200', time: '12:00-13:00', selected: false, disabled: false },
-            { id: 't-1300', time: '13:00-14:00', selected: false, disabled: false },
-            { id: 't-1400', time: '14:00-15:00', selected: false, disabled: false },
-            { id: 't-1500', time: '15:00-16:00', selected: false, disabled: false },
-            { id: 't-1600', time: '16:00-17:00', selected: false, disabled: false }
+            { id: '6', time: '12:00-13:00', selected: false, disabled: false },
+            { id: '7', time: '13:00-14:00', selected: false, disabled: false },
+            { id: '8', time: '14:00-15:00', selected: false, disabled: false },
+            { id: '9', time: '15:00-16:00', selected: false, disabled: false },
+            { id: '10', time: '16:00-17:00', selected: false, disabled: false }
           ]
         },
         {
           title: '晚上',
           slots: [
-            { id: 't-1700', time: '17:00-18:00', selected: false, disabled: false },
-            { id: 't-1800', time: '18:00-19:00', selected: false, disabled: false },
-            { id: 't-1900', time: '19:00-20:00', selected: false, disabled: false },
-            { id: 't-2000', time: '20:00-21:00', selected: false, disabled: false },
-            { id: 't-2100', time: '21:00-22:00', selected: false, disabled: false }
+            { id: '11', time: '17:00-18:00', selected: false, disabled: false },
+            { id: '12', time: '18:00-19:00', selected: false, disabled: false },
+            { id: '13', time: '19:00-20:00', selected: false, disabled: false },
+            { id: '14', time: '20:00-21:00', selected: false, disabled: false },
+            { id: '15', time: '21:00-22:00', selected: false, disabled: false }
           ]
         }
       ],
