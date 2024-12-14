@@ -38,7 +38,7 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
             <span>租借設備：<span class="info-value">{{ formatEquipments }}</span></span>
           </div>
           <div class="info-item">
-            <span>租借費用計：<span class="info-value">{{ rentalFee }}元</span></span>
+            <span>租借費用計：<span class="info-value">{{ bookingData.totalAmount }}元</span></span>
           </div>
         </div>
       </div>
@@ -67,11 +67,6 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
 </template>
 
 <script>
-const EQUIPMENT_MAP = {
-  10: '麥克風',
-  11: '投影機'
-};
-
 export default {
   name: 'bookingPayment',
   components: {
@@ -86,29 +81,32 @@ export default {
         applyApartment: '',
         content: '',
         equipmentIds: [],
+        selectedEquipments: [],
         venueId: '',
         venueName: '',
         venueType: '',
         paymentMethod: '',
         timeSlots: [],
-        reservationDate: ''
+        reservationDate: '',
+        totalAmount: '',
+        totalHours: 0,
+        unitPrice: 0,
       },
       originalQuery: null,
       userId: '',
-      rentalFee: 1500
+      paymentMethod: ''
     }
   },
 
   computed: {
-    formatDate() {
-      return '2024/11/06' // 這裡可以加入日期處理邏輯
-    },
     formatTimeSlots() {
-      return this.bookingData.timeSlots.join('、')
+      return this.bookingData.timeSlots
+        .map(slot => slot.time)
+        .join('、')
     },
     formatEquipments() {
-      return this.bookingData.equipmentIds
-        .map(id => EQUIPMENT_MAP[id])
+      return this.bookingData.selectedEquipments
+        .map(equipment => equipment.equipmentName)
         .join('、')
     }
   },
@@ -144,7 +142,8 @@ export default {
         const reservationData = {
           venueId: this.bookingData.venueId,
           userId: this.userId,
-          timePeriodId: 1, // 需要從上一步驟取得正確的 timePeriodId
+          timePeriodId: this.bookingData.timeSlots.map(slot => slot.id),
+          equipment: this.bookingData.selectedEquipments.map(eq => eq.id),
           reservationDate: this.bookingData.reservationDate,
           remark: "",
           applyApartment: this.bookingData.applyApartment,
@@ -204,9 +203,10 @@ export default {
   },
 
   watch: {
-    'bookingData.paymentMethod': {
+    paymentMethod: {
       handler(newValue) {
         try {
+          this.bookingData.paymentMethod = newValue
           localStorage.setItem('bookingData', JSON.stringify(this.bookingData))
         } catch (error) {
           console.error('Error saving booking data:', error)
