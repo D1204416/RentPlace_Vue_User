@@ -142,13 +142,14 @@ export default {
         const reservationData = {
           venueId: this.bookingData.venueId,
           userId: this.userId,
-          timePeriodId: this.bookingData.timeSlots.map(slot => slot.id),
-          equipment: this.bookingData.selectedEquipments.map(eq => eq.id),
+          timePeriodIds: this.bookingData.timeSlots.map(slot => slot.id),
+          equipmentIds: this.bookingData.selectedEquipments.map(eq => eq.id),
           reservationDate: this.bookingData.reservationDate,
           remark: "",
           applyApartment: this.bookingData.applyApartment,
           content: this.bookingData.content,
-          paymentMethod: this.bookingData.paymentMethod
+          paymentMethod: this.bookingData.paymentMethod,
+          totalAmount: this.bookingData.totalAmount
         }
 
         const response = await fetch('http://localhost:8080/api/reservations', {
