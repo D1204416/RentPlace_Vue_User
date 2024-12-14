@@ -5,7 +5,7 @@
     <!-- 篩選區域 -->
     <div class="filters">
       <!-- 場地篩選 -->
-      <div class="filter-item">
+      <!-- <div class="filter-item">
         <label>場地</label>
         <select v-model="filters.venue">
           <option value="">全部場地</option>
@@ -13,7 +13,7 @@
             {{ venue.venue?.venueName }}
           </option>
         </select>
-      </div>
+      </div> -->
 
       <!-- 日期範圍篩選 -->
       <div class="filter-item">
@@ -52,9 +52,9 @@
             <th>訂單號碼</th>
             <th>場地名稱</th>
             <th>預約日期</th>
-            <th>預約時段</th>
+            <!-- <th>預約時段</th> -->
             <th>付款方式</th>
-            <th>訂單狀態</th>
+            <!-- <th>訂單狀態</th> -->
             <th class="amount">金額</th>
           </tr>
         </thead>
@@ -63,11 +63,11 @@
             <td>{{ order.orderId }}</td>
             <td>{{ order.reservation?.venue?.venueName || '無資料' }}</td>
             <td>{{ formatDate(order.reservation?.reservationDate) || '無資料' }}</td>
-            <td>{{ order.reservation?.timePeriodText || '無資料' }}</td>
+            <!-- <td>{{ order.reservation?.timePeriodText || '無資料' }}</td> -->
             <td>{{ order.payment?.paymentMethodDisplay || '無資料' }}</td>
-            <td>{{ order.status?.status || '無資料' }}</td>
+            <!-- <td>{{ order.status?.status || '無資料' }}</td> -->
             <td class="amount">
-              {{ order.reservation?.venue?.unitPrice ? `NT$ ${formatPrice(order.reservation.venue.unitPrice)}` : '無資料' }}
+              {{ order.totalAmount ? `NT$ ${formatPrice(order.totalAmount)}` : '無資料' }}
             </td>
           </tr>
           <tr v-if="filteredOrders.length === 0">
