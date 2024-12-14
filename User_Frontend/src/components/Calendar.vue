@@ -1,7 +1,7 @@
 <!-- src/components/Calendar.vue -->
 <template>
   <div class="calendar-container">
-    
+
     <!-- 日曆標題和月份導航 -->
     <div class="calendar-header">
       <button @click="previousMonth" class="nav-btn" :disabled="isPreviousMonthDisabled"
@@ -107,37 +107,40 @@ export default {
 
     // 新增: 格式化日期函數
     const formatDate = (date) => {
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      return `${year}-${month}-${day}`
-    }
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
 
     // 修改: 檢查日期狀態
     const getDateStatus = (date) => {
-      const dateString = formatDate(date)
+    const dateString = formatDate(date)
 
-      // 如果是用戶選中的日期，返回 'selected'
-      if (dateString === selectedDate.value) {
-        return 'selected'
-      }
-
-      // 檢查是否為休館日
-      const isClosedDate = props.closeDates.some(
-        closeDate => closeDate.date === dateString
-      )
-      if (isClosedDate) { return 'closed' }
-
-      // 檢查是否為不可預約日期
-      const reservation = props.reservations.find(
-        res => res.date === dateString
-      )
-      if (reservation && reservation.status === '不可預約') {
-        return 'fully-booked'
-      }
-
-      return null
+    // 檢查是否為選中日期
+    if (dateString === selectedDate.value) {
+      return 'selected'
     }
+
+    // 檢查是否為休館日
+    const isClosedDate = props.closeDates.some(
+      closeDate => closeDate.date === dateString
+    )
+    if (isClosedDate) {
+      return 'closed'
+    }
+
+    // 檢查是否為不可預約日期
+    const reservation = props.reservations.find(
+      res => res.date === dateString
+    )
+    if (reservation && reservation.status === '不可預約') {
+      return 'fully-booked'
+    }
+
+    return null
+  }
+
     // 計算日曆天數
     const calendarDays = computed(() => {
       const days = []
@@ -188,27 +191,26 @@ export default {
       return days
     })
 
-
-
     // 選擇日期
     const selectDate = (day) => {
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-      // 檢查是否為過去日期或非當月日期
-      if (day.isPast || !day.currentMonth ||
+    if (day.isPast || !day.currentMonth ||
         day.status === 'fully-booked' ||
         day.status === 'closed') {
-        return
-      }
-
-      const dateString = formatDate(day.date)
-      selectedDate.value = dateString
-      emit('date-selected', {
-        date: dateString,
-        status: day.status
-      })
+      return
     }
+
+    const dateString = formatDate(day.date)
+    selectedDate.value = dateString
+    
+    // 發送選擇的日期
+    emit('date-selected', {
+      date: dateString,
+      status: day.status
+    })
+  }
 
     // 上個月
     const previousMonth = () => {
@@ -240,42 +242,68 @@ export default {
       }
     }
 
-    // 監聽資料變化
-    watch([() => props.reservations, () => props.closeDates], () => {
-      loading.value = false
-    })
+    // 修改初始化日曆的函數
+    // const initializeCalendar = () => {
+    //   const today = new Date()
 
+    //   if (props.initialDate) {
+    //     // 如果有初始日期，解析並設置
+    //     const initialDate = new Date(props.initialDate)
+    //     currentDate.value = initialDate
+    //     currentMonth.value = initialDate.getMonth()
+    //     currentYear.value = initialDate.getFullYear()
+    //     selectedDate.value = formatDate(initialDate)  // 設置選中日期
+    //   } else {
+    //     currentDate.value = today
+    //     currentMonth.value = today.getMonth()
+    //     currentYear.value = today.getFullYear()
+    //   }
+    // }
     const initializeCalendar = () => {
+    loading.value = true // 開始加載
+    try {
       const today = new Date()
+      let targetDate = today
 
       if (props.initialDate) {
-        // 如果有初始日期，解析並設置
-        const initialDate = new Date(props.initialDate)
-        currentDate.value = initialDate
-        currentMonth.value = initialDate.getMonth()
-        currentYear.value = initialDate.getFullYear()
-        selectedDate.value = formatDate(initialDate)  // 設置選中日期
-      } else {
-        currentDate.value = today
-        currentMonth.value = today.getMonth()
-        currentYear.value = today.getFullYear()
+        targetDate = new Date(props.initialDate)
+        selectedDate.value = formatDate(targetDate)
       }
-    }
 
-    watch(
-    () => props.initialDate,
-    (newDate) => {
+      currentDate.value = targetDate
+      currentMonth.value = targetDate.getMonth()
+      currentYear.value = targetDate.getFullYear()
+
+    } finally {
+      loading.value = false // 確保無論如何都會關閉 loading
+    }
+  }
+
+  // 監聽預約和休館日數據變化
+  watch([() => props.reservations, () => props.closeDates], () => {
+    loading.value = false
+  }, { immediate: true })
+
+    // 監聽 initialDate 的變化
+    watch(() => props.initialDate, (newDate) => {
       if (newDate) {
-        selectedDate.value = newDate
+        const date = new Date(newDate)
+        selectedDate.value = formatDate(date)
+        currentMonth.value = date.getMonth()
+        currentYear.value = date.getFullYear()
+
+        console.log('Initial date changed:', {
+          newDate,
+          selectedDate: selectedDate.value,
+          currentMonth: currentMonth.value,
+          currentYear: currentYear.value
+        })
       }
-    },
-    { immediate: true }
-  )
+    }, { immediate: true })
 
     // 組件掛載
     onMounted(() => {
       initializeCalendar()
-      loading.value = true
     })
 
     return {

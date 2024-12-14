@@ -7,19 +7,15 @@
     <!-- 日曆 -->
     <div class="calendar-wrapper">
       <Calendar :venue-id="venueId" :reservations="reservations" :close-dates="closeDates"
-        :initial-date="$route.query.date" @date-selected="handleDateSelect" />
+        :initial-date="selectedDateValue" @date-selected="handleDateSelect" />
     </div>
 
     <!-- 時段選擇 -->
     <div class="time-slot-wrapper">
       <h3 class="page-title">{{ placeName }}</h3>
-      <TimeSlotSelector 
-  :date="selectedDate"
-  :initial-date="$route.query.date"
-  :reserved-time-slots="selectedDateReservations"
-  :initial-selected-slots="selectedTimeData?.selectedSlots || []"
-  @selection-change="handleSelectionChange"
-/>
+      <TimeSlotSelector :date="selectedDate" :initial-date="$route.query.date"
+        :reserved-time-slots="selectedDateReservations" :initial-selected-slots="selectedTimeData?.selectedSlots || []"
+        @selection-change="handleSelectionChange" />
     </div>
 
     <!-- 狀態提示訊息 -->
