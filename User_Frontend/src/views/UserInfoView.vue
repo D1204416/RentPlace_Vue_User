@@ -309,8 +309,9 @@ label {
 
 .button-group {
   display: flex;
-  justify-content: space-between;
-  margin-top: 24px;
+  gap: 15px;
+  padding: 20px;
+  justify-content: center;
 }
 
 .button {
@@ -323,7 +324,7 @@ label {
 }
 
 .button.primary {
-  background-color: #4a90e2;
+  background-color: #3498db;
   color: white;
 }
 
