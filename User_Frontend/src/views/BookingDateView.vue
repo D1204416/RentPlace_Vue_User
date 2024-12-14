@@ -71,8 +71,8 @@ export default {
     const placeName = ref('')
     const selectedDate = ref('尚未選擇租借日期') // 儲存選中的日期
     const selectedDateReservations = ref([])  // 初始為空陣列
-    const selectedTimeData = ref(null)
     const selectedDateValue = ref('') // 儲存原始日期格式 YYYY-MM-DD
+    const selectedTimeData = ref(null)
     const originalQuery = ref({ ...route.query })
 
     // 獲取認證 token
@@ -208,7 +208,7 @@ export default {
       })
 
       // 檢查是否有選擇日期和時段
-      if (selectedDate.value === '尚未選擇租借日期') {
+      if (selectedDateValue.value === '') {
         showMessage('請選擇預約日期', 'error')
         return
       }
@@ -273,6 +273,17 @@ export default {
       } else {
         showMessage('找不到場地ID', 'error')
       }
+
+      // 檢查是否有從 query 傳來的日期
+      if (route.query.date) {
+        const date = new Date(route.query.date)
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+
+        // 更新兩個日期相關的 ref
+        selectedDate.value = `${month}月${day}日可租借時段`
+        selectedDateValue.value = route.query.date
+      }
     })
 
     return {
@@ -286,10 +297,10 @@ export default {
       handleDateSelect,
       placeName,
       selectedDate,
-      originalQuery,
-      selectedDateReservations,
       selectedDateValue,
       selectedTimeData,
+      selectedDateReservations,
+      originalQuery,
       handleSelectionChange,
       goBack,
       goNext,
