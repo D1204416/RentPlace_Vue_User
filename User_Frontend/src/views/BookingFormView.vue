@@ -154,7 +154,10 @@ export default {
       })
     },
 
-    goNext() {
+    async goNext() {
+      if (!this.venueData) {
+        await this.loadVenueData();
+      }
       // 保存資料
       this.saveBookingData(),
         // 導航到付款頁面
@@ -175,16 +178,35 @@ export default {
 
     // 儲存整個預約表單資料
     saveBookingData() {
-      const bookingData = {
+      // 準備要儲存的表格資料
+      const formData = {
         name: this.formData.name,
         phone: this.formData.phone,
         applyApartment: this.formData.applyApartment,
         content: this.formData.content,
         venueId: this.venueId,
-        venueName: this.venueData.venueName,
+        venueName: this.venueData?.venueName,
         equipmentIds: this.equipmentIds
       }
-      localStorage.setItem('bookingData', JSON.stringify(bookingData))
+
+      try {
+        // 讀取現有的預約資料（如果有的話）
+        const existingData = localStorage.getItem('bookingData')
+        const bookingData = existingData ? JSON.parse(existingData) : {}
+
+        // 合併新的日期和時段資料
+        const updatedBookingData = {
+          ...bookingData,           // 保留其他可能已存在的資料
+          ...formData,          // 更新日期和時段資料
+          lastUpdated: new Date()   // 可選：記錄最後更新時間
+        }
+        // 儲存更新後的資料
+        localStorage.setItem('bookingData', JSON.stringify(updatedBookingData))
+
+      } catch (error) {
+        console.error('Failed to save booking data:', error)
+        showMessage('儲存預約資料失敗', 'error')
+      }
     },
   },
 

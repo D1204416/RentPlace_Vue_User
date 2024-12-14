@@ -50,7 +50,6 @@ export default {
   },
 
   created() {
-
     console.log('Route object:', this.$route)
     console.log('Route params:', this.$route.params)
     console.log('Route query:', this.$route.query)
@@ -176,16 +175,16 @@ export default {
       const dateReservations = reservations.value.find(r => r.date === dateInfo.date)
       const reservedTimeSlots = dateReservations ? dateReservations.timeSlots : []
 
-      console.log('Selected date reserved slots:', reservedTimeSlots)
-      console.log('bookingDate:', dateInfo)
+      // console.log('Selected date reserved slots:', reservedTimeSlots)
+      // console.log('bookingDate:', dateInfo)
 
       selectedDateReservations.value = reservedTimeSlots
     }
 
     // 處理時段選擇的函數
     const handleSelectionChange = (data) => {
-      console.log('Time slots changed:', data)
-      console.log('總時數:', data.totalHours)
+      // console.log('Time slots changed:', data)
+      // console.log('總時數:', data.totalHours)
       console.log('已選時段:', data.selectedSlots)
       selectedTimeData.value = data
     }
@@ -201,11 +200,11 @@ export default {
 
     // 前往下一頁
     const goNext = () => {
-      console.log('Checking conditions:', {
-        selectedDate: selectedDate.value,
-        selectedTimeData: selectedTimeData.value,
-        selectedSlots: selectedTimeData.value?.selectedSlots
-      })
+      // console.log('Checking conditions:', {
+      //   selectedDate: selectedDate.value,
+      //   selectedTimeData: selectedTimeData.value,
+      //   selectedSlots: selectedTimeData.value?.selectedSlots
+      // })
 
       // 檢查是否有選擇日期和時段
       if (selectedDateValue.value === '') {
@@ -241,7 +240,7 @@ export default {
           lastUpdated: new Date()   // 可選：記錄最後更新時間
         }
 
-        localStorage.setItem('bookingDate', JSON.stringify(updatedBookingData))
+        localStorage.setItem('bookingData', JSON.stringify(updatedBookingData))
 
         // 導航到指定頁
         router.push({

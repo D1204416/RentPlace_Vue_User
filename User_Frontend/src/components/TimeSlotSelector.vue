@@ -111,7 +111,7 @@ export default {
 
     // 初始化時段狀態
     initializeTimeSlots() {
-      console.log('Reserved slots:', this.reservedTimeSlots) // 調試用
+      // console.log('Reserved slots:', this.reservedTimeSlots) // 調試用
       this.sections.forEach(section => {
         section.slots.forEach(slot => {
           // 檢查該時段是否被預約
@@ -138,10 +138,10 @@ export default {
           }))
       )
 
-      console.log('Emitting selection change:', {
-        totalHours: this.totalHours,
-        selectedSlots
-      })
+      // console.log('Emitting selection change:', {
+      //   totalHours: this.totalHours,
+      //   selectedSlots
+      // })
 
       // 發送選擇變更事件
       this.$emit('selection-change', {
