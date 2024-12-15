@@ -34,7 +34,7 @@
           </div>
           <div class="info-item">
             <label>繳款期限：</label>
-            <span>{{ latestOrder.paymentDueDate || '- -' }}</span>
+            <span>{{ paymentDueDate }}</span>
           </div>
         </div>
       </div>
@@ -84,6 +84,7 @@ export default {
         venueId: '',
         venueName: '',
         originalQuery: null,
+        lastUpdated: null,
       },
       paymentMethod: '',
     };
@@ -130,6 +131,32 @@ export default {
         'BANK_TRANSFER': 'ATM/銀行臨櫃 轉帳繳費'
       };
       return paymentMethods[this.paymentMethod] || this.paymentMethod;
+    },
+
+    paymentDueDate() {
+      try {
+        if (!this.bookingData?.lastUpdated) {
+          return '- -';
+        }
+        
+        // 將 lastUpdated 轉換為 Date 對象
+        const lastUpdatedDate = new Date(this.bookingData.lastUpdated);
+        
+        // 加上 24 小時
+        const dueDate = new Date(lastUpdatedDate.getTime() + 24 * 60 * 60 * 1000);
+        
+        // 格式化日期為 YYYY-MM-DD HH:mm
+        const year = dueDate.getFullYear();
+        const month = String(dueDate.getMonth() + 1).padStart(2, '0');
+        const day = String(dueDate.getDate()).padStart(2, '0');
+        const hours = String(dueDate.getHours()).padStart(2, '0');
+        const minutes = String(dueDate.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      } catch (error) {
+        console.error('Error calculating payment due date:', error);
+        return '- -';
+      }
     }
   },
 
