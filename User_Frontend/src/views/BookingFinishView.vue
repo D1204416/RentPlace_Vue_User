@@ -29,7 +29,7 @@
             <span>{{ bookingData.paymentMethod }}</span>
           </div>
           <div class="info-item">
-            <label>銷帳編號：</label>
+            <label>匯款帳號：</label>
             <span>{{ latestOrder.accountingNumber || '- -' }}</span>
           </div>
           <div class="info-item">
