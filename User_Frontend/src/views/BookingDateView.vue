@@ -405,7 +405,7 @@ export default {
 } */
 .message {
   position: fixed;
-  top: 300px;
+  top: 310px;
   left: 50%;
   transform: translateX(-50%);
   padding: 25px 100px;
