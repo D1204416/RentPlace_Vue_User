@@ -248,14 +248,14 @@ h4 {
 
 .content-container {
   display: flex;
-  gap: 40px;
+  gap: 20px;
   margin-bottom: 30px;
 }
 
 /* 左側 QR Code 區域 */
 .qr-code-section {
   flex: 1;
-  padding: 20px;
+  padding: 20px 100px 20px 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
   display: flex;
@@ -305,13 +305,13 @@ h4 {
   background-color: #45a049;
 }
 
-/* 右側訂單資訊區域 */
+/* 左側訂單資訊區域 */
 .order-info-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px;
+  padding: 20px 20px 20px 120px;
 }
 
 .info-card {
