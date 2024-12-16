@@ -311,7 +311,7 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px 20px 20px 120px;
+  padding: 20px 20px 20px 140px;
 }
 
 .info-card {
