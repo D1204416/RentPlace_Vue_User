@@ -405,12 +405,13 @@ export default {
 } */
 .message {
   position: fixed;
-  top: 80px;
+  top: 300px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 20px;
+  padding: 25px 100px;
   border-radius: 4px;
   z-index: 1000;
+  font-size: 18px;
 }
 
 .message.success {
