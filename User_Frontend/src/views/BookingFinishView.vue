@@ -1,6 +1,6 @@
 <template>
   <div class="booking-finish-view">
-    <h1>完成預訂</h1>
+    <h2>完成預訂</h2>
     <h4>謝謝惠顧，您的預約已完成，如欲查看更詳細的資訊可至歷史訂單查看</h4>
 
     <div v-if="qrCodeUrl && latestOrder" class="content-container">
@@ -235,15 +235,19 @@ export default {
 
 <style scoped>
 .booking-finish-view {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
 
-h1,
+h2,
 h4 {
   text-align: center;
   margin-bottom: 30px;
+}
+
+h4{
+  font-weight: normal;
 }
 
 .content-container {
@@ -255,7 +259,7 @@ h4 {
 /* 左側 QR Code 區域 */
 .qr-code-section {
   flex: 1;
-  padding: 20px 100px 20px 20px;
+  padding: 20px /*100px 20px 20px*/;
   background-color: #f8f9fa;
   border-radius: 10px;
   display: flex;
@@ -311,7 +315,7 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px 20px 20px 140px;
+  padding: 20px /*20px 20px 140px*/;
 }
 
 .info-card {
