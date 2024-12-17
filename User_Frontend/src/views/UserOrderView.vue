@@ -402,7 +402,7 @@ input[type="date"] {
 }
 
 .search-btn:hover:not(:disabled) {
-  background-color: #1565c0;
+  background-color: #2687c8;
 }
 
 .search-btn:disabled {
@@ -448,6 +448,18 @@ td {
 tr:hover td {
   background-color: #f8f8f8;
 }
+
+.btn-warning {
+  color: white;
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-warning:hover {
+  background-color: #2687c8;
+  border-color: #2687c8;
+}
+
 
 .amount {
   text-align: right;
