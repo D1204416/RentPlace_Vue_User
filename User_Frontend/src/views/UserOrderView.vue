@@ -120,27 +120,29 @@ export default {
 
   computed: {
     filteredOrders() {
-      return this.orders.filter(order => {
-        // 安全地訪問 venue id
-        const venueId = order?.reservation?.venue?.id
-        if (this.filters.venue && venueId !== this.filters.venue) {
-          return false
-        }
-
-        // 安全地訪問預約日期
-        const reservationDate = order?.reservation?.reservationDate
-        if (this.filters.startDate && this.filters.endDate && reservationDate) {
-          const orderDate = new Date(reservationDate)
-          const startDate = new Date(this.filters.startDate)
-          const endDate = new Date(this.filters.endDate)
-
-          if (orderDate < startDate || orderDate > endDate) {
+      return this.orders
+        .filter(order => {
+          const venueId = order?.reservation?.venue?.id
+          if (this.filters.venue && venueId !== this.filters.venue) {
             return false
           }
-        }
 
-        return true
-      })
+          const reservationDate = order?.reservation?.reservationDate
+          if (this.filters.startDate && this.filters.endDate && reservationDate) {
+            const orderDate = new Date(reservationDate)
+            const startDate = new Date(this.filters.startDate)
+            const endDate = new Date(this.filters.endDate)
+
+            if (orderDate < startDate || orderDate > endDate) {
+              return false
+            }
+          }
+
+          return true
+        })
+
+        // 排序 - 訂單號碼由大而小
+        .sort((a, b) => b.orderId - a.orderId)
     }
   },
 
