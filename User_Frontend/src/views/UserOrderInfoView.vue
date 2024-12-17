@@ -51,6 +51,13 @@ import axios from "axios";
 
 export default {
   name: "UserOrderInfoView",
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
+  },
+
   data() {
     return {
       qrCodeUrl: null,
@@ -80,9 +87,13 @@ export default {
     this.stopAutoUpdateQRCode();
   },
 
-  created() {
+  async created() {
     // 保存進入頁面時的查詢參數
     this.originalQuery = { ...this.$route.query }
+
+    // Modify your created hook to get the route param
+    const orderId = this.$route.params.id;
+    await this.loadOrderDetails(orderId);
 
     try {
       // 載入使用者資料
@@ -144,6 +155,21 @@ export default {
   // },
 
   methods: {
+    async loadOrderDetails(orderId) {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/orders/${orderId}`);
+        this.latestOrder = response.data;
+        // Update bookingData based on the order details
+        this.bookingData = {
+          venueName: this.latestOrder.reservation?.venue?.venueName,
+          reservationDate: this.latestOrder.reservation?.reservationDate,
+          // ... other fields as needed
+        };
+      } catch (error) {
+        console.error("Error loading order details:", error);
+      }
+    },
+
     async loadLatestQRCode() {
       try {
         const qrCodeResponse = await axios.get(
@@ -160,8 +186,8 @@ export default {
 
         this.qrCodeUrl = blobUrl;
 
-        const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
-        this.latestOrder = orderResponse.data;
+        // const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
+        // this.latestOrder = orderResponse.data;
 
         // console.log("QR Code and Order updated:", this.latestOrder);
       } catch (error) {
