@@ -230,7 +230,7 @@ export default {
     goNext() {
       // 導航到場地租借頁面
       this.$router.push({
-        name: "userOrder",
+        name: "userOrderView",
       })
 
       // 清除之前的暫存資料
