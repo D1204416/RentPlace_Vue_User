@@ -29,5 +29,7 @@ npm run build
 ```
 
 ###
+```sh
 npm install axios
+npm install pinia
 npm install crypto-js
