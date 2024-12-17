@@ -53,8 +53,8 @@
             <th>場地名稱</th>
             <th>預約日期</th>
             <!-- <th>預約時段</th> -->
-            <th>付款方式</th>
-            <!-- <th>訂單狀態</th> -->
+            <th>訂單詳情</th>
+            <th>訂單狀態</th>
             <th class="amount">金額</th>
           </tr>
         </thead>
@@ -65,7 +65,11 @@
             <td>{{ formatDate(order.reservation?.reservationDate) || '無資料' }}</td>
             <!-- <td>{{ order.reservation?.timePeriodText || '無資料' }}</td> -->
             <td>{{ order.payment?.paymentMethodDisplay || '無資料' }}</td>
-            <!-- <td>{{ order.status?.status || '無資料' }}</td> -->
+            <td style="white-space: nowrap;">
+              <button class="btn btn-warning btn-sm btn-xs btn-block" @click="goToOrderDetail(order.orderId)">
+                訂單詳情
+              </button>
+            </td>
             <td class="amount">
               {{ order.totalAmount ? `NT$ ${formatPrice(order.totalAmount)}` : '無資料' }}
             </td>
@@ -280,7 +284,21 @@ export default {
       if (this.userId) {
         this.fetchOrders()
       }
-    }
+    },
+
+    goToOrderDetail(orderId) {
+      if (!orderId) {
+        console.error('订单ID不存在')
+        return
+      }
+
+      try {
+        this.$router.push(`/userOrderInfo/${orderId}`)
+      } catch (error) {
+        console.error('导航失败:', error)
+        // 可以在这里添加错误处理逻辑
+      }
+    },
   },
 
   created() {
