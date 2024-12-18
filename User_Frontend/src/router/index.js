@@ -12,6 +12,8 @@ import DecodeQRCodeView from "@/views/DecodeQRCodeView.vue"; // 修正命名，�
 
 import UserOrderView from '../views/UserOrderView.vue'
 import UserInfoView from '../views/UserInfoView.vue'
+import UserOrderInfoView from '../views/UserOrderInfoView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -211,6 +213,11 @@ const router = createRouter({
       path: '/userInfo',
       name: 'userInfoView',
       component: UserInfoView,
+    },
+    {
+      path: '/userOrderInfo/:id',
+      name: 'userOrderInfoView',
+      component: UserOrderInfoView,
     }
   ]
 })

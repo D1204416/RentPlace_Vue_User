@@ -53,8 +53,8 @@
             <th>場地名稱</th>
             <th>預約日期</th>
             <!-- <th>預約時段</th> -->
-            <th>付款方式</th>
-            <!-- <th>訂單狀態</th> -->
+            <th>訂單詳情</th>
+            <th>訂單狀態</th>
             <th class="amount">金額</th>
           </tr>
         </thead>
@@ -65,7 +65,11 @@
             <td>{{ formatDate(order.reservation?.reservationDate) || '無資料' }}</td>
             <!-- <td>{{ order.reservation?.timePeriodText || '無資料' }}</td> -->
             <td>{{ order.payment?.paymentMethodDisplay || '無資料' }}</td>
-            <!-- <td>{{ order.status?.status || '無資料' }}</td> -->
+            <td style="white-space: nowrap;">
+              <button class="btn btn-warning btn-sm btn-xs btn-block" @click="goToOrderDetail(order.orderId)">
+                訂單詳情
+              </button>
+            </td>
             <td class="amount">
               {{ order.totalAmount ? `NT$ ${formatPrice(order.totalAmount)}` : '無資料' }}
             </td>
@@ -116,27 +120,29 @@ export default {
 
   computed: {
     filteredOrders() {
-      return this.orders.filter(order => {
-        // 安全地訪問 venue id
-        const venueId = order?.reservation?.venue?.id
-        if (this.filters.venue && venueId !== this.filters.venue) {
-          return false
-        }
-
-        // 安全地訪問預約日期
-        const reservationDate = order?.reservation?.reservationDate
-        if (this.filters.startDate && this.filters.endDate && reservationDate) {
-          const orderDate = new Date(reservationDate)
-          const startDate = new Date(this.filters.startDate)
-          const endDate = new Date(this.filters.endDate)
-
-          if (orderDate < startDate || orderDate > endDate) {
+      return this.orders
+        .filter(order => {
+          const venueId = order?.reservation?.venue?.id
+          if (this.filters.venue && venueId !== this.filters.venue) {
             return false
           }
-        }
 
-        return true
-      })
+          const reservationDate = order?.reservation?.reservationDate
+          if (this.filters.startDate && this.filters.endDate && reservationDate) {
+            const orderDate = new Date(reservationDate)
+            const startDate = new Date(this.filters.startDate)
+            const endDate = new Date(this.filters.endDate)
+
+            if (orderDate < startDate || orderDate > endDate) {
+              return false
+            }
+          }
+
+          return true
+        })
+
+        // 排序 - 訂單號碼由大而小
+        .sort((a, b) => b.orderId - a.orderId)
     }
   },
 
@@ -280,7 +286,21 @@ export default {
       if (this.userId) {
         this.fetchOrders()
       }
-    }
+    },
+
+    goToOrderDetail(orderId) {
+      if (!orderId) {
+        console.error('订单ID不存在')
+        return
+      }
+
+      try {
+        this.$router.push(`/userOrderInfo/${orderId}`)
+      } catch (error) {
+        console.error('导航失败:', error)
+        // 可以在这里添加错误处理逻辑
+      }
+    },
   },
 
   created() {
@@ -384,7 +404,7 @@ input[type="date"] {
 }
 
 .search-btn:hover:not(:disabled) {
-  background-color: #1565c0;
+  background-color: #2687c8;
 }
 
 .search-btn:disabled {
@@ -430,6 +450,18 @@ td {
 tr:hover td {
   background-color: #f8f8f8;
 }
+
+.btn-warning {
+  color: white;
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-warning:hover {
+  background-color: #2687c8;
+  border-color: #2687c8;
+}
+
 
 .amount {
   text-align: right;
