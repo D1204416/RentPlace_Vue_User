@@ -290,15 +290,15 @@ export default {
 
     goToOrderDetail(orderId) {
       if (!orderId) {
-        console.error('订单ID不存在')
+        console.error('訂單ID不存在')
         return
       }
 
       try {
         this.$router.push(`/userOrderInfo/${orderId}`)
       } catch (error) {
-        console.error('导航失败:', error)
-        // 可以在这里添加错误处理逻辑
+        console.error('跳轉失敗:', error)
+        // 可以在這裡添加錯誤處理邏輯
       }
     },
   },
