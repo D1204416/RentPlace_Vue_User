@@ -28,7 +28,7 @@
             <label>付款方式：</label>
             <span>{{ bookingData.paymentMethod }}</span>
           </div>
-          <div class="info-item">
+          <div class="info-item" v-if="bookingData.paymentMethod !== 'ONLINE_PAYMENT'">
             <label>匯款帳號：</label>
             <span>{{ formattedVirtualAccount }}</span>
           </div>
