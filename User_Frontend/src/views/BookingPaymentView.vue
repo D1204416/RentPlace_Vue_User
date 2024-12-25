@@ -216,6 +216,7 @@ export default {
             const account = await response.text();
             console.log('Received Virtual Account:', account); // 確認數字是否正確
             this.virtualAccount = account; // 賦值
+            localStorage.setItem('virtualAccount', account); // 儲存到 localStorage
             this.showVirtualAccountModal = true;
           } else {
             console.error('獲取虛擬帳號失敗');

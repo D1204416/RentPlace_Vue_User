@@ -30,7 +30,7 @@
           </div>
           <div class="info-item">
             <label>匯款帳號：</label>
-            <span>{{ latestOrder.accountingNumber || '- -' }}</span>
+            <span>{{ formattedVirtualAccount }}</span>
           </div>
           <div class="info-item">
             <label>繳款期限：</label>
@@ -99,7 +99,7 @@ export default {
 
   created() {
     // 保存進入頁面時的查詢參數
-    this.originalQuery = { ...this.$route.query }
+    this.originalQuery = {...this.$route.query}
 
     try {
       // 載入使用者資料
@@ -113,14 +113,13 @@ export default {
       if (storedData) {
         this.bookingData = JSON.parse(storedData)
       }
-
-      // 載入付款方式
-      const storedPaymentMethod = localStorage.getItem('paymentMethod')
-      if (storedPaymentMethod) {
-        this.paymentMethod = storedPaymentMethod
+      // 載入虛擬帳號
+      const storedVirtualAccount = localStorage.getItem('virtualAccount');
+      if (storedVirtualAccount) {
+        this.bookingData.accountingNumber = storedVirtualAccount;
       }
     } catch (error) {
-      console.error('Error loading booking data:', error)
+      console.error('Error loading booking data:', error);
     }
   },
 
@@ -157,7 +156,13 @@ export default {
         console.error('Error calculating payment due date:', error);
         return '- -';
       }
-    }
+    },
+
+    formattedVirtualAccount() {
+      const account = this.latestOrder?.accountingNumber || this.bookingData?.accountingNumber || '';
+      if (!account) return '- -'; // 處理無帳號的情況
+      return account.replace(/(\d{4})(?=\d)/g, '$1-').replace(/-$/, ''); // 每四碼加一個 `-`
+    },
   },
 
   methods: {
