@@ -13,8 +13,8 @@
             <small v-if="isFieldRequired('username')" class="field-hint">(必填)</small>
           </label>
           <input type="text" id="name" v-model="formData.username" placeholder="輸入您的名字"
-            :class="{ 'error': errors.username }" :aria-required="isFieldRequired('username')"
-            :required="isFieldRequired('username')" required>
+                 :class="{ 'error': errors.username }" :aria-required="isFieldRequired('username')"
+                 :required="isFieldRequired('username')" required>
           <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
         </div>
 
@@ -24,7 +24,7 @@
             <small v-if="isFieldRequired('gender')" class="field-hint">(必填)</small>
           </label>
           <select id="gender" v-model="formData.gender" :aria-required="isFieldRequired('gender')"
-            :required="isFieldRequired('gender')" required>
+                  :required="isFieldRequired('gender')" required>
             <option value="">請選擇性別</option>
             <option value="male">男</option>
             <option value="female">女</option>
@@ -40,8 +40,8 @@
             <small v-if="isFieldRequired('birth')" class="field-hint">(必填)</small>
           </label>
           <input type="date" id="birthdate" v-model="formData.birth" placeholder="請選擇生日"
-            :class="{ 'error': errors.birth }" :aria-required="isFieldRequired('birth')"
-            :required="isFieldRequired('birth')" required>
+                 :class="{ 'error': errors.birth }" :aria-required="isFieldRequired('birth')"
+                 :required="isFieldRequired('birth')" required>
           <span class="error-message" v-if="errors.birth">{{ errors.birth }}</span>
         </div>
 
@@ -51,7 +51,7 @@
             <small v-if="isFieldRequired('phone')" class="field-hint">(必填)</small>
           </label>
           <input type="tel" id="phone" v-model="formData.phone" placeholder="聯絡電話" :class="{ 'error': errors.phone }"
-            :aria-required="isFieldRequired('phone')" :required="isFieldRequired('phone')" required>
+                 :aria-required="isFieldRequired('phone')" :required="isFieldRequired('phone')" required>
           <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
         </div>
       </div>
@@ -63,8 +63,8 @@
             <small v-if="isFieldRequired('email')" class="field-hint">(必填)</small>
           </label>
           <input type="email" id="email" v-model="formData.email" placeholder="請輸入電子郵件信箱"
-            :class="{ 'error': errors.email }" :aria-required="isFieldRequired('email')"
-            :required="isFieldRequired('email')" required>
+                 :class="{ 'error': errors.email }" :aria-required="isFieldRequired('email')"
+                 :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
 
@@ -76,7 +76,7 @@
           <div class="verification">
             <button type="button" class="send-code-btn" @click="sendVerificationCode">發送驗證碼</button>
             <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼"
-              :aria-required="isFieldRequired('password')" :required="isFieldRequired('password')" required>
+                   :aria-required="isFieldRequired('password')" :required="isFieldRequired('password')" required>
           </div>
         </div>
       </div>
@@ -88,8 +88,8 @@
             <small v-if="isFieldRequired('password')" class="field-hint">(必填)</small>
           </label>
           <input type="password" id="password" v-model="formData.password" placeholder="6位密碼，至少一個字母和一個數字"
-            :class="{ 'error': errors.password }" :aria-required="isFieldRequired('password')"
-            :required="isFieldRequired('password')" required>
+                 :class="{ 'error': errors.password }" :aria-required="isFieldRequired('password')"
+                 :required="isFieldRequired('password')" required>
           <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
         </div>
 
@@ -99,14 +99,14 @@
             <small v-if="isFieldRequired('confirmPassword')" class="field-hint">(必填)</small>
           </label>
           <input type="password" id="confirm-password" v-model="confirmPassword" placeholder=""
-            :aria-required="isFieldRequired('confirmPassword')" :required="isFieldRequired('confirmPassword')" required>
+                 :aria-required="isFieldRequired('confirmPassword')" :required="isFieldRequired('confirmPassword')" required>
         </div>
       </div>
 
       <div class="form-row agreement" style="gap: 0px;">
         <input type="checkbox" id="agreement" v-model="agreedToTerms" @click.prevent="showModal" required>
         <label for="agreement" style="margin: 10px;" @click.prevent="showModal"><a
-          style="color:#007bff; cursor: pointer;">閱讀網路同意書 </a>本人已確認 <span>並同意</span></label>
+            style="color:#007bff; cursor: pointer;">閱讀網路同意書 </a>本人已確認 <span>並同意</span></label>
       </div>
 
       <!-- Modal -->
@@ -119,7 +119,7 @@
 
           <div class="modal-body">
             <!-- 在這裡放入你的條款內容 -->
-            <p>申請同意書   
+            <p>申請同意書  
               歡迎您使用「運動服務e櫃檯」網路申辦功能，在使用本功能之前，請您務必詳閱下列說明：
 
               辦理申請案件中，若為CA申辦項目，須先使用您的憑證進行驗證，始可使用「臺中市政府服務e櫃檯」所提供之網路申請服務。
@@ -155,6 +155,8 @@
 
 <script>
 import axios from 'axios';
+import { auth } from "@/config/firebaseConfig.js";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 export default {
   name: 'Register',
@@ -231,7 +233,23 @@ export default {
         return false;
       }
     },
-
+    // ======== 新增：Firebase 寄送驗證信的方法 ========
+    async sendFirebaseVerificationEmail() {
+      try {
+        // Firebase 會先創建帳戶，再寄出驗證信
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            this.formData.email,
+            this.formData.password
+        )
+        // 寄送驗證信
+        await sendEmailVerification(userCredential.user)
+        alert('已透過 Firebase 寄送驗證信，請至信箱收信')
+      } catch (error) {
+        console.error('發送 Firebase 驗證信失敗:', error)
+      }
+    },
+    // ======== 以上為新增 ========
     // 驗證輸入欄位
     validateForm() {
       this.errors = {};
@@ -330,50 +348,33 @@ export default {
     },
 
     async handleSubmit() {
-      console.log('handleSubmit called');
-
-      if (!this.validateForm()) {
-        console.log('Form validation failed');
-        return;
-      }
+      if (!this.validateForm()) return;
 
       this.isSubmitting = true;
 
       try {
         const isCodeValid = await this.verifyCode();
-        console.log('Verification code valid:', isCodeValid);
 
-        if (isCodeValid) {
-          const response = await axios.post('http://localhost:8080/api/user', this.formData);
-          console.log('Register response:', response.data);
-          this.$emit('register-success', response.data);
-
-          // 註冊成功後跳轉
-          this.$router.replace('/'); // 跳轉到登入頁面
-          // 或者使用命名路由
-          // this.$router.push({ name: 'login' });
-
-          // 可以加入提示訊息
-          // alert('註冊成功！請重新登入。');
-          // 或使用其他提示組件，如 Toast
-
-        } else {
-          this.errors.verificationCode = '驗證碼不正確';
+        if (!isCodeValid) {
+          this.errors.verificationCode = "驗證碼不正確";
+          return;
         }
+
+        await this.sendFirebaseVerificationEmail();
+
+        const response = await axios.post('http://localhost:8080/api/user', this.formData);
+
+        alert("註冊成功！請檢查您的信箱完成 Firebase 驗證！");
+        this.$router.replace('/'); // 跳轉到登入頁面
       } catch (error) {
-        if (error.response) {
-          this.errors = error.response.data.errors || {};
-          console.log('Error response:', error.response.data.errors);
-        } else {
-          console.error('註冊失敗:', error);
-        }
+        console.error("註冊失敗：", error);
+        alert("註冊失敗，請稍後再試！");
       } finally {
         this.isSubmitting = false;
       }
     }
-
   }
-}
+};
 </script>
 
 <style scoped>
@@ -716,7 +717,7 @@ input[type="password"]::placeholder {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  height: 100;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items:self-start;
@@ -782,7 +783,7 @@ input[type="password"]::placeholder {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  
+
 }
 
 /* 為了確保標題和按鈕不會被擠壓 */

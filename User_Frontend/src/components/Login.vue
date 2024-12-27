@@ -65,7 +65,11 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user' // Pinia store
 import axios from 'axios' // 假設使用 axios 做 API 請求
-
+import { auth } from '@/config/firebaseConfig.js';
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from 'firebase/auth';
 const router = useRouter()
 const userStore = useUserStore()
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -89,6 +93,16 @@ const api = axios.create({
     'Content-Type': 'application/json'
   }
 })
+const closeLoginModal = () => {
+  const loginModal = document.getElementById('loginModal');
+  if (loginModal) {
+    const bootstrapModal = bootstrap.Modal.getInstance(loginModal); // 如果使用 Bootstrap
+    if (bootstrapModal) {
+      bootstrapModal.hide();
+    }
+  }
+};
+
 
 // 處理Google登入
 const handleCredentialResponse = async (response) => {
@@ -204,42 +218,69 @@ const handleCredentialResponse = async (response) => {
 
 // 新增一個 emit 用於通知父組件登入成功
 const emit = defineEmits(['login-success'])
+// 檢查信箱驗證狀態
+const checkEmailVerification = async (email) => {
+  try {
+    // 使用 Firebase 嘗試登入，確認用戶是否已註冊
+    const userCredential = await signInWithEmailAndPassword(auth, email, loginForm.password);
+    const user = userCredential.user;
+
+    // 檢查是否已驗證信箱
+    if (!user.emailVerified) {
+      console.warn('用戶信箱尚未驗證');
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('檢查信箱驗證失敗：', error);
+    return false;
+  }
+};
 
 // 一般登入處理
 const handleLogin = async () => {
   // 清除之前的錯誤訊息
-  errorMessage.value = ''
+  errorMessage.value = '';
 
   // 表單驗證
   if (!loginForm.email || !loginForm.password) {
-    errorMessage.value = '請填寫帳號和密碼'
-    return
+    errorMessage.value = '請填寫帳號和密碼';
+    return;
   }
 
   try {
-    isLoading.value = true
+    isLoading.value = true;
 
     console.log('Sending login request:', {
       email: loginForm.email,
-      // 不要記錄密碼
-    })
+    });
 
+    // 發送登入請求到後端 (MariaDB)
     const response = await api.post('/api/auth/login', {
       email: loginForm.email,
-      password: loginForm.password
-    })
+      password: loginForm.password,
+    });
 
     console.log('Login response:', {
       status: response.status,
-      hasToken: !!response.data.token
-    })
+      hasToken: !!response.data.token,
+    });
 
-    console.log('API response:', response) // 確認 user 資料結構
-    console.log('登入返回資料:', response.data) // 檢查完整返回
+    console.log('API response:', response); // 確認 user 資料結構
+    console.log('登入返回資料:', response.data); // 檢查完整返回
 
     if (response.data.token) {
+      // 檢查 Firebase 信箱驗證狀態
+      const isVerified = await checkEmailVerification(loginForm.email);
+
+      if (!isVerified) {
+        alert('您的信箱尚未驗證，請檢查您的信箱完成驗證後再登入。');
+        return;
+      }
+
       // 儲存 token
-      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('token', response.data.token);
 
       // 儲存用戶資料到 localStorage
       const userData = {
@@ -247,71 +288,41 @@ const handleLogin = async () => {
         name: response.data.username,
         phone: response.data.phone,
         email: response.data.email,
-        avatar: response.data.avatar
-      }
-      localStorage.setItem('user', JSON.stringify(userData))
+        avatar: response.data.avatar,
+      };
+      localStorage.setItem('user', JSON.stringify(userData));
 
       // 更新 user store
-      userStore.setUser({
-        userId: response.data.userId,  // 確保後端返回 id
-        username: response.data.username,
-        email: response.data.email,  // 確保從回應中獲取 email
-        phone: response.data.phone
-      })
-      console.log('更新後的 userStore:', userStore.user)
-      console.log('準備儲存的用戶資料:', userData)
-      localStorage.setItem('user', JSON.stringify(userData))
-      userStore.setUser(userData)
+      userStore.setUser(userData);
+
+      console.log('更新後的 userStore:', userStore.user);
 
       // 設置 axios 默認 header
-      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
 
-      // 關閉 Modal
-      // const loginModal = document.getElementById('loginModal')
-      // const bootstrapModal = bootstrap.Modal.getInstance(loginModal)
-      // if (bootstrapModal) {
-      //   bootstrapModal.hide()
-      // }
+      // 清空表單數據
+      loginForm.email = '';
+      loginForm.password = '';
+      
+      closeLoginModal();
 
-      // 使用新的函數關閉 Modal 並清空資料
-      clearAndCloseModal()
-
-      emit('login-success', userData)
-
-      // 檢查是否有待處理的預約路由
-      const pendingBooking = localStorage.getItem('pendingBooking')
-      if (pendingBooking) {
-        const bookingRoute = JSON.parse(pendingBooking)
-        localStorage.removeItem('pendingBooking') // 清除暫存的路由
-        router.push(bookingRoute)
-      } else {
-        router.push('/') // 否則導向首頁
-      }
-
-
-
-
-      // 登入成功後跳轉首頁
-      console.log("登入成功")
-      // router.push('/')
-
+      // 跳轉到首頁或其他頁面
+      alert('登入成功！');
+      router.push('/');
     } else {
-      errorMessage.value = '登入失敗：伺服器回應格式錯誤'
-      console.error('Invalid response format:', response.data)
-      throw new Error('無效的回應格式')
+      errorMessage.value = '登入失敗：伺服器回應格式錯誤';
+      throw new Error('無效的回應格式');
     }
-
   } catch (error) {
     console.error('Login error:', {
       status: error.response?.status,
       message: error.message,
-      error: error
-    })
-    errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試'
+    });
+    errorMessage.value = error.response?.data?.message || '登入失敗，請稍後再試';
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // 關閉 Modal 並清空表單
 const clearAndCloseModal = () => {
