@@ -166,7 +166,8 @@ export default {
           applyApartment: this.bookingData.applyApartment,
           content: this.bookingData.content,
           paymentMethod: this.bookingData.paymentMethod,
-          totalAmount: this.bookingData.totalAmount
+          totalAmount: this.bookingData.totalAmount,
+          virtualAccount: this.virtualAccount,
         }
 
         const response = await fetch('http://localhost:8080/api/reservations', {
