@@ -275,7 +275,7 @@ export default {
       //     (maxCapacity === Infinity ? true : room.capacity <= maxCapacity)
       //   )
 
-       // 處理容納人數
+       // 處理容納人數 (以上皆含)
        if (query.capacity) {
         let minCapacity = 1;
         
