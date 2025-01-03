@@ -125,6 +125,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    
 }
 
 h2 {
@@ -139,6 +140,7 @@ p {
     margin-bottom: 1rem;
     color: #555;
     font-size: large;
+    line-height: 2;
 }
 
 .features {
