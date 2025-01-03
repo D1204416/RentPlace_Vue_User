@@ -26,7 +26,7 @@
           <h2>付款資訊</h2>
           <div class="info-item">
             <label>付款方式：</label>
-            <span>{{ bookingData.paymentMethod }}</span>
+            <span>{{ displayPaymentMethod }}</span>
           </div>
           <div class="info-item" v-if="bookingData.paymentMethod !== 'ONLINE_PAYMENT'">
             <label>匯款帳號：</label>
@@ -129,7 +129,7 @@ export default {
         'ONLINE_PAYMENT': '線上繳費',
         'BANK_TRANSFER': 'ATM/銀行臨櫃 轉帳繳費'
       };
-      return paymentMethods[this.paymentMethod] || this.paymentMethod;
+      return paymentMethods[this.bookingData.paymentMethod] || this.bookingData.paymentMethod;
     },
 
     paymentDueDate() {
