@@ -14,6 +14,7 @@ import UserOrderView from '../views/UserOrderView.vue'
 import UserInfoView from '../views/UserInfoView.vue'
 import UserOrderInfoView from '../views/UserOrderInfoView.vue'
 import FAQView from '@/views/FAQView.vue'
+import AboutView from '@/views/AboutView.vue'
 
 
 const router = createRouter({
@@ -220,6 +221,19 @@ const router = createRouter({
       path: '/userOrderInfo/:id',
       name: 'userOrderInfoView',
       component: UserOrderInfoView,
+    },
+    {
+      path: '/about',
+      name: 'AboutView',
+      component: AboutView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '關於我們',
+            path: '/about'
+          }
+        ]
+      }
     },
     {
       path: '/FAQ',

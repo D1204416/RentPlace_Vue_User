@@ -142,7 +142,7 @@
   .header {
     text-align: center;
     margin-bottom: 0px;
-    padding: 20px;
+    padding: 0 20px;
     background-color: rgb(249, 249, 249);
     border-radius: 8px;
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); */

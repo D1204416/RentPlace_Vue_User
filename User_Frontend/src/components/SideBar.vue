@@ -128,8 +128,8 @@
                 </li>
 
                 <li class="nav-item">
-                  <RouterLink to="/StoreSetView" class="nav-link" style="color: #4A4A4A;">
-                    活動資訊
+                  <RouterLink to="/about" class="nav-link" style="color: #4A4A4A;">
+                    關於我們
                   </RouterLink>
                 </li>
 
