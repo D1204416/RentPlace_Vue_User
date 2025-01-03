@@ -301,13 +301,13 @@ export default {
     clearDate() {
       this.selectedDate = '';
       this.activeDropdown = null;
-      this.search(); // 更新 URL
+      //this.search(); // 更新 URL
     },
 
     clearCapacity() {
       this.selectedCapacity = '';
       this.activeDropdown = null;
-      this.search(); // 更新 URL
+      //this.search(); // 更新 URL
     },
 
 
