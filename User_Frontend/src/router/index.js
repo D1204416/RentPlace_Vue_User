@@ -9,7 +9,7 @@ import BookingFormView from '../views/BookingFormView.vue'
 import BookingPaymentView from '../views/BookingPaymentView.vue'
 import BookingFinishView from '../views/BookingFinishView.vue'
 import DecodeQRCodeView from "@/views/DecodeQRCodeView.vue"; // 修正命名，首字母大寫
-
+import forgotPassword from "@/views/forgotPassword.vue";
 import UserOrderView from '../views/UserOrderView.vue'
 import UserInfoView from '../views/UserInfoView.vue'
 import UserOrderInfoView from '../views/UserOrderInfoView.vue'
@@ -205,6 +205,7 @@ const router = createRouter({
         ]
       }
     },
+    {path: "/forgotPassword", component: forgotPassword},
     {
       path: '/userOrder',
       name: 'userOrderView',

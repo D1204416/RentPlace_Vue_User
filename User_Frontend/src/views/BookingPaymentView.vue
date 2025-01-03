@@ -63,7 +63,18 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
       <button class="btn btn-back" @click="goBack">上一步</button>
       <button class="btn btn-book" @click="goNext">下一步</button>
     </div>
-  </div>
+
+      <div class="modal" v-if="showVirtualAccountModal">
+        <div class="modal-content">
+          <h2>轉帳虛擬帳號</h2>
+          <p>請於 24 小時內完成轉帳，逾時將取消預約</p>
+          <p>請將款項轉至以下虛擬帳號：</p>
+          <p>轉帳銀行 : 台灣銀行 銀行代碼 : 004</p>
+          <p class="virtual-account">{{ formattedVirtualAccount }}</p>
+          <button @click="closeVirtualAccountModal">確定</button>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -94,24 +105,30 @@ export default {
       },
       originalQuery: null,
       userId: '',
-      paymentMethod: ''
+      paymentMethod: '',
+      showVirtualAccountModal: false,
+      virtualAccount: ''
     }
   },
 
   computed: {
     formatTimeSlots() {
       return this.bookingData.timeSlots
-        .map(slot => slot.time)
-        .join('、')
+          .map(slot => slot.time)
+          .join('、')
     },
     formatEquipments() {
       return this.bookingData.selectedEquipments
-        .map(equipment => equipment.equipmentName)
-        .join('、')
-    }
-  },
+          .map(equipment => equipment.equipmentName)
+          .join('、')
+    },
+      formattedVirtualAccount() {
+        if (!this.virtualAccount) return '';
+        return this.virtualAccount.replace(/(\d{4})(?=\d)/g, '$1-').replace(/-$/, '');
+      }
+    },
 
-  created() {
+    created() {
     // 保存進入頁面時的查詢參數
     this.originalQuery = { ...this.$route.query }
 
@@ -190,28 +207,57 @@ export default {
       })
     },
 
-    goNext() {
-      // 送出資料
-      this.submitBooking(),
+    async goNext() {
+      if (this.paymentMethod === 'BANK_TRANSFER') {
+        try {
+          // 呼叫後端 API 獲取虛擬帳號
+          const response = await fetch('/api/payments/virtual-account');
+          if (response.ok) {
+            const account = await response.text();
+            console.log('Received Virtual Account:', account); // 確認數字是否正確
+            this.virtualAccount = account; // 賦值
+            localStorage.setItem('virtualAccount', account); // 儲存到 localStorage
+            this.showVirtualAccountModal = true;
+          } else {
+            console.error('獲取虛擬帳號失敗');
+          }
+        } catch (error) {
+          console.error('Error fetching virtual account:', error);
+          console.log('Response Text:', account);
+          console.log('Virtual Account:', this.virtualAccount);
 
-        // 導航到付款頁面
+        }
+      } else {
+        // 繼續到下一步
+        await this.submitBooking();
         this.$router.push({
-          name: "BookingFinishView",
+          name: 'BookingFinishView',
           params: { id: this.venueId },
           query: this.originalQuery
-        })
+        });
+      }
     },
+
+    closeVirtualAccountModal() {
+      this.showVirtualAccountModal = false;
+      // 繼續到下一步
+      this.submitBooking().then(() => {
+        this.$router.push({
+          name: 'BookingFinishView',
+          params: { id: this.venueId },
+          query: this.originalQuery
+        });
+      });
+    }
   },
 
   watch: {
-    paymentMethod: {
-      handler(newValue) {
-        try {
-          this.bookingData.paymentMethod = newValue
-          localStorage.setItem('bookingData', JSON.stringify(this.bookingData))
-        } catch (error) {
-          console.error('Error saving booking data:', error)
-        }
+    paymentMethod(newValue) {
+      try {
+        this.bookingData.paymentMethod = newValue;
+        localStorage.setItem('bookingData', JSON.stringify(this.bookingData));
+      } catch (error) {
+        console.error('Error saving booking data:', error);
       }
     }
   }
@@ -341,4 +387,80 @@ export default {
   color: white;
   border: none;
 }
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 更深的背景遮罩 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeIn 0.3s ease-in-out; /* 添加淡入動畫 */
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* 添加陰影 */
+  transform: translateY(-20px);
+  animation: slideIn 0.3s ease-in-out; /* 添加彈出動畫 */
+}
+
+.virtual-account {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111111; /* 使用亮藍色 */
+  letter-spacing: 0.15em; /* 增加字母間距 */
+  margin: 20px 0;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  color: #333333;
+  margin-bottom: 15px;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #0095ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out; /* 按鈕背景過渡效果 */
+}
+
+.modal-content button:hover {
+  background: #0056b3; /* 更深的藍色 */
+}
+
+/* 動畫效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-40px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+
 </style>
