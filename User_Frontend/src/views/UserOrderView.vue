@@ -53,8 +53,8 @@
             <th>場地名稱</th>
             <th>預約日期</th>
             <!-- <th>預約時段</th> -->
-            <th>訂單詳情</th>
-            <th>訂單狀態</th>
+            <th>付款方式</th>
+            <th>訂單資料</th>
             <th class="amount">金額</th>
           </tr>
         </thead>

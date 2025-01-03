@@ -20,6 +20,18 @@
             <span>{{ bookingData.reservationDate }}</span>
           </div>
         </div>
+
+        <div class="info-card">
+          <h2>付款資訊</h2>
+          <div class="info-item">
+            <label>付款方式：</label>
+            <span>{{ latestOrder?.payment?.paymentMethodDisplay }}</span>
+          </div>
+          <div class="info-item" v-if="latestOrder?.payment?.paymentMethod === 'BANK_TRANSFER'">
+            <label>匯款帳號：</label>
+            <span>{{ formattedVirtualAccount }}</span>
+          </div>
+        </div>
       </div>
 
       <!-- 右側 QR Code 區域 -->
@@ -118,41 +130,13 @@ export default {
     }
   },
 
-  // computed: {
-  //   displayPaymentMethod() {
-  //     const paymentMethods = {
-  //       'ONLINE_PAYMENT': '線上繳費',
-  //       'BANK_TRANSFER': 'ATM/銀行臨櫃 轉帳繳費'
-  //     };
-  //     return paymentMethods[this.paymentMethod] || this.paymentMethod;
-  //   },
-
-  //   paymentDueDate() {
-  //     try {
-  //       if (!this.bookingData?.lastUpdated) {
-  //         return '- -';
-  //       }
-        
-  //       // 將 lastUpdated 轉換為 Date 對象
-  //       const lastUpdatedDate = new Date(this.bookingData.lastUpdated);
-        
-  //       // 加上 24 小時
-  //       const dueDate = new Date(lastUpdatedDate.getTime() + 24 * 60 * 60 * 1000);
-        
-  //       // 格式化日期為 YYYY-MM-DD HH:mm
-  //       const year = dueDate.getFullYear();
-  //       const month = String(dueDate.getMonth() + 1).padStart(2, '0');
-  //       const day = String(dueDate.getDate()).padStart(2, '0');
-  //       const hours = String(dueDate.getHours()).padStart(2, '0');
-  //       const minutes = String(dueDate.getMinutes()).padStart(2, '0');
-        
-  //       return `${year}-${month}-${day} ${hours}:${minutes}`;
-  //     } catch (error) {
-  //       console.error('Error calculating payment due date:', error);
-  //       return '- -';
-  //     }
-  //   }
-  // },
+  computed: {
+    formattedVirtualAccount() {
+      const account = this.latestOrder?.payment?.virtualAccount || '';
+      if (!account) return '- -';
+      return account.replace(/(\d{4})(?=\d)/g, '$1-').replace(/-$/, '');
+    },
+  },
 
   methods: {
     async loadOrderDetails(orderId) {
