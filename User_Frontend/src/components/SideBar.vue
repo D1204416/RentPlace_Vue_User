@@ -151,7 +151,7 @@
 
 
                 <li class="nav-item">
-                  <RouterLink to="/StoreSetView" class="nav-link" style="color: #4A4A4A;">
+                  <RouterLink to="/FAQ" class="nav-link" style="color: #4A4A4A;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                       <path

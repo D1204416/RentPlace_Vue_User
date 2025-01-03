@@ -13,6 +13,7 @@ import DecodeQRCodeView from "@/views/DecodeQRCodeView.vue"; // 修正命名，�
 import UserOrderView from '../views/UserOrderView.vue'
 import UserInfoView from '../views/UserInfoView.vue'
 import UserOrderInfoView from '../views/UserOrderInfoView.vue'
+import FAQView from '@/views/FAQView.vue'
 
 
 const router = createRouter({
@@ -218,6 +219,19 @@ const router = createRouter({
       path: '/userOrderInfo/:id',
       name: 'userOrderInfoView',
       component: UserOrderInfoView,
+    },
+    {
+      path: '/FAQ',
+      name: 'FAQView',
+      component: FAQView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '常見問答',
+            path: '/FAQ'
+          }
+        ]
+      }
     }
   ]
 })
