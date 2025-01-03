@@ -67,19 +67,8 @@
                  :required="isFieldRequired('email')" required>
           <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
         </div>
-
-        <div class="form-group ">
-          <label for="verification-code">信箱驗證
-            <span class="required-mark" title="此欄位為必填">*</span>
-            <small v-if="isFieldRequired('verificationCode')" class="field-hint">(必填)</small>
-          </label>
-          <div class="verification">
-            <button type="button" class="send-code-btn" @click="sendVerificationCode">發送驗證碼</button>
-            <input type="text" id="verification-code" v-model="verificationCode" placeholder="請輸入驗證碼"
-                   :aria-required="isFieldRequired('password')" :required="isFieldRequired('password')" required>
-          </div>
         </div>
-      </div>
+
 
       <div class="form-row">
         <div class="form-group">
@@ -184,7 +173,7 @@ export default {
     // 必填欄位
     isFieldRequired(fieldName) {
       // 可以集中管理必填欄位
-      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password', 'confirmPassword', 'verificationCode'];
+      const requiredFields = ['username', 'gender', 'birth', 'email', 'phone', 'password', 'confirmPassword'];
       return requiredFields.includes(fieldName);
     },
 
@@ -206,33 +195,7 @@ export default {
       this.closeModal()
     },
 
-    // 發送信箱驗證碼
-    async sendVerificationCode() {
-      try {
-        const response = await axios.post('http://localhost:8080/api/send-verification-code', {
-          email: this.formData.email
-        });
-        console.log('Verification code sent:', response.data);
-      } catch (error) {
-        console.error('Failed to send verification code:', error);
-      }
-    },
 
-    // 比對驗證碼
-    async verifyCode() {
-      try {
-        const response = await axios.post('http://localhost:8080/api/verify-code', {
-          email: this.formData.email,
-          code: this.verificationCode
-        });
-        console.log('Verification response:', response.data); // 添加此行來查看回應數據
-        return response.data.valid;
-
-      } catch (error) {
-        console.error('Failed to verify code:', error);
-        return false;
-      }
-    },
     // ======== 新增：Firebase 寄送驗證信的方法 ========
     async sendFirebaseVerificationEmail() {
       try {
@@ -329,14 +292,7 @@ export default {
         isValid = false;
       }
 
-      // 驗證碼驗證
-      if (!this.verificationCode) {
-        this.errors.verificationCode = '請輸入驗證碼';
-        isValid = false;
-      } else if (this.verificationCode.length !== 6) {
-        this.errors.verificationCode = '驗證碼必須為6位數';
-        isValid = false;
-      }
+
 
       // 同意條款驗證
       if (!this.agreedToTerms) {
@@ -353,13 +309,6 @@ export default {
       this.isSubmitting = true;
 
       try {
-        const isCodeValid = await this.verifyCode();
-
-        if (!isCodeValid) {
-          this.errors.verificationCode = "驗證碼不正確";
-          return;
-        }
-
         await this.sendFirebaseVerificationEmail();
 
         const response = await axios.post('http://localhost:8080/api/user', this.formData);
@@ -374,7 +323,7 @@ export default {
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

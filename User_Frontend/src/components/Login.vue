@@ -45,7 +45,7 @@
     </div>
 
     <div class="forgot-password">
-      <a href="#">忘記密碼</a>
+      <a href="">忘記密碼</a>
     </div>
 
     <!-- <button class="login-button">登入</button> -->
@@ -303,7 +303,7 @@ const handleLogin = async () => {
       // 清空表單數據
       loginForm.email = '';
       loginForm.password = '';
-      
+
       closeLoginModal();
 
       // 跳轉到首頁或其他頁面
