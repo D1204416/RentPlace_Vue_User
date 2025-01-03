@@ -233,6 +233,7 @@ export default {
       localStorage.removeItem('bookingData')
       localStorage.removeItem('paymentMethod')
       localStorage.removeItem('reservationInfo')
+      localStorage.removeItem('virtualAccount')
     },
   },
 };

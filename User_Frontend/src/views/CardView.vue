@@ -262,18 +262,33 @@ export default {
         )
       }
 
-      // 處理容納人數
-      if (query.capacity) {
-        const capacityRange = query.capacity.split('~')
-        const minCapacity = parseInt(capacityRange[0])
-        const maxCapacity = capacityRange[1] ?
-          (capacityRange[1].includes('以上') ? Infinity : parseInt(capacityRange[1])) :
-          minCapacity
+      // // 處理容納人數
+      // if (query.capacity) {
+      //   const capacityRange = query.capacity.split('~')
+      //   const minCapacity = parseInt(capacityRange[0])
+      //   const maxCapacity = capacityRange[1] ?
+      //     (capacityRange[1].includes('以上') ? Infinity : parseInt(capacityRange[1])) :
+      //     minCapacity
 
-        filtered = filtered.filter(room =>
-          room.capacity >= minCapacity &&
-          (maxCapacity === Infinity ? true : room.capacity <= maxCapacity)
-        )
+      //   filtered = filtered.filter(room =>
+      //     room.capacity >= minCapacity &&
+      //     (maxCapacity === Infinity ? true : room.capacity <= maxCapacity)
+      //   )
+
+       // 處理容納人數 (以上皆含)
+       if (query.capacity) {
+        let minCapacity = 1;
+        
+        if (query.capacity.includes('以上')) {
+          // 處理 "200人以上" 的情況
+          minCapacity = parseInt(query.capacity);
+        } else {
+          // 處理 "1~10人" 這種範圍的情況
+          const capacityRange = query.capacity.split('~');
+          minCapacity = parseInt(capacityRange[0]);
+        }
+
+        filtered = filtered.filter(room => room.capacity >= minCapacity)
       }
 
       // 日期和時段過濾

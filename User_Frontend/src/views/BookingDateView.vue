@@ -197,6 +197,9 @@ export default {
 
     // 返回上一頁
     const goBack = () => {
+      // 清空 localStorage 中的 bookingData
+      localStorage.removeItem('bookingData')
+      
       router.push({
         name: "cardInfoView",
         params: { id: venueId.value },

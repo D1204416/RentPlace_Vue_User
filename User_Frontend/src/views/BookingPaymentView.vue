@@ -64,17 +64,17 @@ import ProgressSteps from '../components/ProgressSteps_Jo.vue'
       <button class="btn btn-book" @click="goNext">下一步</button>
     </div>
 
-      <div class="modal" v-if="showVirtualAccountModal">
-        <div class="modal-content">
-          <h2>轉帳虛擬帳號</h2>
-          <p>請於 24 小時內完成轉帳，逾時將取消預約</p>
-          <p>請將款項轉至以下虛擬帳號：</p>
-          <p>轉帳銀行 : 台灣銀行 銀行代碼 : 004</p>
-          <p class="virtual-account">{{ formattedVirtualAccount }}</p>
-          <button @click="closeVirtualAccountModal">確定</button>
-        </div>
+    <div class="modal" v-if="showVirtualAccountModal">
+      <div class="modal-content">
+        <h2>轉帳虛擬帳號</h2>
+        <p>請於 24 小時內完成轉帳，逾時將取消預約</p>
+        <p>請將款項轉至以下虛擬帳號：</p>
+        <p>轉帳銀行 : 台灣銀行 銀行代碼 : 004</p>
+        <p class="virtual-account">{{ formattedVirtualAccount }}</p>
+        <button @click="closeVirtualAccountModal">確定</button>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -114,21 +114,21 @@ export default {
   computed: {
     formatTimeSlots() {
       return this.bookingData.timeSlots
-          .map(slot => slot.time)
-          .join('、')
+        .map(slot => slot.time)
+        .join('、')
     },
     formatEquipments() {
       return this.bookingData.selectedEquipments
-          .map(equipment => equipment.equipmentName)
-          .join('、')
+        .map(equipment => equipment.equipmentName)
+        .join('、')
     },
-      formattedVirtualAccount() {
-        if (!this.virtualAccount) return '';
-        return this.virtualAccount.replace(/(\d{4})(?=\d)/g, '$1-').replace(/-$/, '');
-      }
-    },
+    formattedVirtualAccount() {
+      if (!this.virtualAccount) return '';
+      return this.virtualAccount.replace(/(\d{4})(?=\d)/g, '$1-').replace(/-$/, '');
+    }
+  },
 
-    created() {
+  created() {
     // 保存進入頁面時的查詢參數
     this.originalQuery = { ...this.$route.query }
 
@@ -166,7 +166,8 @@ export default {
           applyApartment: this.bookingData.applyApartment,
           content: this.bookingData.content,
           paymentMethod: this.bookingData.paymentMethod,
-          totalAmount: this.bookingData.totalAmount
+          totalAmount: this.bookingData.totalAmount,
+          virtualAccount: this.virtualAccount,
         }
 
         const response = await fetch('http://localhost:8080/api/reservations', {
@@ -387,18 +388,21 @@ export default {
   color: white;
   border: none;
 }
+
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* 更深的背景遮罩 */
+  background: rgba(0, 0, 0, 0.6);
+  /* 更深的背景遮罩 */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1050;
-  animation: fadeIn 0.3s ease-in-out; /* 添加淡入動畫 */
+  animation: fadeIn 0.3s ease-in-out;
+  /* 添加淡入動畫 */
 }
 
 .modal-content {
@@ -408,16 +412,20 @@ export default {
   text-align: center;
   max-width: 450px;
   width: 90%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* 添加陰影 */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  /* 添加陰影 */
   transform: translateY(-20px);
-  animation: slideIn 0.3s ease-in-out; /* 添加彈出動畫 */
+  animation: slideIn 0.3s ease-in-out;
+  /* 添加彈出動畫 */
 }
 
 .virtual-account {
   font-size: 2rem;
   font-weight: 700;
-  color: #111111; /* 使用亮藍色 */
-  letter-spacing: 0.15em; /* 增加字母間距 */
+  color: #111111;
+  /* 使用亮藍色 */
+  letter-spacing: 0.15em;
+  /* 增加字母間距 */
   margin: 20px 0;
 }
 
@@ -436,11 +444,13 @@ export default {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out; /* 按鈕背景過渡效果 */
+  transition: background 0.3s ease-in-out;
+  /* 按鈕背景過渡效果 */
 }
 
 .modal-content button:hover {
-  background: #0056b3; /* 更深的藍色 */
+  background: #0056b3;
+  /* 更深的藍色 */
 }
 
 /* 動畫效果 */
@@ -448,6 +458,7 @@ export default {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -457,10 +468,9 @@ export default {
   from {
     transform: translateY(-40px);
   }
+
   to {
     transform: translateY(0);
   }
 }
-
-
 </style>
