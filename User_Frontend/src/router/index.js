@@ -83,7 +83,7 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           }
         ]
       }
@@ -104,11 +104,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingDate'
+            path: '/bookingDate/:id'
           }
         ]
       }
@@ -129,11 +129,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingForm'
+            path: '/bookingForm/:id'
           }
         ]
       }
@@ -154,11 +154,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingPayment'
+            path: '/bookingPayment/:id'
           }
         ]
       }
@@ -179,11 +179,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingFinish'
+            path: '/bookingFinish/:id'
           }
         ]
       }
