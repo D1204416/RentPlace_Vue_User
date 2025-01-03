@@ -18,13 +18,40 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+// export default {
+//     name: 'Breadcrumb',
+//     setup() {
+//         const route = useRoute()
+
+//         const currentBreadcrumbs = computed(() => {
+//             return route.meta.breadcrumb || []
+//         })
+
+//         return {
+//             currentBreadcrumbs
+//         }
+//     }
+// }
+
 export default {
     name: 'Breadcrumb',
     setup() {
         const route = useRoute()
 
         const currentBreadcrumbs = computed(() => {
-            return route.meta.breadcrumb || []
+            const breadcrumbs = route.meta.breadcrumb || []
+            
+            return breadcrumbs.map(item => {
+                // 檢查路徑是否包含 :id
+                if (item.path.includes(':id')) {
+                    return {
+                        ...item,
+                        // 使用實際的 route.params.id 替換 :id
+                        path: item.path.replace(':id', route.params.id)
+                    }
+                }
+                return item
+            })
         })
 
         return {
@@ -32,6 +59,9 @@ export default {
         }
     }
 }
+
+
+
 </script>
 
 <style >

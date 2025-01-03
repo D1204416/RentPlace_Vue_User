@@ -13,6 +13,7 @@ import forgotPassword from "@/views/forgotPassword.vue";
 import UserOrderView from '../views/UserOrderView.vue'
 import UserInfoView from '../views/UserInfoView.vue'
 import UserOrderInfoView from '../views/UserOrderInfoView.vue'
+import FAQView from '@/views/FAQView.vue'
 
 
 const router = createRouter({
@@ -82,7 +83,7 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           }
         ]
       }
@@ -103,11 +104,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingDate'
+            path: '/bookingDate/:id'
           }
         ]
       }
@@ -128,11 +129,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingForm'
+            path: '/bookingForm/:id'
           }
         ]
       }
@@ -153,11 +154,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingPayment'
+            path: '/bookingPayment/:id'
           }
         ]
       }
@@ -178,11 +179,11 @@ const router = createRouter({
           },
           {
             text: '詳細資訊',
-            path: '/cardInfo'
+            path: '/cardInfo/:id'
           },
           {
             text: '預約流程',
-            path: '/bookingFinish'
+            path: '/bookingFinish/:id'
           }
         ]
       }
@@ -219,6 +220,19 @@ const router = createRouter({
       path: '/userOrderInfo/:id',
       name: 'userOrderInfoView',
       component: UserOrderInfoView,
+    },
+    {
+      path: '/FAQ',
+      name: 'FAQView',
+      component: FAQView,
+      meta: {
+        breadcrumb: [
+          {
+            text: '常見問答',
+            path: '/FAQ'
+          }
+        ]
+      }
     }
   ]
 })
