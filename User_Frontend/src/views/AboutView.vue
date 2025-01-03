@@ -138,6 +138,7 @@ h2 {
 p {
     margin-bottom: 1rem;
     color: #555;
+    font-size: large;
 }
 
 .features {
