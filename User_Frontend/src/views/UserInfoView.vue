@@ -92,6 +92,7 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 // 創建 axios 實例
 const axiosInstance = axios.create({
@@ -404,6 +405,10 @@ export default {
 
         // 清除本地存儲的用戶信息
         localStorage.removeItem('user')
+
+        // 清除 Pinia store
+        const userStore = useUserStore()
+        userStore.$reset()  // 或是 userStore.setUser(null)
 
         // 導向登入頁面
         this.$router.push('/')
