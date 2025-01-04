@@ -219,24 +219,35 @@ const handleCredentialResponse = async (response) => {
 // 新增一個 emit 用於通知父組件登入成功
 const emit = defineEmits(['login-success'])
 // 檢查信箱驗證狀態
+// const checkEmailVerification = async (email) => {
+//   try {
+//     // 使用 Firebase 嘗試登入，確認用戶是否已註冊
+//     const userCredential = await signInWithEmailAndPassword(auth, email, loginForm.password);
+//     const user = userCredential.user;
+
+//     // 檢查是否已驗證信箱
+//     if (!user.emailVerified) {
+//       console.warn('用戶信箱尚未驗證');
+//       return false;
+//     }
+
+//     return true;
+//   } catch (error) {
+//     console.error('檢查信箱驗證失敗：', error);
+//     return false;
+//   }
+// };
 const checkEmailVerification = async (email) => {
-  try {
-    // 使用 Firebase 嘗試登入，確認用戶是否已註冊
-    const userCredential = await signInWithEmailAndPassword(auth, email, loginForm.password);
-    const user = userCredential.user;
+  const firebaseUser = auth.currentUser;
 
-    // 檢查是否已驗證信箱
-    if (!user.emailVerified) {
-      console.warn('用戶信箱尚未驗證');
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('檢查信箱驗證失敗：', error);
-    return false;
+  // 確保用戶存在且已經重新載入最新狀態
+  if (firebaseUser) {
+    await firebaseUser.reload();
+    console.log('Firebase email verified status:', firebaseUser.emailVerified);
+    return firebaseUser.emailVerified;
   }
-};
+  return false;
+}
 
 // 一般登入處理
 const handleLogin = async () => {

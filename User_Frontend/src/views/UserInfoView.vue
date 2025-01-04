@@ -309,7 +309,7 @@ export default {
         // 從 localStorage 獲取用戶 ID
         const userData = JSON.parse(localStorage.getItem('user'))
         if (!userData || !userData.userId) {
-          throw new Error('未找到用戶信息')
+          throw new Error('未找到用戶資訊')
         }
 
         const response = await axiosInstance.get(`/api/user/${userData.userId}`)
@@ -345,7 +345,7 @@ export default {
 
         const userData = JSON.parse(localStorage.getItem('user'))
         if (!userData || !userData.userId) {
-          throw new Error('未找到用戶信息')
+          throw new Error('未找到用戶資訊')
         }
 
         // 準備更新的數據
@@ -397,16 +397,16 @@ export default {
 
         const userData = JSON.parse(localStorage.getItem('user'))
         if (!userData || !userData.userId) {
-          throw new Error('未找到用戶信息')
+          throw new Error('未找到用戶資訊')
         }
 
-        await axiosInstance.delete(`/api/user/${userData.userId}`)
+        await axiosInstance.delete(`/api/user/${userData.userId}/soft`)
 
         // 清除本地存儲的用戶信息
         localStorage.removeItem('user')
 
         // 導向登入頁面
-        this.$router.push('/login')
+        this.$router.push('/')
       } catch (err) {
         this.error = err.response?.data?.message || err.message || '刪除帳號失敗'
         this.loading = false
