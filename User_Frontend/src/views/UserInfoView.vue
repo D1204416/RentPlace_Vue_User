@@ -38,7 +38,8 @@
         <!-- 密碼 -->
         <div class="form-group">
           <label>密碼</label>
-          <input type="password" v-model="user.password" @input="validateField('password')"placeholder="輸入新密碼" class="input">
+          <input type="password" v-model="user.password" @input="validateField('password')" placeholder="輸入新密碼"
+            class="input">
           <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
         </div>
 
@@ -46,7 +47,7 @@
         <div class="form-group">
           <label>電話</label>
           <span class="required-mark">*</span>
-          <input type="tel" v-model="user.phone" @input="validateField('phone')"required class="input">
+          <input type="tel" v-model="user.phone" @input="validateField('phone')" required class="input">
           <span v-if="errors.phone" class="error-message">{{ errors.phone }}</span>
         </div>
 
@@ -54,7 +55,7 @@
         <div class="form-group">
           <label>Email</label>
           <span class="required-mark">*</span>
-          <input type="email" v-model="user.email" @input="validateField('email')"required class="input">
+          <input type="email" v-model="user.email" @input="validateField('email')" required class="input">
           <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
         </div>
 
@@ -62,7 +63,7 @@
         <div class="form-group">
           <label>性別</label>
           <span class="required-mark">*</span>
-          <select v-model="user.gender" @input="validateField('gender')"required class="input">
+          <select v-model="user.gender" @input="validateField('gender')" required class="input">
             <option value="">選擇性別</option>
             <option value="male">男</option>
             <option value="female">女</option>
@@ -75,7 +76,7 @@
         <div class="form-group">
           <label>生日</label>
           <span class="required-mark">*</span>
-          <input type="date" v-model="user.birth" @input="validateField('birth')"required class="input">
+          <input type="date" v-model="user.birth" @input="validateField('birth')" required class="input">
           <span v-if="errors.birth" class="error-message">{{ errors.birth }}</span>
         </div>
 
@@ -361,7 +362,19 @@ export default {
           updateData.password = this.user.password
         }
 
+        // 發送更新請求到後端
         await axiosInstance.put(`/api/user/${userData.userId}`, updateData)
+        this.success = '資料更新成功'
+
+        // 更新 localStorage 中的用戶資料
+        const updatedUserData = {
+          ...userData,
+          email: this.user.email,
+          username: this.user.username,
+          phone: this.user.phone
+        }
+        localStorage.setItem('user', JSON.stringify(updatedUserData))
+
         this.success = '資料更新成功'
 
         // 清空密碼欄位
