@@ -14,7 +14,7 @@ import Search from '../components/Search.vue'
     <div v-else>
       <div class="content">
         <div class="left-column">
-          <img :src="`/venueImg/${venueId}.svg`" :alt="info['場地名稱：']" class="room-image" />
+          <img :src="getImageUrl(venue.imageName)" :alt="info['場地名稱：']" class="room-image" @error="handleImageError" />
         </div>
 
         <div class="right-column">
@@ -67,6 +67,7 @@ export default {
       loading: true,
       error: null,
       originalQuery: null, // 添加此字段來保存原始查詢參數
+      venue: {}, // 添加存儲完整場地數據
     };
   },
 
@@ -89,18 +90,48 @@ export default {
   },
 
   methods: {
+    getImageUrl(imageName) {
+      if (!imageName) {
+        return '/img/default.svg'
+      }
+      return `/img/${imageName}`
+    },
+
+    handleImageError(e) {
+      // 如果已經是預設圖片就不處理
+      if (e.target.src.includes('default.svg')) {
+        return
+      }
+
+      // 設置預設圖片
+      e.target.src = '/img/default.svg'
+      // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
+      e.target.removeEventListener('error', this.handleImageError)
+    },
+
     async fetchVenueDetail() {
       try {
         this.loading = true
-
         console.log('Fetching venue detail for ID:', this.venueId)
+
         // 並行請求場地和設施資料
         const [venueResponse, equipmentResponse] = await Promise.all([
           axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
           axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
         ])
 
-        const venue = venueResponse.data
+        // 直接將 API 回傳的資料存到 venue
+        const venueData = venueResponse.data
+        console.log('Venue response:', venueData)  // 檢查資料
+
+        // 確保所有需要的資料都正確存儲
+        this.venue = {
+          ...venueData,  // 展開所有資料
+          imageName: venueData.imageName  // 明確指定 imageName
+        }
+
+        console.log('Stored venue data:', this.venue)  // 檢查存儲的資料
+        console.log('Image name:', this.venue.imageName)  // 檢查 imageName
 
         // 從設備資料中只提取 equipmentName
         this.facilities = Array.isArray(equipmentResponse.data)
@@ -109,12 +140,12 @@ export default {
 
         // 設置場地信息
         this.info = {
-          "場地名稱：": venue.venueName,
-          "聯絡電話：": venue.phoneNumber,
-          "場地位址：": venue.address,
-          "容納人數：": `${venue.capacity}人`,
-          "營業時間：": venue.availableTime,
-          "繳費方式：": `${venue.unitPrice} / ${venue.unit}`,
+          "場地名稱：": venueData.venueName,
+          "聯絡電話：": venueData.phoneNumber,
+          "場地位址：": venueData.address,
+          "容納人數：": `${venueData.capacity}人`,
+          "營業時間：": venueData.availableTime,
+          "繳費方式：": `${venueData.unitPrice} / ${venueData.unit}`,
         }
 
         this.loading = false
@@ -164,7 +195,7 @@ export default {
         params: { id: this.venueId },
         query: this.originalQuery   // 傳遞查詢參數
       })
-      
+
     },
 
     async created() {

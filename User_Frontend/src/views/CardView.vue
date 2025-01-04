@@ -22,7 +22,7 @@ import Pagination from '../components/Pagination.vue';
       <!-- 卡片網格 -->
       <div class="room-grid">
         <div v-for="room in paginatedRooms" :key="room.id" class="room-card" @click="goToDetail(room)">
-          <img :src="`/venueImg/${room.imageId}.svg`" :alt="room.name" class="card-image" @error="handleImageError">
+          <img :src="getImageUrl(room.imageName)" :alt="room.name" class="card-image" @error="handleImageError">
           <div class="card-content">
             <h5 class="venue-name">{{ room.venueName }}</h5>
             <div class="venue-info">
@@ -74,6 +74,13 @@ export default {
   },
 
   methods: {
+    getImageUrl(imageName) {
+      if (!imageName) {
+        return '/img/default.svg'
+      }
+      return `/img/${imageName}`
+    },
+
     handleImageError(e) {
       const currentSrc = e.target.src
 
@@ -84,7 +91,7 @@ export default {
 
       // 設置預設圖片
       try {
-        e.target.src = '/img/'
+        e.target.src = '/img/default.svg'
         // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
         e.target.removeEventListener('error', this.handleImageError)
       } catch (error) {
