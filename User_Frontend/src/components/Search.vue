@@ -220,8 +220,12 @@ export default {
     },
     selectDate(date) {
       if (!date) return
-      this.selectedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-      this.activeDropdown = null
+      // 使用 padStart 確保月份和日期是兩位數
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      this.selectedDate = `${year}-${month}-${day}`;
+      this.activeDropdown = null;
     },
     selectCapacity(capacity) {
       this.selectedCapacity = capacity
@@ -254,6 +258,10 @@ export default {
       this.selectedDate = query.date || '';
       if (query.date) {
         const [year, month, day] = query.date.split('-');
+        // 確保月份和日期是兩位數
+        const formattedMonth = String(parseInt(month)).padStart(2, '0');
+        const formattedDay = String(parseInt(day)).padStart(2, '0');
+        this.selectedDate = `${year}-${formattedMonth}-${formattedDay}`;
         this.currentDate = new Date(year, parseInt(month) - 1, day);
       }
 
@@ -449,7 +457,8 @@ export default {
 /* 下拉選單樣式 */
 .dropdown {
   position: absolute;
-  top: 105%;   /* 改為相對於 search-field 底部 */
+  top: 105%;
+  /* 改為相對於 search-field 底部 */
   /* left: 50%;
   transform: translateX(-50%); */
   background: white;
@@ -476,10 +485,14 @@ export default {
 
 /* 各下拉選單寬度 */
 #district-dropdown {
-  width: 415%;   /* 設置為100%以配合search-bar寬度 */
-  max-width: calc(500% + 20px);   /* 確保不會超出container */
-  left: 0;   /* 重置left位置 */
-  transform: none;   /* 移除transform */
+  width: 415%;
+  /* 設置為100%以配合search-bar寬度 */
+  max-width: calc(500% + 20px);
+  /* 確保不會超出container */
+  left: 0;
+  /* 重置left位置 */
+  transform: none;
+  /* 移除transform */
   height: 380px;
   padding: 20px;
 }
@@ -508,9 +521,12 @@ export default {
 #district-dropdown .checkbox-group {
   grid-template-columns: repeat(5, 1fr);
 
-  padding: 0 20px; /* 增加左右內距 */
-  width: 90%; /* 設置寬度比例 */
-  margin: 0 auto; /* 水平置中 */
+  padding: 0 20px;
+  /* 增加左右內距 */
+  width: 90%;
+  /* 設置寬度比例 */
+  margin: 0 auto;
+  /* 水平置中 */
 }
 
 #venue-dropdown .checkbox-group {
@@ -523,7 +539,8 @@ export default {
   gap: 8px;
   white-space: nowrap;
   padding: 0 20px;
-  justify-content: flex-start; /* 確保內容左對齊 */
+  justify-content: flex-start;
+  /* 確保內容左對齊 */
 }
 
 .checkbox-item input[type="checkbox"] {
@@ -868,11 +885,13 @@ export default {
     /* 減少高度 */
     font-size: 13px;
   }
-  
+
   #capacity-dropdown,
   #district-dropdown {
-    width: calc(100% + 30px) !important; /* 30px = search-bar的左右padding (15px * 2) */
-    left: -10px; /* 對應 search-bar 的 padding-left */
+    width: calc(100% + 30px) !important;
+    /* 30px = search-bar的左右padding (15px * 2) */
+    left: -10px;
+    /* 對應 search-bar 的 padding-left */
   }
 
   /* 調整 checkbox-group 在 dropdown 中的排列 */
