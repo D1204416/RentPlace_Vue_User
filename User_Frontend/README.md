@@ -33,3 +33,5 @@ npm run build
 npm install axios
 npm install pinia
 npm install crypto-js
+npm install vue3-toastify
+
