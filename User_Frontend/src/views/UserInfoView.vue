@@ -55,7 +55,7 @@
         <div class="form-group">
           <label>Email</label>
           <span class="required-mark">*</span>
-          <input type="email" v-model="user.email" @input="validateField('email')" required class="input">
+          <input type="email" v-model="user.email" @input="validateField('email')" disabled class="input disabled">
           <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
         </div>
 
@@ -76,7 +76,7 @@
         <div class="form-group">
           <label>生日</label>
           <span class="required-mark">*</span>
-          <input type="date" v-model="user.birth" @input="validateField('birth')" required class="input">
+          <input type="date" v-model="user.birth" @input="validateField('birth')" disabled class="input disabled">
           <span v-if="errors.birth" class="error-message">{{ errors.birth }}</span>
         </div>
 
