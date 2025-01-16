@@ -20,5 +20,7 @@ export default defineConfig({
          // 可選，如果後端路徑需要去掉 `/api`
       }
     }
-  }
+  },
+  base: '/RentPlace_Vue_User/',  // 替換成您的 GitHub repository 名稱
+  // 其他配置...
 })
