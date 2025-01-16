@@ -5,7 +5,7 @@
     <div class="venue-grid">
       <div v-for="venue in venues" :key="venue.id" class="venue-card" @click="handleVenueClick(venue)">
         <div class="venue-icon">
-          <img :src="`/img/${venue.icon}`" :alt="venue.title" />
+          <img :src="`${venue.icon}`" :alt="venue.title" />
         </div>
         <h3 class="venue-title">{{ venue.title }} {{ venue.count }}</h3>
         <p class="venue-description">{{ venue.description }}</p>
@@ -27,7 +27,7 @@ export default {
           title: '會議室',
           count: 0, // 初始化為 0
           description: '包含會議室、簡報室、聯誼室.....',
-          icon: 'meeting-room.png',
+          icon: `${import.meta.env.BASE_URL}img/meeting-room.png`,
           filterValue: ['會議室','簡報室','聯誼室']  
         },
         {
@@ -35,7 +35,7 @@ export default {
           title: '活動中心',
           count: 0, // 初始化為 0
           description: '包含禮堂、音樂廳、集會空間、演藝廳.....',
-          icon: 'theater.png',
+          icon: `${import.meta.env.BASE_URL}img/theater.png`,
           filterValue: ['禮堂','音樂廳','集會空間','演藝廳']
         },
         {
@@ -43,7 +43,7 @@ export default {
           title: '運動場地',
           count: 0, // 初始化為 0
           description: '包含健身中心、韻律教室、廣場、校園操場.....',
-          icon: 'playground.png',
+          icon: `${import.meta.env.BASE_URL}img/playground.png`,
           filterValue: ['運動場地','健身中心','韻律教室','廣場','校園操場']
         },
         {
@@ -51,7 +51,7 @@ export default {
           title: '教室',
           count: 0, // 初始化為 0
           description: '包含教室、多功能教室、電腦教室.....',
-          icon: 'classroom.png',
+          icon: `${import.meta.env.BASE_URL}img/classroom.png`,
           filterValue: ['教室','多功能教室','電腦教室']
         }
       ],
