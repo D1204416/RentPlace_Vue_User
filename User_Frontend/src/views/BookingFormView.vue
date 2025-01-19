@@ -134,7 +134,9 @@ export default {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/api/venues/${venueId}`)
+        // const response = await fetch(`http://localhost:8080/api/venues/${venueId}`)
+        const response = await fetch(`http://rentplacespring-production.up.railway.app/api/venues/${venueId}`)
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

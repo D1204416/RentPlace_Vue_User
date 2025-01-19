@@ -169,7 +169,8 @@ export default {
     async loadLatestQRCode() {
       try {
         const qrCodeResponse = await axios.get(
-          `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`,
+          // `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`,
+          `http://rentplacespring-production.up.railway.app/api/orders/latest-qrcode?t=${new Date().getTime()}`,
           { responseType: "arraybuffer" }
         );
 
@@ -182,7 +183,8 @@ export default {
 
         this.qrCodeUrl = blobUrl;
 
-        const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
+        // const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
+        const orderResponse = await axios.get("http://rentplacespring-production.up.railway.app/api/orders/latest");
         this.latestOrder = orderResponse.data;
 
         // console.log("QR Code and Order updated:", this.latestOrder);

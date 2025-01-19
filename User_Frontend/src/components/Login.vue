@@ -283,12 +283,12 @@ const handleLogin = async () => {
 
     if (response.data.token) {
       // 檢查 Firebase 信箱驗證狀態
-      const isVerified = await checkEmailVerification(loginForm.email);
+      // const isVerified = await checkEmailVerification(loginForm.email);
 
-      if (!isVerified) {
-        alert('您的信箱尚未驗證，請檢查您的信箱完成驗證後再登入。');
-        return;
-      }
+      // if (!isVerified) {
+      //   alert('您的信箱尚未驗證，請檢查您的信箱完成驗證後再登入。');
+      //   return;
+      // }
 
       // 儲存 token
       localStorage.setItem('token', response.data.token);

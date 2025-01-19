@@ -311,7 +311,8 @@ export default {
       try {
         await this.sendFirebaseVerificationEmail();
 
-        const response = await axios.post('http://localhost:8080/api/user', this.formData);
+        // const response = await axios.post('http://localhost:8080/api/user', this.formData);
+        const response = await axios.post('https://rentplacespring-production.up.railway.app/api/user', this.formData);
 
         alert("註冊成功！請檢查您的信箱完成 Firebase 驗證！");
         this.$router.replace('/'); // 跳轉到登入頁面
