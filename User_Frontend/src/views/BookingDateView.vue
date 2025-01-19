@@ -98,13 +98,13 @@ export default {
     }
 
     // 新增一個格式化日期的輔助函數
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
 
     // 新增獲取場地名稱的函數
     const fetchPlaceName = async () => {
@@ -182,13 +182,13 @@ const formatDate = (dateString) => {
     const handleDateSelect = (dateInfo) => {
       // 將日期格式轉換為 "MM月DD日" 的格式
       const date = new Date(dateInfo.date);
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  selectedDate.value = `${month}月${day}日可租借時段`;
-  selectedDateValue.value = formatDate(dateInfo.date); // 使用 formatDate 函數
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      selectedDate.value = `${month}月${day}日可租借時段`;
+      selectedDateValue.value = formatDate(dateInfo.date); // 使用 formatDate 函數
 
-  const dateReservations = reservations.value.find(r => r.date === formatDate(dateInfo.date));
-  const reservedTimeSlots = dateReservations ? dateReservations.timeSlots : [];
+      const dateReservations = reservations.value.find(r => r.date === formatDate(dateInfo.date));
+      const reservedTimeSlots = dateReservations ? dateReservations.timeSlots : [];
 
       // console.log('Selected date reserved slots:', reservedTimeSlots)
       // console.log('bookingDate:', dateInfo)
@@ -208,7 +208,7 @@ const formatDate = (dateString) => {
     const goBack = () => {
       // 清空 localStorage 中的 bookingData
       localStorage.removeItem('bookingData')
-      
+
       router.push({
         name: "cardInfoView",
         params: { id: venueId.value },
@@ -238,8 +238,8 @@ const formatDate = (dateString) => {
       }
 
       // 計算總金額
-    const totalHours = selectedTimeData.value?.totalHours || 0
-    const totalAmount = totalHours * unitPrice.value
+      const totalHours = selectedTimeData.value?.totalHours || 0
+      const totalAmount = totalHours * unitPrice.value
 
       // 準備要儲存的預約資料
       const dateTimeData = {
@@ -283,39 +283,39 @@ const formatDate = (dateString) => {
     const restoreBookingData = () => {
       try {
         const savedData = localStorage.getItem('bookingData');
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      console.log('Restored data:', parsedData);
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          console.log('Restored data:', parsedData);
 
           // 如果有保存的日期，恢復日期顯示
           if (parsedData.reservationDate) {
-        const date = new Date(parsedData.reservationDate);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        selectedDate.value = `${month}月${day}日可租借時段`;
-        selectedDateValue.value = formatDate(parsedData.reservationDate); // 使用 formatDate 函數
+            const date = new Date(parsedData.reservationDate);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            selectedDate.value = `${month}月${day}日可租借時段`;
+            selectedDateValue.value = formatDate(parsedData.reservationDate); // 使用 formatDate 函數
 
             // 恢復時段選擇
             if (parsedData.timeSlots && Array.isArray(parsedData.timeSlots)) {
-          selectedTimeData.value = {
-            selectedSlots: parsedData.timeSlots,
-            totalHours: parsedData.totalHours || parsedData.timeSlots.length
-          };
-        }
+              selectedTimeData.value = {
+                selectedSlots: parsedData.timeSlots,
+                totalHours: parsedData.totalHours || parsedData.timeSlots.length
+              };
+            }
 
             // 觸發日期選擇的處理函數來加載該日期的預約情況
             handleDateSelect({
-          date: parsedData.reservationDate
-        });
+              date: parsedData.reservationDate
+            });
           }
 
           // 恢復場地名稱等其他數據
           if (parsedData.venueName) {
-        placeName.value = parsedData.venueName;
-      }
-      if (parsedData.venueType) {
-        venueType.value = parsedData.venueType;
-      }
+            placeName.value = parsedData.venueName;
+          }
+          if (parsedData.venueType) {
+            venueType.value = parsedData.venueType;
+          }
         }
       } catch (error) {
         console.error('Failed to restore booking data:', error)
