@@ -76,9 +76,9 @@ export default {
   methods: {
     getImageUrl(imageName) {
       if (!imageName) {
-        return '/img/default.svg'
+        return '/RentPlace_Vue_User/img/default.svg'
       }
-      return `/img/${imageName}`
+      return `/RentPlace_Vue_User/img/${imageName}`
     },
 
     handleImageError(e) {
@@ -91,7 +91,7 @@ export default {
 
       // 設置預設圖片
       try {
-        e.target.src = '/img/default.svg'
+        e.target.src = '/RentPlace_Vue_User/img/default.svg'
         // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
         e.target.removeEventListener('error', this.handleImageError)
       } catch (error) {
@@ -102,7 +102,8 @@ export default {
     async fetchVenues() {
       try {
         this.loading = true
-        const response = await axios.get('http://localhost:8080/api/venues')
+        // const response = await axios.get('http://localhost:8080/api/venues')
+        const response = await axios.get('http://rentplacespring-production.up.railway.app/api/venues')
         this.rooms = response.data
         await this.fetchReservations()
         this.applyFilters() // 確保在獲取數據後立即應用過濾
@@ -115,7 +116,8 @@ export default {
 
     async fetchReservations() {
       try {
-        const response = await axios.get('http://localhost:8080/api/reservations')
+        // const response = await axios.get('http://localhost:8080/api/reservations')
+        const response = await axios.get('http://rentplacespring-production.up.railway.app/api/reservations')
         // 將預約資訊按場地ID分組
         this.reservations = response.data.reduce((acc, reservation) => {
           if (!acc[reservation.venueId]) {
