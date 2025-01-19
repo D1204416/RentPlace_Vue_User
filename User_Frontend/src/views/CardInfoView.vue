@@ -92,9 +92,9 @@ export default {
   methods: {
     getImageUrl(imageName) {
       if (!imageName) {
-        return '/img/default.svg'
+        return '/RentPlace_Vue_User/img/default.svg'
       }
-      return `/img/${imageName}`
+      return `/RentPlace_Vue_User/img/${imageName}`
     },
 
     handleImageError(e) {
@@ -104,7 +104,7 @@ export default {
       }
 
       // 設置預設圖片
-      e.target.src = '/img/default.svg'
+      e.target.src = '/RentPlace_Vue_User/img/default.svg'
       // 移除錯誤事件監聽，防止預設圖片載入失敗時再次觸發
       e.target.removeEventListener('error', this.handleImageError)
     },
@@ -116,8 +116,10 @@ export default {
 
         // 並行請求場地和設施資料
         const [venueResponse, equipmentResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
-          axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
+          // axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
+          // axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
+          axios.get(`http://rentplacespring-production.up.railway.app/api/venues/${this.venueId}`),
+          axios.get(`http://rentplacespring-production.up.railway.app/api/equipment/venue/${this.venueId}`)
         ])
 
         // 直接將 API 回傳的資料存到 venue
