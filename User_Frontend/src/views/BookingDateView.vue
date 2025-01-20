@@ -112,7 +112,7 @@ export default {
         loading.value = true
         const response = await axios.get(
           // `http://localhost:8080/api/venues/${venueId.value}`,
-          `http://rentplacespring-production.up.railway.app/api/venues/${venueId.value}`,
+          `https://rentplacespring-production.up.railway.app/api/venues/${venueId.value}`,
           { headers }
         )
         placeName.value = response.data.venueName // 假設 API 返回的場地數據中有 name 欄位
@@ -133,7 +133,7 @@ export default {
         loading.value = true
         const response = await axios.get(
           // `http://localhost:8080/api/reservations/venue/${venueId.value}`,
-          `http://rentplacespring-production.up.railway.app/api/reservations/venue/${venueId.value}`,
+          `https://rentplacespring-production.up.railway.app/api/reservations/venue/${venueId.value}`,
           { headers }
         )
 
@@ -165,7 +165,7 @@ export default {
         loading.value = true
         const response = await axios.get(
           // `http://localhost:8080/api/close-dates/venue/${venueId.value}`,
-          `http://rentplacespring-production.up.railway.app/api/close-dates/venue/${venueId.value}`,
+          `https://rentplacespring-production.up.railway.app/api/close-dates/venue/${venueId.value}`,
           { headers }
         )
         // 轉換資料格式

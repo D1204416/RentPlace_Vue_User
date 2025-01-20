@@ -170,7 +170,7 @@ export default {
           virtualAccount: this.virtualAccount,
         }
 
-        const response = await fetch('http://rentplacespring-production.up.railway.app/api/reservations', {
+        const response = await fetch('https://rentplacespring-production.up.railway.app/api/reservations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -212,7 +212,7 @@ export default {
       if (this.paymentMethod === 'BANK_TRANSFER') {
         try {
           // 呼叫後端 API 獲取虛擬帳號
-          const response = await fetch('http://rentplacespring-production.up.railway.app/api/payments/virtual-account');
+          const response = await fetch('https://rentplacespring-production.up.railway.app/api/payments/virtual-account');
           if (response.ok) {
             const account = await response.text();
             console.log('Received Virtual Account:', account); // 確認數字是否正確

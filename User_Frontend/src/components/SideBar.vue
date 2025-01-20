@@ -147,7 +147,7 @@
 
           <!-- SideBar Logo -->
           <div>
-            <img src="/img/logo.svg" alt="Logo"
+            <img src="/RentPlace_Vue_User/img/logo.svg" alt="Logo"
               style="height: 44px; position: fixed; bottom: 30px; margin-left: 48px;" />
           </div>
 

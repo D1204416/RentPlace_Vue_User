@@ -103,7 +103,7 @@ export default {
       try {
         this.loading = true
         // const response = await axios.get('http://localhost:8080/api/venues')
-        const response = await axios.get('http://rentplacespring-production.up.railway.app/api/venues')
+        const response = await axios.get('https://rentplacespring-production.up.railway.app/api/venues')
         this.rooms = response.data
         await this.fetchReservations()
         this.applyFilters() // 確保在獲取數據後立即應用過濾
@@ -117,7 +117,7 @@ export default {
     async fetchReservations() {
       try {
         // const response = await axios.get('http://localhost:8080/api/reservations')
-        const response = await axios.get('http://rentplacespring-production.up.railway.app/api/reservations')
+        const response = await axios.get('https://rentplacespring-production.up.railway.app/api/reservations')
         // 將預約資訊按場地ID分組
         this.reservations = response.data.reduce((acc, reservation) => {
           if (!acc[reservation.venueId]) {

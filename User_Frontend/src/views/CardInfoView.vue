@@ -118,8 +118,8 @@ export default {
         const [venueResponse, equipmentResponse] = await Promise.all([
           // axios.get(`http://localhost:8080/api/venues/${this.venueId}`),
           // axios.get(`http://localhost:8080/api/equipment/venue/${this.venueId}`)
-          axios.get(`http://rentplacespring-production.up.railway.app/api/venues/${this.venueId}`),
-          axios.get(`http://rentplacespring-production.up.railway.app/api/equipment/venue/${this.venueId}`)
+          axios.get(`https://rentplacespring-production.up.railway.app/api/venues/${this.venueId}`),
+          axios.get(`https://rentplacespring-production.up.railway.app/api/equipment/venue/${this.venueId}`)
         ])
 
         // 直接將 API 回傳的資料存到 venue

@@ -53,9 +53,9 @@
       
     </div>
 
-    <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
+    <!-- <p v-if="qrCodeUrl === null && latestOrder === null" class="error">
       無法載入最新的 QR Code 或訂單資訊，請稍後再試。
-    </p>
+    </p> -->
 
     <div class="button-group">
       <button class="btn btn-book" @click="goNext">返回場地租借</button>
@@ -90,12 +90,12 @@ export default {
     };
   },
 
-  mounted() {
-    this.startAutoUpdateQRCode();
-  },
-  beforeDestroy() {
-    this.stopAutoUpdateQRCode();
-  },
+  // mounted() {
+  //   this.startAutoUpdateQRCode();
+  // },
+  // beforeDestroy() {
+  //   this.stopAutoUpdateQRCode();
+  // },
 
   created() {
     // 保存進入頁面時的查詢參數
@@ -170,7 +170,7 @@ export default {
       try {
         const qrCodeResponse = await axios.get(
           // `http://localhost:8080/api/orders/latest-qrcode?t=${new Date().getTime()}`,
-          `http://rentplacespring-production.up.railway.app/api/orders/latest-qrcode?t=${new Date().getTime()}`,
+          `https://rentplacespring-production.up.railway.app/api/orders/latest-qrcode?t=${new Date().getTime()}`,
           { responseType: "arraybuffer" }
         );
 
@@ -184,7 +184,7 @@ export default {
         this.qrCodeUrl = blobUrl;
 
         // const orderResponse = await axios.get("http://localhost:8080/api/orders/latest");
-        const orderResponse = await axios.get("http://rentplacespring-production.up.railway.app/api/orders/latest");
+        const orderResponse = await axios.get("https://rentplacespring-production.up.railway.app/api/orders/latest");
         this.latestOrder = orderResponse.data;
 
         // console.log("QR Code and Order updated:", this.latestOrder);
