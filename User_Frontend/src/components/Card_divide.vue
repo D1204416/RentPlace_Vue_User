@@ -63,7 +63,7 @@ export default {
     async fetchVenues() {
       try {
         // const response = await axios.get('http://localhost:8080/api/venues')
-        const response = await axios.get('http://rentplacespring-production.up.railway.app/api/venues')
+        const response = await axios.get('https://rentplacespring-production.up.railway.app/api/venues')
         this.allVenues = response.data
         this.updateVenueCounts()
       } catch (error) {
